@@ -179,12 +179,25 @@ These are the gotchas that break results or lose time:
    `dc v(in) 0 5 1`.
 3. **`op ; print v(x)` can be stale/zero.** Prefer `tran`, `dc`, or `ac` plus
    `wrdata`. The harness also parses `v(x) = value` lines from the log.
-4. **Behavioral logic is flaky.** A `B` source with a hard comparison
-   (`V = 3.3*(V(in)<1.65)`) converges for a single gate but multi-input logic
-   (`V = ... (a>1.65)*(b>1.65)`) frequently fails with *"timestep too small"*.
-   For multi-input gates use **XSPICE digital primitives** (`d_nand`, `d_or`,
-   `d_dff`, ...) — event-driven, no convergence issues. The `circuit-design`
-   skill documents the working recipe.
+4. **Multi-input logic — use XSPICE digital primitives.** Behavioral `B` sources
+   converge for a *single* comparator (an inverter works) but multi-input logic
+   (`V = ... (a>1.65)*(b>1.65)`) fails with *"timestep too small"*. Use the
+   XSPICE **`d_nand`** code model instead — event-driven, no convergence issues.
+   Verified recipe (output reads as logic **0/1**, not rail voltage):
+
+   ```spice
+   vdummy dummy 0 DC=0              ; required — stabilises the digital OP
+   a_x [a b] out nand1              ; inputs in brackets, output scalar
+   .model nand1 d_nand (rise_delay=1n fall_delay=1n in_low=0.7 in_high=1.6 out_low=0 out_high=3.3)
+   ```
+
+   **Sequential memory (SR latch / FF) does NOT settle in this ngspice build** —
+   cross-coupled digital feedback starts in the X (unknown) state and the
+   outputs sit at 0.5 (`1.65V` = threshold). Verified: `d_srlatch` (any pin/bind
+   order) and two cross-coupled `d_nand`s both give 0.5. Sequential logic here
+   needs a proper init path that ngspice's event-driven XSPICE doesn't provide
+   cleanly; treat `circuits/digital/inverter_behavioral.cir`,
+   `nand_xspice.cir`, and `debounce_rc.cir` as the verified digital set.
 5. **`B`-source logic operators.** ngspice `B` sources accept arithmetic
    (`+ - * /`) and comparisons (`< > == !=`) but NOT `&`, `|`, `~`, or `if()`.
    Build logic from arithmetic on 0/1 comparisons, or use XSPICE.
