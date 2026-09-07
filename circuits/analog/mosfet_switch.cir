@@ -1,0 +1,15 @@
+* MOSFET low-side switch — 3.3V GPIO drives a 12V load (relay coil/LED strip)
+* Load ~12V/120ohm = 100 mA. 2N7000-style N-MOSFET.
+VDD 12 0 12V
+VGPIO in 0 PULSE(0 3.3 0 1u 1u 0.5m 1m)
+RL 12 load 120
+M1 load in 0 0 2N7000
+
+.model 2N7000 nmos(level=1 vto=2.0 kp=0.3 lambda=0.01)
+
+.control
+tran 20u 2m
+wrdata v_in.csv v(in)
+wrdata v_load.csv v(load)
+.endc
+.end

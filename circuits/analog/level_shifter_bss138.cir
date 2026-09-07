@@ -1,0 +1,18 @@
+* 3.3V <-> 5V bidirectional level shifter (BSS138 style) — I2C/GPIO
+* Gate tied to 3.3V; source = LV data line; drain = HV data line.
+* Pull-ups on both sides.  Non-inverting: LV high -> HV 5V, LV low -> HV 0.
+VLV 3v3 0 3.3V
+VHV 5v0 0 5.0V
+RLV 3v3 lv 10k
+RHV 5v0 hv 10k
+M1 hv 3v3 lv lv NMOS
+.model NMOS nmos(level=1 vto=1.0 kp=1e-3)
+* Drive the LV data line with a 3.3V logic signal
+VDRV lv 0 PULSE(0 3.3 0 1m 1m 5m 10m)
+
+.control
+tran 0.2m 20m
+wrdata v_lv.csv v(lv)
+wrdata v_hv.csv v(hv)
+.endc
+.end

@@ -1,0 +1,10 @@
+* Behavioral logic inverter (3.3V logic) — threshold at 1.65V
+VIN in 0 PULSE(0 3.3 0 1n 1n 0.5u 1u)
+B1 out 0 V = 3.3 * (V(in) < 1.65)
+
+.control
+tran 10n 2u
+wrdata v_in.csv V(in)
+wrdata v_out.csv V(out)
+.endc
+.end

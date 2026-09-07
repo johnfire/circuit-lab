@@ -1,0 +1,21 @@
+* Non-inverting amplifier with an ideal (behavioral) op-amp.
+* Gain = 1 + R1/R2 = 2.  Supplies +/-15 V, output clips at +-13.5 V.
+VCC vcc 0 15V
+VEE vee 0 -15V
+VIN in 0 PULSE(0 1 0 1u 1u 1m 2m)
+R1 vout fb 10k
+R2 fb 0 10k
+XOP vout in fb vcc vee OPAMP
+
+* Behavioral macro op-amp: Vout = clamp(A*(v+ - v-), -13.5, 13.5)
+* Pin order: out, v+, v-, vcc, vee
+.subckt OPAMP out pin pinm vcc vee
+B1 out 0 V = MIN(MAX(1e6*(V(pin) - V(pinm)), -13.5), 13.5)
+.ends
+
+.control
+tran 0.01m 3m
+wrdata v_in.csv v(in)
+wrdata v_vout.csv v(vout)
+.endc
+.end

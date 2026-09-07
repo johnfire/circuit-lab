@@ -1,0 +1,14 @@
+* LED current-limit from a RPi 3.3V GPIO
+* Forward current I = (GPIO - Vf)/R = (3.3 - ~2.0)/220 = ~5.9 mA
+VGPIO in 0 PULSE(0 3.3 0 1u 1u 2m 4m)
+R in led 220
+D1 led 0 LED
+
+.model LED d(is=1e-14 n=1.8 rs=5)
+
+.control
+tran 0.1m 8m
+wrdata v_in.csv v(in)
+wrdata v_led.csv v(led)
+.endc
+.end

@@ -1,0 +1,13 @@
+* SR latch from cross-coupled NAND gates (behavioral) — a memory element.
+* Set S low -> Q high; Reset R low -> Q low. Both high -> hold state.
+VS S 0 PULSE(0 3.3 0 1n 1n 2u 4u)
+VR R 0 PULSE(0 3.3 0 1n 1n 4u 8u)
+B1 q 0 V = 3.3 * ~((V(qb) > 1.65) & (V(S) > 1.65))
+B2 qb 0 V = 3.3 * ~((V(q) > 1.65) & (V(R) > 1.65))
+
+.control
+tran 10n 8u
+wrdata v_q.csv V(q)
+wrdata v_qb.csv V(qb)
+.endc
+.end

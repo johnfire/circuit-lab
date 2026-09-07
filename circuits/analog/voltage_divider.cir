@@ -1,0 +1,11 @@
+* Resistor voltage divider — scale a 5V sensor to the Pi ADC (0-3.3V)
+* out = VIN * R2/(R1+R2) = VIN * 6.8k/(10k+6.8k) = 0.405 * VIN
+VIN in 0 5V
+R1 in out 10k
+R2 out 0 6.8k
+
+.control
+dc VIN 0 5 0.5
+wrdata v_out.csv v(out)
+.endc
+.end

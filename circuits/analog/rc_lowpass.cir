@@ -1,0 +1,13 @@
+* RC low-pass filter — PWM->analog DAC for Raspberry Pi
+* GPIO 3.3V PWM (1 kHz) smoothed to a steady analog level.
+* tau = R*C = 10k * 1u = 10 ms  -> fc ~ 16 Hz.
+VIN in 0 PULSE(0 3.3 0 1u 1u 0.5m 1m)
+R1 in out 10k
+C1 out 0 1u
+
+.control
+tran 0.01m 8m
+wrdata v_in.csv v(in)
+wrdata v_out.csv v(out)
+.endc
+.end

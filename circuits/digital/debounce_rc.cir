@@ -1,0 +1,14 @@
+* Button debounce — RC low-pass + comparator (threshold 1.65V)
+* A noisy button edge becomes a clean logic transition.
+VBTN in 0 PULSE(0 3.3 0 0 1u 2m 4m)
+R1 in filter 10k
+C1 filter 0 100n
+B1 out 0 V = 3.3 * (V(filter) > 1.65)
+
+.control
+tran 10u 5m
+wrdata v_in.csv V(in)
+wrdata v_filter.csv V(filter)
+wrdata v_out.csv V(out)
+.endc
+.end
