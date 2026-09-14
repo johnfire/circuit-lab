@@ -156,7 +156,7 @@ simulating, or verifying an electronic circuit; writing a SPICE netlist; or
 "build an adapter / filter / switch / level shifter for a Raspberry Pi."
 It lives in `skills/software-development/circuit-design/`.
 
-The project root is `~/circuit-lab/`.
+The project root is `~/Projects/circuit-lab/`.
 
 ## 2. Environment
 
@@ -206,15 +206,15 @@ These are the gotchas that break results or lose time:
 ## 4. Operating the harness
 
 ```bash
-python3 ~/circuit-lab/harness/run_circuit.py list
-python3 ~/circuit-lab/harness/run_circuit.py run circuits/analog/rc_lowpass.cir
-python3 ~/circuit-lab/harness/run_circuit.py run circuits/analog/rc_lowpass.cir --set R1=4700
-python3 ~/circuit-lab/harness/run_circuit.py run circuits/analog/rc_lowpass.cir --sweep R1=4700,10000,22000
-python3 ~/circuit-lab/harness/run_circuit.py run circuits/analog/rc_lowpass.cir --plot /tmp/rc.png
-python3 ~/circuit-lab/harness/run_circuit.py new circuits/analog/my_circuit
+python3 ~/Projects/circuit-lab/harness/run_circuit.py list
+python3 ~/Projects/circuit-lab/harness/run_circuit.py run circuits/analog/rc_lowpass.cir
+python3 ~/Projects/circuit-lab/harness/run_circuit.py run circuits/analog/rc_lowpass.cir --set R1=4700
+python3 ~/Projects/circuit-lab/harness/run_circuit.py run circuits/analog/rc_lowpass.cir --sweep R1=4700,10000,22000
+python3 ~/Projects/circuit-lab/harness/run_circuit.py run circuits/analog/rc_lowpass.cir --plot /tmp/rc.png
+python3 ~/Projects/circuit-lab/harness/run_circuit.py new circuits/analog/my_circuit
 ```
 
-Paths are relative to `~/circuit-lab/`. `--set K=V` substitutes `$K` / `%{K}`
+Paths are relative to `~/Projects/circuit-lab/`. `--set K=V` substitutes `$K` / `%{K}`
 placeholders; `--sweep K=v1,v2,v3` runs once per value.
 
 ## 5. How to verify a design (do this every time)
