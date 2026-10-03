@@ -1,0 +1,71 @@
+name: circuit-lab
+
+services:
+  worker:
+    image: circuit-lab-worker:${CIRCUIT_IMAGE_TAG:-local}
+    build:
+      context: .
+      target: worker
+    network_mode: none
+    read_only: true
+    user: "10001:10001"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 384m
+    cpus: 0.75
+    pids_limit: 64
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m,mode=1777
+    volumes:
+      - worker-ipc:/run/circuit-lab
+    environment:
+      CIRCUIT_WORKER_LISTEN: /run/circuit-lab/worker.sock
+    healthcheck:
+      test: [CMD, python, -m, backend.worker_health]
+      interval: 15s
+      timeout: 20s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    logging:
+      options: {max-size: 5m, max-file: "3"}
+
+  api:
+    image: circuit-lab-api:${CIRCUIT_IMAGE_TAG:-local}
+    build:
+      context: .
+      target: api
+    read_only: true
+    user: "10001:10001"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 192m
+    cpus: 0.5
+    pids_limit: 64
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=32m,mode=1777
+    ports:
+      - "127.0.0.1:${CIRCUIT_PORT:-8102}:8000"
+    volumes:
+      - worker-ipc:/run/circuit-lab:ro
+      - audit-log:/var/log/circuit-lab
+    environment:
+      CIRCUIT_WORKER_SOCKET: /run/circuit-lab/worker.sock
+      CIRCUIT_AUDIT_PATH: /var/log/circuit-lab/audit.jsonl
+      CIRCUIT_PUBLIC_URL: ${CIRCUIT_PUBLIC_URL:-}
+      CIRCUIT_PROXY_TOKEN: ${CIRCUIT_PROXY_TOKEN:-}
+      CIRCUIT_ACCESS_MODE: ${CIRCUIT_ACCESS_MODE:-private}
+    depends_on:
+      worker: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    logging:
+      options: {max-size: 5m, max-file: "3"}
+
+volumes:
+  worker-ipc:
+  audit-log:

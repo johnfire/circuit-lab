@@ -1,4 +1,4 @@
-name: Prototype checks
+name: Circuit Lab checks and deployment
 
 on:
   push:
@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9 # v7
         with:
           version: "0.12.10"
           python-version: "3.13"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "26"
           cache: npm
@@ -27,13 +27,14 @@ jobs:
       - name: Install simulator and locked dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ngspice
+          sudo apt-get install -y build-essential bison flex curl ca-certificates
+          sudo bash deploy/build_ngspice.sh /usr/local
           uv sync --frozen --all-extras
           npm ci --prefix frontend
       - name: Python lint, strict types, and unit/integration tests
         run: |
-          uv run ruff check backend harness tests
-          uv run mypy backend
+          uv run ruff check backend harness tests deploy
+          uv run mypy backend deploy
           uv run pytest --cov=backend --cov=harness --cov-report=term-missing --cov-fail-under=70
       - name: Frontend lint and production build
         working-directory: frontend
@@ -52,8 +53,61 @@ jobs:
           npm run test:e2e
       - name: Retain browser failure diagnostics
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: browser-failures
           path: frontend/test-results
           if-no-files-found: ignore
+
+  containers:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CIRCUIT_PUBLIC_URL: https://circuit-lab.christopherrehm.de
+      CIRCUIT_PROXY_TOKEN: ci-only-proxy-token-not-for-production-123
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: Build and start isolated containers
+        run: docker compose -p circuit-lab-ci up -d --build --wait --wait-timeout 90
+      - name: Real simulations and proxy rejection
+        run: docker compose -p circuit-lab-ci exec -T api python - < deploy/container_checks.py
+      - name: Verify worker isolation
+        run: |
+          worker=$(docker compose -p circuit-lab-ci ps -q worker)
+          test "$(docker inspect -f '{{.HostConfig.NetworkMode}}' "$worker")" = none
+          test "$(docker inspect -f '{{.HostConfig.ReadonlyRootfs}}' "$worker")" = true
+          test "$(docker inspect -f '{{.Config.User}}' "$worker")" = 10001:10001
+          docker compose -p circuit-lab-ci exec -T worker python -c "import socket; assert socket.getaddrinfo('localhost', 1); print('Worker has only loopback')"
+      - name: Container failure diagnostics
+        if: failure()
+        run: docker compose -p circuit-lab-ci logs --tail 80
+      - name: Stop CI-only containers
+        if: always()
+        run: docker compose -p circuit-lab-ci down
+
+  deploy:
+    needs: containers
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: circuit-lab-production
+      cancel-in-progress: false
+    environment: production
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: Send exact verified revision to restricted VPS receiver
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST_KEY: ${{ secrets.DEPLOY_HOST_KEY }}
+        run: |
+          test -n "$DEPLOY_SSH_KEY"
+          test -n "$DEPLOY_HOST_KEY"
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/circuit-lab"
+          chmod 600 "$HOME/.ssh/circuit-lab"
+          printf '%s\n' "$DEPLOY_HOST_KEY" > "$HOME/.ssh/known_hosts"
+          git archive "$GITHUB_SHA" | ssh -F /dev/null -i "$HOME/.ssh/circuit-lab" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 circuit-deploy@82.165.32.162 "deploy $GITHUB_SHA"
+      - name: Verify public TLS front door remains private
+        run: test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/)" = 401

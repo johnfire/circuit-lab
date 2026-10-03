@@ -1,0 +1,28 @@
+<VirtualHost 82.165.32.162:443>
+    ServerName circuit-lab.christopherrehm.de
+    SSLEngine On
+    SSLCertificateFile /etc/letsencrypt/live/circuit-lab.christopherrehm.de/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/circuit-lab.christopherrehm.de/privkey.pem
+    Include /etc/letsencrypt/options-ssl-apache.conf
+    Header always set Strict-Transport-Security "max-age=31536000"
+    Header always set Cache-Control "no-store"
+    LimitRequestBody 8192
+    ProxyRequests Off
+    ProxyPreserveHost On
+    ProxyTimeout 25
+    RequestHeader unset X-Circuit-Proxy-Token
+    RequestHeader unset X-Circuit-Actor
+    RequestHeader set X-Circuit-Proxy-Token "__PROXY_TOKEN__"
+    RequestHeader set X-Circuit-Actor "expr=%{REMOTE_USER}"
+    RequestHeader set X-Forwarded-Proto "https"
+    <Location />
+        AuthType Basic
+        AuthName "Circuit Lab — private prototype"
+        AuthUserFile /etc/apache2/circuit-lab.htpasswd
+        Require valid-user
+    </Location>
+    ProxyPass / http://127.0.0.1:8102/
+    ProxyPassReverse / http://127.0.0.1:8102/
+    ErrorLog ${APACHE_LOG_DIR}/circuit-lab-error.log
+    CustomLog ${APACHE_LOG_DIR}/circuit-lab-access.log combined
+</VirtualHost>

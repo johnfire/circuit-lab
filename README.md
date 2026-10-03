@@ -31,7 +31,7 @@ circuit-lab/
 
 ## Web prototype
 
-The first workbench is local-only: nine recipes, editable resistor/capacitor
+The first workbench supports local and gated hosted modes: nine recipes, editable resistor/capacitor
 values, real ngspice waveforms with zoom/cursor measurements, numerical checks,
 a supported-component connectivity table, netlist inspection, and JSON export.
 It does not yet have AI chat, schematic editing, or persistent saved designs.
@@ -56,8 +56,8 @@ All models are marked generic/ideal. Passing checks are not hardware approval,
 component-rating verification, or permission to connect a Raspberry Pi.
 The API accepts only registered recipes and bounded numeric overrides, not
 arbitrary netlists. Each job has its own temporary directory and process group,
-resource limits, timeouts, and a two-worker ceiling. This is not the planned
-network-isolated simulation container.
+resource limits, timeouts, and a two-worker ceiling. Hosted mode uses the
+network-isolated worker described in [the deployment runbook](deploy/README.md).
 
 Run the same checks used by CI:
 
@@ -73,7 +73,8 @@ Run the same checks used by CI:
 Simulation events are appended to /tmp/circuit-lab-audit.jsonl, with correlation
 IDs and the local-user actor. Set CIRCUIT_AUDIT_PATH for a different local
 destination. Missing audit storage rejects jobs without breaking the catalog.
-This prototype has no authentication or authenticated per-person attribution.
+Local mode has no accounts. Hosted mode requires a trusted gateway and records
+its authenticated identity on simulation events. Customer login is being staged.
 See [prototype status](docs/prototype-status.md) for scope and next milestones.
 
 ## Command-line quick start

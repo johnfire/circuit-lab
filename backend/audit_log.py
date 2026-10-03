@@ -13,10 +13,11 @@ AUDIT_LOCK = Lock()
 LOGGER = logging.getLogger("circuit-lab")
 
 
-def record_simulation(circuit_id: str, correlation_id: str, outcome: str) -> None:
-    """Append a local-user simulation event without storing submitted content."""
+def record_simulation(circuit_id: str, correlation_id: str, outcome: str,
+                      actor: str = "user:local") -> None:
+    """Append an explicitly attributed action without storing submitted content."""
     event = {"timestamp": datetime.now(timezone.utc).isoformat(), "level": "INFO",
-             "source": "simulation", "actor": "user:local", "action": "simulation.run",
+             "source": "simulation", "actor": actor, "action": "simulation.run",
              "target": circuit_id, "correlation_id": correlation_id, "outcome": outcome}
     audit_path = Path(os.environ.get("CIRCUIT_AUDIT_PATH", "/tmp/circuit-lab-audit.jsonl"))
     try:

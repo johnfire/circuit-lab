@@ -10,6 +10,7 @@ from threading import BoundedSemaphore
 from pydantic import ValidationError
 
 from backend.circuit_catalog import ROOT
+from backend.remote_worker import request_worker_simulation
 from backend.simulation_engine import SimulationFailure
 from backend.simulation_models import SimulationRequest, SimulationResponse
 
@@ -19,6 +20,9 @@ WORKER_SLOTS = BoundedSemaphore(2)
 def launch_simulation(circuit_id: str, request: SimulationRequest,
                       correlation_id: str) -> SimulationResponse:
     """Run up to two isolated jobs; kill the process group on a timeout."""
+    socket_path = os.environ.get("CIRCUIT_WORKER_SOCKET")
+    if socket_path:
+        return request_worker_simulation(socket_path, circuit_id, request, correlation_id)
     if not WORKER_SLOTS.acquire(blocking=False):
         raise SimulationFailure("Two simulations are already running. Please retry shortly.")
     payload = json.dumps({"circuit_id": circuit_id, "request": request.model_dump(),
