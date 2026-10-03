@@ -9,7 +9,7 @@ export function AnalogMeasurements({ schematic, report, frame }: { schematic: Sc
     return value === undefined ? '—' : engineering(value, 'V');
   };
   return <details className="editor-card" open><summary>Measurements · one shared instant</summary>
-    <div className="measurement-scroll"><table><caption className="sr-only">Synchronized terminal voltages and signed branch currents</caption>
+    <div className="measurement-scroll" role="region" tabIndex={0} aria-label="Scrollable circuit measurements"><table><caption className="sr-only">Synchronized terminal voltages and signed branch currents</caption>
       <thead><tr><th scope="col">Part</th><th scope="col">Terminal 0</th><th scope="col">Terminal 1</th><th scope="col">Current 0 → 1</th></tr></thead>
       <tbody>{schematic.parts.filter(part => part.kind !== 'GND').map(part => {
         const current = report.traces.find(trace => trace.name === 'I:' + part.id)?.values[frame];

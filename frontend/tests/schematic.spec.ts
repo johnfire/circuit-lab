@@ -88,6 +88,10 @@ test('analog editor is accessible on desktop and mobile without page overflow', 
   await expect(page.getByRole('heading', { name: 'Watch the circuit' })).toBeVisible();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page.setViewportSize({ width: 390, height: 844 });
+  const measurements = page.getByRole('region', { name: 'Scrollable circuit measurements' });
+  await expect(measurements).toHaveAttribute('tabindex', '0');
+  await measurements.focus();
+  await expect(measurements).toBeFocused();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.getByLabel('Watch from (ms)').fill('11');
