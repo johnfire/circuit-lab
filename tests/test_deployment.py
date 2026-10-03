@@ -25,15 +25,19 @@ def test_favicon_is_self_contained_brand_svg() -> None:
 
 
 @pytest.mark.parametrize('has_favicon', [True, False])
+@pytest.mark.parametrize('has_theme', [True, False])
 def test_publish_landing_exposes_only_allowlisted_assets(tmp_path: Path,
                                                         monkeypatch: pytest.MonkeyPatch,
-                                                        has_favicon: bool) -> None:
+                                                        has_favicon: bool,
+                                                        has_theme: bool) -> None:
     release = tmp_path / 'releases' / ('a' * 40)
     source = release / 'frontend' / 'public'
     source.mkdir(parents=True)
     expected_names = {'landing.html', 'landing.css'}
     if has_favicon:
         expected_names.add('favicon.svg')
+    if has_theme:
+        expected_names.add('theme.css')
     for name in expected_names:
         (source / name).write_text(name)
     (source / '.env').write_text('private-fixture-do-not-publish')

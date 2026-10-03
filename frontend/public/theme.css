@@ -1,0 +1,20 @@
+:root {
+  color-scheme: dark;
+  --color-background: #200808;
+  --color-surface: #2c1010;
+  --color-raised: #391818;
+  --color-shadow: #140404;
+  --color-text: #d8b592;
+  --color-muted: #c19b80;
+  --color-heading: #f3cd68;
+  --color-accent: #f3cd68;
+  --color-accent-hover: #ffde89;
+  --color-on-accent: #240a0a;
+  --color-border: #684338;
+  --color-control-border: #a47b63;
+  --color-focus: #ffde89;
+  --color-warning-surface: #492019;
+  --color-signal-0: #f3cd68;
+  --color-signal-1: #dca780;
+  --color-signal-2: #bdaae3;
+}

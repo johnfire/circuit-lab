@@ -90,9 +90,9 @@ def publish_landing(release: Path) -> None:
         return
     destination = PUBLIC_PAGES / release.name
     destination.mkdir(parents=True, mode=0o755, exist_ok=True)
-    for name in ('landing.html', 'landing.css', 'favicon.svg'):
-        if name == 'favicon.svg' and not (source / name).is_file():
-            continue  # Older immutable releases predate the favicon.
+    for name in ('landing.html', 'landing.css', 'favicon.svg', 'theme.css'):
+        if name in ('favicon.svg', 'theme.css') and not (source / name).is_file():
+            continue  # Older immutable releases predate these optional assets.
         shutil.copyfile(source / name, destination / name)
         (destination / name).chmod(0o644)
     temporary = PUBLIC_LINK.with_name(PUBLIC_LINK.name + '.next')

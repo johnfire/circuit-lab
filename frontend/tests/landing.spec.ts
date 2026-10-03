@@ -3,6 +3,12 @@ import AxeBuilder from '@axe-core/playwright';
 
 test('public landing explains the preview and links to account creation', async ({ page }) => {
   await page.goto('/landing.html');
+  await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(32, 8, 8)');
+  await expect(page.locator('html')).toHaveCSS('color', 'rgb(216, 181, 146)');
+  await expect(page.locator('h1')).toHaveCSS('color', 'rgb(243, 205, 104)');
+  const theme = await page.request.get('/theme.css');
+  expect(theme.status()).toBe(200);
+  expect(theme.headers()['content-type']).toContain('text/css');
   await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg');
   const favicon = await page.request.get('/favicon.svg');
   expect(favicon.status()).toBe(200);

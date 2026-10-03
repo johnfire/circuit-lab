@@ -1,7 +1,7 @@
 :root {
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  color: #213d33;
-  background: #f4f2e9;
+  color: var(--color-text);
+  background: var(--color-background);
   font-synthesis: none;
 }
 * {
@@ -15,7 +15,7 @@ a {
   text-decoration: none;
 }
 a:focus-visible {
-  outline: 3px solid #a2472c;
+  outline: 3px solid var(--color-focus);
   outline-offset: 5px;
 }
 a:hover {
@@ -37,7 +37,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #d4d9ce;
+  border-bottom: 1px solid var(--color-border);
 }
 .brand {
   font-size: 25px;
@@ -74,7 +74,7 @@ nav {
   display: inline-block;
   width: 7px;
   height: 7px;
-  background: #4d6b3d;
+  background: var(--color-accent);
   border-radius: 50%;
   margin-right: 8px;
 }
@@ -87,13 +87,13 @@ h1 {
 h1 em {
   font-family: Georgia, serif;
   font-weight: 400;
-  color: #8c472d;
+  color: var(--color-text);
 }
 .intro {
   max-width: 490px;
   font-size: 17px;
   line-height: 1.7;
-  color: #526058;
+  color: var(--color-muted);
 }
 .actions {
   display: flex;
@@ -105,15 +105,15 @@ h1 em {
   display: inline-flex;
   justify-content: space-between;
   gap: 28px;
-  background: #243f34;
-  color: #fff;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
   padding: 17px 22px;
   border-radius: 3px;
   font-size: 14px;
   font-weight: 600;
 }
 .button:hover {
-  background: #3b5547;
+  background: var(--color-accent-hover);
   text-decoration: none;
 }
 .secondary {
@@ -122,14 +122,14 @@ h1 em {
 .fine-print {
   font-size: 11px;
   line-height: 1.6;
-  color: #526058;
+  color: var(--color-muted);
   margin-top: 20px;
 }
 .circuit-card {
-  background: #e6eadf;
+  background: var(--color-surface);
   padding: 25px 28px 22px;
-  border: 1px solid #d4d9ce;
-  box-shadow: 7px 9px 0 #e9e7de;
+  border: 1px solid var(--color-border);
+  box-shadow: 7px 9px 0 var(--color-shadow);
   border-radius: 5px;
   transform: rotate(1deg);
 }
@@ -146,8 +146,8 @@ h1 em {
   font:
     7px ui-monospace,
     monospace;
-  color: #596353;
-  border: 1px solid #b8c3ae;
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
   padding: 5px;
   white-space: nowrap;
 }
@@ -158,7 +158,7 @@ h1 em {
 }
 .mini-result {
   padding: 17px 0 0;
-  border-top: 1px solid #bcc8b4;
+  border-top: 1px solid var(--color-border);
   display: flex;
   align-items: center;
 }
@@ -172,7 +172,7 @@ h1 em {
     9px ui-monospace,
     monospace;
   margin-top: 7px;
-  color: #536450;
+  color: var(--color-muted);
 }
 .result-arrow {
   margin-left: auto;
@@ -182,14 +182,14 @@ h1 em {
   grid-template-columns: repeat(3, 1fr);
   gap: 50px;
   padding: 40px 0 54px;
-  border-top: 1px solid #d4d9ce;
-  border-bottom: 1px solid #d4d9ce;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 .feature-number {
   font:
     11px ui-monospace,
     monospace;
-  color: #8c472d;
+  color: var(--color-heading);
 }
 .capabilities h2 {
   font-size: 19px;
@@ -199,7 +199,7 @@ h1 em {
 .capabilities p {
   font-size: 13px;
   line-height: 1.8;
-  color: #526058;
+  color: var(--color-muted);
   margin: 0;
 }
 .next-chapter {
@@ -218,7 +218,7 @@ h1 em {
 .next-chapter p:not(.eyebrow) {
   font-size: 14px;
   line-height: 1.8;
-  color: #526058;
+  color: var(--color-muted);
 }
 .text-link {
   font-size: 14px;
@@ -227,16 +227,16 @@ h1 em {
   margin-top: 12px;
 }
 .safety-note {
-  background: #ebe7db;
-  border-left: 3px solid #b37c53;
+  background: var(--color-surface);
+  border-left: 3px solid var(--color-accent);
   padding: 18px 22px;
   font-size: 11px;
   line-height: 1.8;
-  color: #5a6155;
+  color: var(--color-muted);
 }
 .safety-note strong {
   display: block;
-  color: #394b3e;
+  color: var(--color-heading);
 }
 footer {
   display: flex;
@@ -245,18 +245,19 @@ footer {
   padding-top: 40px;
   padding-bottom: 40px;
   font-size: 10px;
-  color: #657060;
+  color: var(--color-muted);
 }
 footer .brand {
   font-size: 19px;
-  color: #213d33;
+  color: var(--color-heading);
 }
 .skip-link {
   position: fixed;
   top: -60px;
   left: 12px;
   z-index: 10;
-  background: #fff;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
   padding: 12px;
 }
 .skip-link:focus {
@@ -364,4 +365,14 @@ footer .brand {
 footer .brand > span {
   font-size: inherit;
   margin-right: 0;
+}
+
+.brand,
+nav,
+h1,
+h2,
+.eyebrow,
+.schematic,
+.text-link {
+  color: var(--color-heading);
 }

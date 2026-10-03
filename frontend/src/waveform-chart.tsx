@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Signal } from './circuit-types';
 
-const COLORS = ['#267568', '#b24d23', '#6755a0'];
+const COLORS = ['var(--color-signal-0)', 'var(--color-signal-1)', 'var(--color-signal-2)'];
 interface Props { signals: Signal[]; isDc: boolean }
 interface ChartRange { maximumX: number; startX: number; minimumY: number; maximumY: number; ySpan: number; xSpan: number }
 
