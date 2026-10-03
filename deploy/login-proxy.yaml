@@ -1,0 +1,42 @@
+server:
+  bindAddress: 0.0.0.0:4180
+upstreamConfig:
+  upstreams:
+    - id: workbench
+      path: /
+      uri: http://api:8000/
+providers:
+  - id: circuit-lab
+    provider: keycloak-oidc
+    name: Circuit Lab
+    clientID: circuit-lab-web
+    clientSecret: ${CIRCUIT_OIDC_CLIENT_SECRET}
+    loginURL: ${CIRCUIT_PUBLIC_URL}/auth/realms/circuit-lab/protocol/openid-connect/auth
+    redeemURL: http://identity:8080/auth/realms/circuit-lab/protocol/openid-connect/token
+    profileURL: http://identity:8080/auth/realms/circuit-lab/protocol/openid-connect/userinfo
+    code_challenge_method: S256
+    scope: openid email profile
+    loginURLParameters:
+      - name: prompt
+        allow: [{value: create}, {value: login}]
+    oidcConfig:
+      issuerURL: ${CIRCUIT_PUBLIC_URL}/auth/realms/circuit-lab
+      skipDiscovery: true
+      jwksURL: http://identity:8080/auth/realms/circuit-lab/protocol/openid-connect/certs
+      userIDClaim: sub
+      insecureSkipNonce: false
+      insecureSkipIssuerVerification: false
+      insecureAllowUnverifiedEmail: false
+injectRequestHeaders:
+  - name: X-Circuit-Actor
+    values:
+      - claimSource: {claim: user}
+  - name: X-Circuit-Email
+    values:
+      - claimSource: {claim: email}
+  - name: X-Circuit-Access-Token
+    values:
+      - claimSource: {claim: access_token}
+  - name: X-Circuit-Proxy-Token
+    values:
+      - secretSource: {fromEnv: CIRCUIT_PROXY_TOKEN}

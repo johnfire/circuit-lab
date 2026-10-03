@@ -6,11 +6,12 @@ from typing import cast
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.responses import Response
 
+from backend.account_export import export_account
 from backend.audit_log import record_simulation
 from backend.circuit_catalog import ROOT, Circuit, list_circuits, read_circuit
 from backend.request_security import allowed_hosts, public_url, reject_unsafe_request
@@ -54,6 +55,20 @@ def health() -> dict[str, str]:
 def catalog() -> list[Circuit]:
     """Expose the curated examples and their editable values."""
     return list_circuits()
+
+
+@app.get("/api/account/export")
+def download_account(request: Request) -> JSONResponse:
+    """Allow a signed-in person to download their own data."""
+    return export_account(request)
+
+
+@app.get("/workbench")
+def workbench_page() -> FileResponse:
+    """Serve the protected workbench separately from the public landing page."""
+    if not (frontend_path / 'index.html').is_file():
+        raise HTTPException(status_code=503, detail='Workbench build unavailable')
+    return FileResponse(frontend_path / 'index.html')
 
 
 @app.post("/api/circuits/{circuit_id}/simulate", response_model=SimulationResponse)

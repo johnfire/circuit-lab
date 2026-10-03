@@ -1,6 +1,6 @@
 # Circuit Lab prototype — 2026-10-03
 
-## Delivered locally
+## Built and locally verified
 
 - React/TypeScript browser workbench, responsive desktop/mobile layout.
 - Nine curated analog/digital examples, with numeric R/C editing and reset.
@@ -19,6 +19,13 @@
 - Python unit/integration regressions, real-engine tests for every example,
   browser interaction/export tests, and desktop/mobile axe accessibility checks.
 - Locked dependencies; main-branch CI and dependency scanning configuration.
+- Public early-preview landing page with signup/sign-in and Rehm Consulting attribution.
+- Self-hosted Keycloak/PostgreSQL identity, verified-email registration, password
+  reset, account/security console, optional TOTP, confirmed account deletion, and
+  identity-bound profile/simulation data export.
+- Separate no-network simulation worker with read-only filesystem and bounded
+  CPU, memory, jobs, processes, and temporary storage.
+- Dedicated TLS certificate and isolated immutable-release VPS delivery receiver.
 
 The original CLI regressions are fixed: named-value edits now work, each sweep
 has its own outputs, failed simulations return failure, new scaffolds contain
@@ -27,26 +34,31 @@ ADC/DAC bridges; the RC example has sufficient default settling time.
 
 ## Verification boundary
 
-Local verification on October 3: 56 Python tests and 2 browser tests passed;
-combined backend/harness coverage was 76.55%. Python lint/strict types, frontend
+Local verification on October 3: 103 Python tests and 3 browser tests passed;
+combined backend/harness coverage was 78.66%. Python lint/strict types, frontend
 lint/production build, the production Python dependency audit, and the full npm
 dependency audit passed. Python tests emit one upstream TestClient deprecation
 warning; no tests were skipped, deleted, or weakened.
 
-This is a local prototype, not the complete Phase 0/Phase 1 deployment in the
-September design. Live checks used ngspice 47 on this machine. CI uses the
-Ubuntu ngspice package and must be confirmed after an authorized push.
+This is an early prototype, not the complete Phase 0/Phase 1 product in the
+September design. Local and container checks use SHA-256-pinned ngspice 47;
+CI builds the same engine. GitHub execution still needs an authorized push.
+Real identity integration covers native signup reachability, authorization
+code/PKCE/nonce exchange, protected workbench access, forged-header rejection,
+own-account export, and revocation at the next one-minute session refresh.
+SMTP authentication is checked against the authorized active mail service.
+Actual verification/reset email delivery must still be checked with a real inbox.
 Browser tests cover recipe selection, actual simulation, value changes,
 failed checks, export, responsive overflow, and automated accessibility.
 Automated accessibility checks are not a substitute for assistive-device testing.
 
 All current models are generic/ideal. There is no manufacturer model provenance,
 rating validation, full schematic graph, build-ready approval, or real hardware
-verification. Processes have resource limits but are not yet dedicated
-network-isolated containers; arbitrary netlists remain prohibited.
-The API is unauthenticated and loopback-only. Audit actor user:local identifies
-the local session, not a verified human identity; no AI-action route exists yet.
-Do not expose the service publicly as-is.
+verification. Arbitrary netlists remain prohibited.
+Local mode remains unauthenticated and loopback-only. Hosted mode requires the
+trusted identity gateway and attributes simulations to stable account IDs.
+No AI-action route exists yet. Commercial launch still needs backup/recovery
+drills, anti-abuse controls and quotas, audit retention, and reviewed legal pages.
 
 ## Next milestones
 
@@ -54,9 +66,9 @@ Do not expose the service publicly as-is.
 2. Add the AI tool loop against bounded simulation actions, with explicit AI/user
    attribution and iterative spec checks; deepen per-recipe verification.
 3. Add curated real component models with provenance and human verification.
-4. Add persistent designs, authenticated access/account controls, and the separate
-   no-network simulation-worker container.
-5. Validate the container/CI path, deploy the approved hosted architecture, and
-   check it on the actual Android client.
+4. Add persistent designs, backup/recovery verification, and per-account quotas.
+5. Run the GitHub pipeline after an authorized push and check the live account
+   creation/email flow on the actual Android client.
 
-No remote deployment or push is included in this local prototype delivery.
+Use the live service and Git history to determine current deployment/push state;
+these capabilities do not imply billing or commercial-release readiness.

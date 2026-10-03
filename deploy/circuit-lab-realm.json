@@ -1,0 +1,76 @@
+{
+  "realm": "circuit-lab",
+  "displayName": "Circuit Lab",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "resetPasswordAllowed": true,
+  "rememberMe": false,
+  "verifyEmail": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "failureFactor": 5,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "passwordPolicy": "hashAlgorithm(argon2) and length(12) and notEmail(undefined) and notUsername(undefined)",
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 28800,
+  "eventsEnabled": true,
+  "eventsExpiration": 2592000,
+  "eventsListeners": ["jboss-logging"],
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": false,
+  "requiredActions": [
+    {"alias": "VERIFY_EMAIL", "name": "Verify Email", "providerId": "VERIFY_EMAIL", "enabled": true, "defaultAction": false, "priority": 50, "config": {}},
+    {"alias": "CONFIGURE_TOTP", "name": "Configure OTP", "providerId": "CONFIGURE_TOTP", "enabled": true, "defaultAction": false, "priority": 10, "config": {}},
+    {"alias": "UPDATE_PASSWORD", "name": "Update Password", "providerId": "UPDATE_PASSWORD", "enabled": true, "defaultAction": false, "priority": 30, "config": {}},
+    {"alias": "UPDATE_PROFILE", "name": "Update Profile", "providerId": "UPDATE_PROFILE", "enabled": true, "defaultAction": false, "priority": 40, "config": {}},
+    {"alias": "delete_account", "name": "Delete Account", "providerId": "delete_account", "enabled": true, "defaultAction": false, "priority": 80, "config": {}}
+  ],
+  "roles": {
+    "realm": [{"name": "offline_access"}, {"name": "uma_authorization"}, {
+      "name": "default-roles-circuit-lab",
+      "composite": true,
+      "composites": {"realm": ["offline_access", "uma_authorization"], "client": {"account": ["manage-account", "view-profile", "delete-account"]}}
+    }]
+  },
+  "defaultRole": {"name": "default-roles-circuit-lab", "composite": true},
+  "smtpServer": {
+    "host": "${CIRCUIT_SMTP_HOST}",
+    "port": "${CIRCUIT_SMTP_PORT}",
+    "from": "${CIRCUIT_SMTP_USER}",
+    "fromDisplayName": "Circuit Lab",
+    "auth": "true",
+    "ssl": "false",
+    "starttls": "true",
+    "user": "${CIRCUIT_SMTP_USER}",
+    "password": "${CIRCUIT_SMTP_PASSWORD}"
+  },
+  "clients": [{
+    "clientId": "circuit-lab-web",
+    "name": "Circuit Lab workbench",
+    "enabled": true,
+    "protocol": "openid-connect",
+    "publicClient": false,
+    "secret": "${CIRCUIT_OIDC_CLIENT_SECRET}",
+    "standardFlowEnabled": true,
+    "directAccessGrantsEnabled": false,
+    "serviceAccountsEnabled": false,
+    "redirectUris": ["${CIRCUIT_PUBLIC_URL}/oauth2/callback"],
+    "webOrigins": ["${CIRCUIT_PUBLIC_URL}"],
+    "defaultClientScopes": ["web-origins", "acr", "roles", "profile", "email"],
+    "attributes": {
+      "pkce.code.challenge.method": "S256",
+      "post.logout.redirect.uris": "${CIRCUIT_PUBLIC_URL}/*"
+    },
+    "protocolMappers": [{
+      "name": "workbench-audience", "protocol": "openid-connect",
+      "protocolMapper": "oidc-audience-mapper",
+      "config": {"included.client.audience": "circuit-lab-web", "id.token.claim": "true", "access.token.claim": "true"}
+    }]
+  }]
+}

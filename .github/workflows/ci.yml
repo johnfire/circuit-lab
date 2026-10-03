@@ -65,26 +65,40 @@ jobs:
     timeout-minutes: 15
     env:
       CIRCUIT_PUBLIC_URL: https://circuit-lab.christopherrehm.de
-      CIRCUIT_PROXY_TOKEN: ci-only-proxy-token-not-for-production-123
+      CIRCUIT_PROXY_TOKEN: container-check-token-not-for-production-123
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Build and start isolated containers
         run: docker compose -p circuit-lab-ci up -d --build --wait --wait-timeout 90
       - name: Real simulations and proxy rejection
         run: docker compose -p circuit-lab-ci exec -T api python - < deploy/container_checks.py
+      - name: Real account and identity-bound export integration
+        env:
+          CIRCUIT_APP_NETWORK: circuit-lab-ci_default
+        run: |
+          docker compose -p circuit-lab-identity-ci --env-file deploy/identity-test.env -f compose.identity.yaml up -d --build --wait --wait-timeout 180
+          python3 deploy/identity_checks.py
       - name: Verify worker isolation
         run: |
           worker=$(docker compose -p circuit-lab-ci ps -q worker)
           test "$(docker inspect -f '{{.HostConfig.NetworkMode}}' "$worker")" = none
           test "$(docker inspect -f '{{.HostConfig.ReadonlyRootfs}}' "$worker")" = true
           test "$(docker inspect -f '{{.Config.User}}' "$worker")" = 10001:10001
-          docker compose -p circuit-lab-ci exec -T worker python -c "import socket; assert socket.getaddrinfo('localhost', 1); print('Worker has only loopback')"
+          docker compose -p circuit-lab-ci exec -T worker python -c "import socket; connection=socket.socket(); connection.settimeout(2); assert connection.connect_ex(('1.1.1.1', 443)) != 0; print('Worker outbound network is blocked')"
       - name: Container failure diagnostics
         if: failure()
-        run: docker compose -p circuit-lab-ci logs --tail 80
+        env:
+          CIRCUIT_APP_NETWORK: circuit-lab-ci_default
+        run: |
+          docker compose -p circuit-lab-ci logs --tail 80
+          docker compose -p circuit-lab-identity-ci --env-file deploy/identity-test.env -f compose.identity.yaml logs --tail 40
       - name: Stop CI-only containers
         if: always()
-        run: docker compose -p circuit-lab-ci down
+        env:
+          CIRCUIT_APP_NETWORK: circuit-lab-ci_default
+        run: |
+          docker compose -p circuit-lab-identity-ci --env-file deploy/identity-test.env -f compose.identity.yaml down
+          docker compose -p circuit-lab-ci down
 
   deploy:
     needs: containers
@@ -109,5 +123,8 @@ jobs:
           chmod 600 "$HOME/.ssh/circuit-lab"
           printf '%s\n' "$DEPLOY_HOST_KEY" > "$HOME/.ssh/known_hosts"
           git archive "$GITHUB_SHA" | ssh -F /dev/null -i "$HOME/.ssh/circuit-lab" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 circuit-deploy@82.165.32.162 "deploy $GITHUB_SHA"
-      - name: Verify public TLS front door remains private
-        run: test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/)" = 401
+      - name: Verify public landing and protected workbench
+        run: |
+          test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/)" = 200
+          test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/workbench)" = 302
+          test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/auth/admin/)" = 403

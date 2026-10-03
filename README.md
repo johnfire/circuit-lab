@@ -74,7 +74,8 @@ Simulation events are appended to /tmp/circuit-lab-audit.jsonl, with correlation
 IDs and the local-user actor. Set CIRCUIT_AUDIT_PATH for a different local
 destination. Missing audit storage rejects jobs without breaking the catalog.
 Local mode has no accounts. Hosted mode requires a trusted gateway and records
-its authenticated identity on simulation events. Customer login is being staged.
+its authenticated identity on simulation events. Hosted mode has a public signup
+landing page and self-hosted Keycloak accounts; see [deployment runbook](deploy/README.md).
 See [prototype status](docs/prototype-status.md) for scope and next milestones.
 
 ## Command-line quick start

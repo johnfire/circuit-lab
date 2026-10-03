@@ -6,6 +6,7 @@ import io
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -46,7 +47,10 @@ def unpack_release(revision: str, payload: bytes) -> Path:
 
 def compose(release: Path, *arguments: str) -> None:
     """Use fixed service scope and a per-revision image tag."""
-    environment = dict(os.environ, CIRCUIT_IMAGE_TAG=release.name)
+    registry_config = ROOT / 'docker-client'
+    registry_config.mkdir(mode=0o700, exist_ok=True)
+    environment = dict(os.environ, CIRCUIT_IMAGE_TAG=release.name,
+                       DOCKER_CONFIG=str(registry_config))
     subprocess.run(['docker', 'compose', '-p', 'circuit-lab', '--env-file',
                     str(ROOT / '.env'), '-f', str(release / 'compose.yaml'), *arguments],
                    env=environment, check=True, timeout=600)
@@ -77,6 +81,22 @@ def point_release(name: str, release: Path) -> None:
     temporary.replace(ROOT / name)
 
 
+def publish_landing(release: Path) -> None:
+    """Publish only the two public assets, never the release or its configuration."""
+    source = release / 'frontend' / 'public'
+    if not (source / 'landing.html').is_file():
+        return
+    destination = Path('/var/www/circuit-lab-pages') / release.name
+    destination.mkdir(parents=True, mode=0o755, exist_ok=True)
+    for name in ('landing.html', 'landing.css'):
+        shutil.copyfile(source / name, destination / name)
+        (destination / name).chmod(0o644)
+    temporary = Path('/var/www/circuit-lab-public.next')
+    temporary.unlink(missing_ok=True)
+    temporary.symlink_to(destination)
+    temporary.replace('/var/www/circuit-lab-public')
+
+
 def deploy(release: Path) -> None:
     """Build first; roll back service failures to the previously verified revision."""
     current = ROOT / 'current'
@@ -85,6 +105,7 @@ def deploy(release: Path) -> None:
     try:
         compose(release, 'up', '-d', '--wait', '--wait-timeout', '90')
         check_live(release.name)
+        publish_landing(release)
     except (subprocess.SubprocessError, OSError, ValueError, KeyError):
         if previous:
             compose(previous, 'up', '-d', '--wait', '--wait-timeout', '90')

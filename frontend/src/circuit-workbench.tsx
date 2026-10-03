@@ -1,4 +1,5 @@
 import { CircuitLibrary } from './circuit-library';
+import { AccountLinks } from './account-links';
 import { ParameterPanel } from './parameter-panel';
 import { SimulationResults } from './simulation-results';
 import { useCircuitWorkbench } from './use-circuit-workbench';
@@ -11,6 +12,7 @@ export function CircuitWorkbench() {
     <header className="masthead"><a className="brand" href="/"><span className="brand-icon" aria-hidden="true">⌁</span>
       Circuit<span>Lab</span></a><span className="prototype-tag">{isHosted ? 'HOSTED' : 'LOCAL'} PROTOTYPE · 01</span>
       <span className="engine-status"><i />ngspice workbench</span></header>
+    {isHosted && <AccountLinks />}
     <CircuitLibrary circuits={state.circuits} selectedId={selected?.id}
       isRunning={state.isRunning} onSelect={state.selectCircuit} />
     <main className="workspace"><div className="workspace-intro">

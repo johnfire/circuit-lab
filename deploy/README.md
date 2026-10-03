@@ -48,14 +48,29 @@ ngspice 47 is built headless with XSPICE from a SHA-256-pinned official source
 tarball. Debian ngspice 39.3 returns failure exit codes for these control-script
 recipes, so it is deliberately not used. Failures are not ignored.
 
-## Authentication rollout
+## Public landing and account service
 
-An empty-password-file Basic gateway keeps staging locked until the separate
-commercialization-oriented identity service is verified. It is not a customer
-account system. The agreed target is self-hosted open registration with verified
-email, password reset, account management, optional 2FA, and deletion/export.
-Identity configuration and database state must not be overwritten by each app
-release. No billing, subscription enforcement, or AI design loop exists yet.
+Apache serves only landing.html and landing.css publicly. The workbench, API,
+and application assets pass through OAuth2 Proxy, which replaces incoming
+identity headers. Keycloak provides open registration, required email
+verification, password reset, account management, optional TOTP, and confirmed
+account deletion. The application export checks that the token subject matches
+the authenticated account and includes only that account's simulation events.
+
+The identity service is a separate Compose project, circuit-lab-identity, with
+its own PostgreSQL volume. This is a single-instance deployment using local
+cache; a multi-node setup needs shared cache and a separate scaling review.
+Keep /opt/circuit-lab/.identity.env root-only. prepare_identity.py verifies the
+authorized existing SMTP credentials and writes this file without printing
+them. Only loopback ports 8103/8104 are exposed; Apache denies public access to
+the master realm and admin API.
+
+Realm import runs only when the realm does not already exist. App delivery must
+not replace customer identity state. Future realm updates require an explicit
+database backup and a reviewed migration, not an overwrite import.
+Backups, signup abuse controls, legal pages, and recovery drills are required
+before commercial launch. No billing, subscriptions, saved projects, or AI
+design loop exists yet.
 
 To pause delivery, disable the GitHub workflow/deployment environment. To revoke
 the deploy capability, remove its one public key or lock the dedicated account's

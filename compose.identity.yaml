@@ -1,0 +1,111 @@
+name: circuit-lab-identity
+
+services:
+  database:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    environment:
+      POSTGRES_DB: circuit_identity
+      POSTGRES_USER: circuit_identity
+      POSTGRES_PASSWORD: ${CIRCUIT_IDENTITY_DATABASE_PASSWORD:?Identity database password required}
+    volumes: [identity-db:/var/lib/postgresql/data]
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 100
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U circuit_identity -d circuit_identity"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    logging:
+      options: {max-size: 5m, max-file: "3"}
+
+  identity:
+    image: circuit-lab-identity:26.8.0
+    build:
+      context: .
+      dockerfile: deploy/Keycloak.Dockerfile
+    command: [start, --optimized, --import-realm]
+    environment:
+      KC_DB: postgres
+      KC_CACHE: local
+      KC_DB_URL: jdbc:postgresql://database:5432/circuit_identity
+      KC_DB_USERNAME: circuit_identity
+      KC_DB_PASSWORD: ${CIRCUIT_IDENTITY_DATABASE_PASSWORD:?Identity database password required}
+      KC_BOOTSTRAP_ADMIN_USERNAME: circuit-bootstrap
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${CIRCUIT_IDENTITY_ADMIN_PASSWORD:?Identity admin password required}
+      KC_HOSTNAME: ${CIRCUIT_PUBLIC_URL}/auth
+      KC_HTTP_ENABLED: "true"
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_PROXY_HEADERS: xforwarded
+      KC_HEALTH_ENABLED: "true"
+      JAVA_OPTS_KC_HEAP: "-XX:MaxRAMPercentage=40 -XX:InitialRAMPercentage=20"
+      CIRCUIT_PUBLIC_URL: ${CIRCUIT_PUBLIC_URL}
+      CIRCUIT_OIDC_CLIENT_SECRET: ${CIRCUIT_OIDC_CLIENT_SECRET:?OIDC secret required}
+      CIRCUIT_SMTP_HOST: ${CIRCUIT_SMTP_HOST:?SMTP host required}
+      CIRCUIT_SMTP_PORT: ${CIRCUIT_SMTP_PORT:-587}
+      CIRCUIT_SMTP_USER: ${CIRCUIT_SMTP_USER:?SMTP user required}
+      CIRCUIT_SMTP_PASSWORD: ${CIRCUIT_SMTP_PASSWORD:?SMTP password required}
+    ports: ["127.0.0.1:8104:8080"]
+    networks: [default, application]
+    mem_limit: 2g
+    cpus: 1.0
+    pids_limit: 200
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      database: {condition: service_healthy}
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, bash, -c, "exec 3<>/dev/tcp/127.0.0.1/9000; printf 'GET /auth/health/ready HTTP/1.0\\r\\n\\r\\n' >&3; head -1 <&3 | grep -q '200'"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    logging:
+      options: {max-size: 5m, max-file: "3"}
+
+  login:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.5@sha256:8498b0d0ef0a7b29686414000a08aee467f02d0299c9ed1e006a8f33fc017916
+    command:
+      - --alpha-config=/etc/circuit-lab/login.yaml
+      - --email-domain=*
+      - --skip-provider-button=true
+      - --reverse-proxy=true
+      - --cookie-name=__Host-circuit-lab
+      - --cookie-secure=true
+      - --cookie-httponly=true
+      - --cookie-samesite=lax
+      - --cookie-expire=8h
+      - --cookie-refresh=1m
+      - --request-logging=false
+      - --standard-logging=true
+      - --auth-logging=true
+    environment:
+      CIRCUIT_PUBLIC_URL: ${CIRCUIT_PUBLIC_URL}
+      CIRCUIT_OIDC_CLIENT_SECRET: ${CIRCUIT_OIDC_CLIENT_SECRET:?OIDC secret required}
+      CIRCUIT_PROXY_TOKEN: ${CIRCUIT_PROXY_TOKEN:?Trusted gateway token required}
+      OAUTH2_PROXY_COOKIE_SECRET: ${CIRCUIT_SESSION_SECRET:?Session secret required}
+      OAUTH2_PROXY_REDIRECT_URL: ${CIRCUIT_PUBLIC_URL}/oauth2/callback
+    volumes: [./deploy/login-proxy.yaml:/etc/circuit-lab/login.yaml:ro]
+    ports: ["127.0.0.1:8103:4180"]
+    networks: [default, application]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 50
+    depends_on:
+      identity: {condition: service_healthy}
+    restart: unless-stopped
+    logging:
+      options: {max-size: 5m, max-file: "3"}
+
+networks:
+  application:
+    external: true
+    name: ${CIRCUIT_APP_NETWORK:-circuit-lab_default}
+
+volumes:
+  identity-db:

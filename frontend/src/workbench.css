@@ -93,3 +93,10 @@ th, td { text-align: left; padding: 12px 8px; border-bottom: 1px solid #d9dfd7; 
 .recovery { max-width: 500px; margin: 80px auto; padding: 20px; }
 @media (max-width: 1150px) { .workbench { grid-template-columns: 230px minmax(0, 1fr); }.workspace { padding: 30px 24px; }.workspace-grid { grid-template-columns: 1fr; }.parameter-panel form { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; }.parameter { flex: 1; min-width: 130px; margin-top: 10px; }.run-button { width: auto; gap: 30px; }.model-note { margin-top: 20px; } }
 @media (max-width: 700px) { .workbench { display: block; }.masthead { height: 72px; padding: 0 20px; gap: 15px; }.brand { font-size: 23px; }.prototype-tag { font-size: 8px; padding-left: 15px; }.engine-status { display: none; }.library { border-right: 0; border-bottom: 1px solid #d9dfd7; padding: 20px; }.library > p, .library-footer { display: none; }.library section { display: flex; flex-wrap: wrap; gap: 5px; }.library h3 { width: 100%; margin: 15px 0 8px; }.circuit-choice { width: auto; font-size: 10px; min-height: 36px; }.choice-arrow { display: none; }.workspace { padding: 28px 20px; }.workspace-intro h1 { font-size: 30px; }.results { padding: 15px; }.page-footer { padding: 20px; flex-wrap: wrap; gap: 12px; }.page-footer span:last-child { margin-left: 0; }.status-badge { font-size: 9px; } }
+.account-links {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+}

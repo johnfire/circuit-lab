@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore sensor circuits for Raspberry Pi projects with real ngspice simulations. Create a Circuit Lab account and start experimenting."
+    />
+    <meta name="theme-color" content="#f4f2e9" />
+    <title>Circuit Lab — Think it through. Then test it.</title>
+    <link rel="stylesheet" href="/landing.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Circuit Lab home"
+        ><span aria-hidden="true">⌁</span> Circuit<span>Lab</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="#how-it-works">How it works</a
+        ><a href="/oauth2/start?rd=%2Fworkbench"
+          >Sign in <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="status-dot" aria-hidden="true"></span> THE WORKBENCH IS
+            OPEN · EARLY PREVIEW
+          </p>
+          <h1>Good circuits start<br />with <em>good questions.</em></h1>
+          <p class="intro">
+            Explore an idea. Change a component. See what actually happens. A
+            hands-on circuit workbench for your next Raspberry Pi sensor
+            project.
+          </p>
+          <div class="actions">
+            <a
+              class="button"
+              href="/oauth2/start?rd=%2Fworkbench&amp;prompt=create"
+              >Create your account <span aria-hidden="true">→</span></a
+            ><a class="secondary" href="#inside"
+              >Take a look inside <span aria-hidden="true">↓</span></a
+            >
+          </div>
+          <p class="fine-print">
+            Real ngspice simulations. No credit card or subscription in this
+            preview.
+          </p>
+        </div>
+        <div class="circuit-card" id="inside">
+          <div class="card-heading">
+            <span class="eyebrow">01 / SENSOR VOLTAGE DIVIDER</span
+            ><span class="example-tag">ILLUSTRATIVE EXAMPLE</span>
+          </div>
+          <svg
+            class="schematic"
+            viewBox="0 0 420 235"
+            role="img"
+            aria-label="A 5 volt source connects through a 10 kiloohm resistor to an output node, then through a 6.8 kiloohm resistor to ground. The ideal output is about 2.02 volts."
+          >
+            <g fill="none" stroke="currentColor" stroke-width="2.5">
+              <path
+                d="M82 36H172V62M172 103V132H300M172 132V157M172 198V217M153 217H191M159 223H185M165 229H179"
+              />
+              <rect x="162" y="62" width="20" height="41" />
+              <rect x="162" y="157" width="20" height="41" />
+              <circle cx="172" cy="132" r="4" fill="currentColor" />
+            </g>
+            <g fill="currentColor" font-family="monospace" font-size="13">
+              <text x="40" y="40">5 V</text>
+              <text x="198" y="78">R1</text>
+              <text x="198" y="97">10 kΩ</text>
+              <text x="198" y="173">R2</text>
+              <text x="198" y="192">6.8 kΩ</text>
+              <text x="310" y="128">OUT</text>
+              <text x="310" y="149">2.02 V</text>
+            </g>
+          </svg>
+          <div class="mini-result">
+            <span class="status-dot" aria-hidden="true"></span>
+            <div>
+              <strong>Change the values. Check the result.</strong
+              ><span>Waveforms · numerical checks · netlist export</span>
+            </div>
+            <span class="result-arrow" aria-hidden="true">↗</span>
+          </div>
+        </div>
+      </section>
+      <section class="capabilities" aria-label="What you can do today">
+        <div>
+          <span class="feature-number">01</span>
+          <h2>Start with a recipe.</h2>
+          <p>
+            Nine analog and digital examples: sensor dividers, filters, GPIO
+            drivers, logic gates, and more.
+          </p>
+        </div>
+        <div>
+          <span class="feature-number">02</span>
+          <h2>Test your thinking.</h2>
+          <p>
+            Run the real simulator. Inspect waveforms, measure signals, and see
+            which numerical checks pass—or fail.
+          </p>
+        </div>
+        <div>
+          <span class="feature-number">03</span>
+          <h2>Keep it understandable.</h2>
+          <p>
+            Editable component values, readable connections, and exports you can
+            inspect. Nothing hidden in a magic box.
+          </p>
+        </div>
+      </section>
+      <section class="next-chapter" id="how-it-works">
+        <div>
+          <p class="eyebrow">A SMALL WORKBENCH. A BIGGER IDEA.</p>
+          <h2>From “could this work?”<br />to “let’s find out.”</h2>
+        </div>
+        <div>
+          <p>
+            Built for curious makers working with Raspberry Pi 3B and 4B sensor
+            circuits. Create an account, choose an example, adjust its values,
+            and run a simulation.
+          </p>
+          <p>
+            Next on the bench: AI-assisted design conversations, saved projects,
+            and guided iteration. Those are planned—not features we pretend are
+            finished.
+          </p>
+          <a
+            class="text-link"
+            href="/oauth2/start?rd=%2Fworkbench&amp;prompt=create"
+            >Join the early preview <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </section>
+      <aside class="safety-note">
+        <strong>Simulation is a thinking tool, not hardware approval.</strong>
+        Examples use generic or ideal models. Passing a check does not verify
+        component ratings, real-world wiring, or Raspberry Pi safety.
+      </aside>
+    </main>
+    <footer>
+      <a class="brand" href="/">Circuit<span>Lab</span></a
+      ><span>Think it through. Then test it.</span
+      ><span
+        >Early preview · No paid plans yet ·
+        <a href="https://christopherrehm.de"
+          >A project from Rehm Consulting</a
+        ></span
+      >
+    </footer>
+  </body>
+</html>
