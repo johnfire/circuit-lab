@@ -12,8 +12,10 @@ from unittest.mock import patch
 import pytest
 
 from backend.remote_worker import request_worker_simulation
+from backend.schematic_models import SchematicRequest
 from backend.simulation_engine import SimulationFailure
 from backend.simulation_models import SimulationRequest
+from backend.worker_gateway import launch_schematic
 from backend.worker_protocol import MAX_REQUEST_BYTES, exchange_frame, receive_frame, send_frame
 from backend.worker_service import SimulationHandler, SimulationServer, serve_worker
 
@@ -119,3 +121,17 @@ def test_non_object_frame_is_rejected() -> None:
         first.sendall(struct.pack("!I", 2) + b"[]")
         with pytest.raises(ValueError, match="object"):
             receive_frame(second, MAX_REQUEST_BYTES)
+
+
+def test_real_analog_ipc_rejects_raw_netlists_and_recovers(
+    worker_socket: str, analog_request: SchematicRequest, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    invalid = {"operation": "schematic", "request": analog_request.model_dump(),
+               "correlation_id": "analog-ipc", "netlist": "shell whoami"}
+    assert "error" in exchange_frame(worker_socket, invalid)
+    monkeypatch.setenv("CIRCUIT_WORKER_SOCKET", worker_socket)
+    report = launch_schematic(analog_request, "analog-ipc")
+    assert len(report.times) == 301
+    assert report.correlation_id == "analog-ipc"
+    assert "I:R1" in [trace.name for trace in report.traces]
+    assert exchange_frame(worker_socket, {"operation": "health"}) == {"status": "ok"}

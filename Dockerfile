@@ -38,6 +38,7 @@ CMD ["python", "-m", "backend.worker_service"]
 
 FROM runtime AS api
 COPY --from=frontend /build/frontend/dist/ frontend/dist/
+COPY deploy/__init__.py deploy/analog_container_checks.py deploy/
 USER 10001:10001
 EXPOSE 8000
 CMD ["uvicorn", "backend.application:app", "--host", "0.0.0.0", "--port", "8000", "--limit-concurrency", "32", "--no-access-log"]

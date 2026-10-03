@@ -1,5 +1,6 @@
 """Local or trusted-proxy prototype API, with separately bounded simulations."""
 
+import hashlib
 import os
 from collections.abc import Awaitable, Callable
 from typing import cast
@@ -15,12 +16,14 @@ from backend.account_export import export_account
 from backend.audit_log import record_simulation
 from backend.circuit_catalog import ROOT, Circuit, list_circuits, read_circuit
 from backend.request_security import allowed_hosts, public_url, reject_unsafe_request
+from backend.schematic_routes import router as schematic_router
 from backend.simulation_engine import SimulationFailure, prepare_simulation
 from backend.simulation_models import SimulationRequest, SimulationResponse
 from backend.worker_gateway import launch_simulation
 
 app = FastAPI(title="Circuit Lab", version="0.1.0", docs_url="/api/docs")
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts())
+app.include_router(schematic_router)
 
 
 @app.middleware("http")
@@ -61,6 +64,14 @@ def catalog() -> list[Circuit]:
 def download_account(request: Request) -> JSONResponse:
     """Allow a signed-in person to download their own data."""
     return export_account(request)
+
+
+@app.get("/api/session")
+def browser_session(request: Request) -> JSONResponse:
+    """Provide a noncredential storage namespace for the authenticated actor."""
+    actor = cast(str, request.state.actor)
+    return JSONResponse({"draft_scope": hashlib.sha256(actor.encode()).hexdigest()},
+                        headers={"Cache-Control": "no-store"})
 
 
 @app.get("/workbench")

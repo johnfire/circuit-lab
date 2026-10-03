@@ -5,6 +5,8 @@ import os
 import urllib.error
 import urllib.request
 
+from deploy.analog_container_checks import check_analog
+
 
 def call(path: str, body: bytes | None = None, trusted: bool = True) -> object:
     """Exercise HTTP across the API-to-worker boundary, with traced AI identity."""
@@ -32,6 +34,7 @@ def main() -> None:
         report = call('/api/circuits/' + circuit['id'] + '/simulate', b'{}')
         assert isinstance(report, dict) and report['signals'] and report['status'] == 'passed'
         print(circuit['id'] + ': passed')
+    check_analog(call)
     try:
         with open('/app/container-write-probe', 'w'):
             pass

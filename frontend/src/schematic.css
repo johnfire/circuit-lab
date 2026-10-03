@@ -1,0 +1,68 @@
+.workbench-modes { grid-column: 1 / -1; display: flex; gap: 12px; padding: 12px 34px; border-block: 1px solid var(--color-border); }
+.workbench-modes button, .analog-workbench button { color: var(--color-heading); background: var(--color-raised); border: 1px solid var(--color-control-border); border-radius: 5px; padding: 9px 12px; min-height: 40px; }
+.workbench-modes button[aria-pressed=true], .analog-workbench button[aria-pressed=true] { background: var(--color-accent); color: var(--color-on-accent); }
+.analog-workbench { grid-column: 1 / -1; min-width: 0; padding: 30px 34px; }
+.analog-intro h1 { font-size: clamp(26px, 3vw, 38px); letter-spacing: -1px; margin: 14px 0 10px; }
+.analog-intro p { color: var(--color-muted); line-height: 1.7; }
+.analog-layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 20px; align-items: start; }
+.analog-sidebar, .analog-board { display: grid; gap: 18px; min-width: 0; }
+.editor-card { padding: 20px; border: 1px solid var(--color-border); background: var(--color-surface); border-radius: 8px; min-width: 0; }
+.editor-card h2 { margin-bottom: 12px; }
+.editor-card label { display: grid; gap: 7px; font-size: 12px; margin-top: 16px; color: var(--color-text); }
+.editor-card input, .editor-card select, .grid-toolbar select { min-width: 0; width: 100%; background: var(--color-background); color: var(--color-heading); border: 1px solid var(--color-control-border); padding: 9px 8px; border-radius: 4px; }
+.editor-card fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.parts-shelf { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.parts-shelf button { display: grid; justify-items: start; gap: 7px; font-size: 11px; }
+.parts-shelf button span { font-family: ui-monospace, monospace; font-size: 20px; }
+.compact-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.secondary-action { width: 100%; margin-top: 12px; }
+.button-row, .move-controls, .editor-file-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+.editor-file-controls { margin-bottom: 22px; align-items: center; }
+.file-button { display: inline-flex; align-items: center; cursor: pointer; padding: 9px 12px; font-size: 13px; min-height: 40px; border: 1px solid var(--color-control-border); border-radius: 5px; background: var(--color-raised); color: var(--color-heading); position: relative; }
+.file-button input { width: 1px; height: 1px; opacity: 0; position: absolute; }
+.file-button:focus-within { outline: 3px solid var(--color-focus); outline-offset: 4px; }
+.analog-workbench .run-button, .analog-workbench .play-toggle { background: var(--color-accent); color: var(--color-on-accent); border-color: var(--color-accent); }
+.wire-list { list-style: none; padding: 0; font-size: 11px; }
+.wire-list li { display: flex; align-items: center; justify-content: space-between; gap: 4px; margin-top: 8px; }
+.wire-list button { min-height: 32px; padding: 4px 10px; }
+.grid-panel { overflow: hidden; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-background); min-width: 0; }
+.grid-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 14px 18px; background: var(--color-surface); font-size: 12px; border-bottom: 1px solid var(--color-border); }
+.grid-toolbar > span { flex: 1; line-height: 1.7; }
+.grid-toolbar label { display: flex; align-items: center; gap: 8px; }
+.grid-toolbar select { width: auto; }
+.grid-scroll { overflow: auto; max-width: 100%; }
+.schematic-grid { display: block; touch-action: pan-x pan-y; }
+.zoom-fit { width: 100%; min-width: 700px; }
+.zoom-100 { width: 1280px; }.zoom-150 { width: 1920px; }
+.grid-background { color: var(--color-border); }
+#analog-dots circle { fill: var(--color-border); }
+.schematic-wire { fill: none; stroke: var(--color-text); stroke-width: 3; pointer-events: none; }
+.symbol { fill: none; stroke: var(--color-accent); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.part-hitbox { fill: transparent; stroke: transparent; }
+.schematic-part { cursor: grab; touch-action: none; }.schematic-part:active { cursor: grabbing; }
+.selected-part .part-hitbox { fill: var(--color-surface); stroke: var(--color-control-border); stroke-dasharray: 5 5; }
+.schematic-part text { font-family: ui-monospace, monospace; pointer-events: none; }
+.part-label { fill: var(--color-heading); font-size: 19px; font-weight: bold; }
+.part-value { fill: var(--color-text); font-size: 17px; }
+.current-reading, .node-reading { fill: var(--color-heading); font-size: 16px; font-family: ui-monospace, monospace; }
+.terminal { fill: var(--color-background); stroke: var(--color-heading); stroke-width: 3; cursor: crosshair; }
+.terminal-label { fill: var(--color-text); font-size: 14px; font-family: ui-monospace, monospace; pointer-events: none; }
+.terminal.pending, .terminal:hover { fill: var(--color-accent); stroke-width: 5; }
+.grid-footnote { color: var(--color-muted); font-size: 11px; padding: 0 18px; line-height: 1.8; }
+.timeline-heading { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
+.timeline-heading output { font-family: ui-monospace, monospace; font-size: 13px; color: var(--color-heading); }
+.time-scrubber input { accent-color: var(--color-accent); padding: 0; }
+.playback-controls { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 8px; }
+.playback-controls label { flex: 1; min-width: 150px; }
+.playback-controls .checkbox-label { display: flex; align-items: center; min-width: auto; flex: 0; margin-bottom: 10px; }
+.checkbox-label input { width: auto; accent-color: var(--color-accent); }
+.interval-fields { max-width: 400px; }
+.measurement-scroll { overflow-x: auto; }
+.measurement-scroll table { width: 100%; font-size: 12px; font-family: ui-monospace, monospace; white-space: nowrap; }
+.model-warnings { font-size: 12px; line-height: 1.8; color: var(--color-muted); padding-left: 18px; }
+.analog-workbench summary { cursor: pointer; color: var(--color-heading); font-size: 13px; font-weight: 600; }
+.analog-netlist { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; line-height: 1.7; }
+.ready-note p { font-size: 13px; color: var(--color-muted); line-height: 1.8; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (max-width: 850px) { .analog-layout { grid-template-columns: 1fr; }.analog-sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); }.analog-board { grid-row: 1; }.analog-workbench { padding: 24px 20px; }.workbench-modes { padding-inline: 20px; } }
+@media (max-width: 520px) { .analog-sidebar { grid-template-columns: 1fr; }.editor-card { padding: 16px; }.editor-file-controls { gap: 8px; }.editor-file-controls button, .file-button { font-size: 11px; }.grid-toolbar > span { flex-basis: 100%; }.analog-workbench { padding: 22px 16px; } }

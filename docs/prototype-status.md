@@ -13,8 +13,13 @@
 - Check failures remain visible; editing marks old results stale. Worker errors
   do not prevent the next run or break catalog/health access.
 - Supported-component connectivity table, source netlist, and JSON report export.
-  This is not a schematic editor or a complete structured circuit model.
-- Curated-only API, strict numeric limits, local origin/host restrictions, CSP,
+- Analog schematic editor alongside Examples: R/C/L, DC/pulse sources, ground,
+  standard/custom values, snap-to-grid placement, drag/move/rotate, explicit wiring,
+  and account-scoped browser drafts plus circuit import/export.
+- Real custom analog transient simulation with synchronized terminal voltages and
+  signed branch currents on the grid. Scrub, step, slow playback, loop and select
+  a viewing interval independently of the solver output interval.
+- Curated-recipe and validated structured-analog APIs, strict numeric limits, local origin/host restrictions, CSP,
   bounded worker processes, job timeouts, correlation IDs, and local audit records.
 - Python unit/integration regressions, real-engine tests for every example,
   browser interaction/export tests, and desktop/mobile axe accessibility checks.
@@ -34,15 +39,17 @@ ADC/DAC bridges; the RC example has sufficient default settling time.
 
 ## Verification boundary
 
-Local verification on October 3: 103 Python tests and 3 browser tests passed;
-combined backend/harness coverage was 78.66%. Python lint/strict types, frontend
+Local verification for the analog editor on October 3: 194 Python tests,
+11 frontend unit tests and 12 browser tests passed; combined backend/harness
+coverage exceeded 83%. Python lint/strict types, frontend
 lint/production build, the production Python dependency audit, and the full npm
 dependency audit passed. Python tests emit one upstream TestClient deprecation
 warning; no tests were skipped, deleted, or weakened.
 
 This is an early prototype, not the complete Phase 0/Phase 1 product in the
 September design. Local and container checks use SHA-256-pinned ngspice 47;
-CI builds the same engine. GitHub execution still needs an authorized push.
+CI builds the same engine. The previous hosted shell is live; the editor and the
+most recent palette refinement are local changes awaiting an authorized push.
 Real identity integration covers native signup reachability, authorization
 code/PKCE/nonce exchange, protected workbench access, forged-header rejection,
 own-account export, and revocation at the next one-minute session refresh.
@@ -50,10 +57,13 @@ SMTP authentication is checked against the authorized active mail service.
 Actual verification/reset email delivery must still be checked with a real inbox.
 Browser tests cover recipe selection, actual simulation, value changes,
 failed checks, export, responsive overflow, and automated accessibility.
+The expanded browser suite uses two workers to match the service's two-job budget;
+separate concurrency tests retain rejection of a third job across editor/recipe modes.
 Automated accessibility checks are not a substitute for assistive-device testing.
 
-All current models are generic/ideal. There is no manufacturer model provenance,
-rating validation, full schematic graph, build-ready approval, or real hardware
+All current models are generic/ideal. The editor has a bounded linear-analog graph,
+not a full electronic parts/model library. There is no manufacturer model provenance,
+rating validation, build-ready approval, or real hardware
 verification. Arbitrary netlists remain prohibited.
 Local mode remains unauthenticated and loopback-only. Hosted mode requires the
 trusted identity gateway and attributes simulations to stable account IDs.
@@ -62,7 +72,8 @@ drills, anti-abuse controls and quotas, audit retention, and reviewed legal page
 
 ## Next milestones
 
-1. Add the structured circuit/netlist model and schematic editor.
+1. Extend the analog editor with nonlinear devices, manual routing/junction tools
+   and undo, while preserving bounded structured input and synchronized playback.
 2. Add the AI tool loop against bounded simulation actions, with explicit AI/user
    attribution and iterative spec checks; deepen per-recipe verification.
 3. Add curated real component models with provenance and human verification.
@@ -72,3 +83,6 @@ drills, anti-abuse controls and quotas, audit retention, and reviewed legal page
 
 Use the live service and Git history to determine current deployment/push state;
 these capabilities do not imply billing or commercial-release readiness.
+
+See [the analog editor scope](plans/2026-10-03-analog-schematic-editor.md) for the
+interaction, security boundaries and intentional first-slice limitations.

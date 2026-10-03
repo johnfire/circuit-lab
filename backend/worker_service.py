@@ -10,9 +10,10 @@ from typing import cast
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from backend.schematic_models import SchematicJob
 from backend.simulation_engine import SimulationFailure
 from backend.simulation_models import SimulationRequest
-from backend.worker_gateway import launch_simulation
+from backend.worker_gateway import launch_schematic, launch_simulation
 from backend.worker_protocol import MAX_REQUEST_BYTES, receive_frame, send_frame
 
 CONNECTION_SLOTS = BoundedSemaphore(2)
@@ -38,6 +39,10 @@ class SimulationHandler(BaseRequestHandler):
             payload = receive_frame(connection, MAX_REQUEST_BYTES)
             if payload == {"operation": "health"}:
                 send_frame(connection, {"status": "ok"})
+                return
+            if payload.get("operation") == "schematic":
+                schematic = SchematicJob.model_validate(payload)
+                send_frame(connection, launch_schematic(schematic.request, schematic.correlation_id).model_dump())
                 return
             job = SimulationJob.model_validate(payload)
             report = launch_simulation(job.circuit_id, job.request, job.correlation_id)
