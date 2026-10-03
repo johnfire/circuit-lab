@@ -50,7 +50,8 @@ recipes, so it is deliberately not used. Failures are not ignored.
 
 ## Public landing and account service
 
-Apache serves only landing.html, landing.css, theme.css, and favicon.svg publicly. The workbench, API,
+Apache serves only landing.html, landing.css, theme.css, favicon.svg, and
+landing-analytics.js publicly. The workbench, API,
 and application assets pass through OAuth2 Proxy, which replaces incoming
 identity headers. Keycloak provides open registration, required email
 verification, password reset, account management, optional TOTP, and confirmed
@@ -77,3 +78,24 @@ the deploy capability, remove its one public key or lock the dedicated account's
 SSH access; don't change shared VPS user keys. To hide the website, disable only
 circuit-lab and circuit-lab-ssl sites, validate Apache, and reload gracefully.
 Stop only the circuit-lab Compose project; preserve its volumes for recovery.
+
+## Landing-page analytics
+
+The existing self-hosted Umami at stats.christopherrehm.de owns website
+c85d3632-ce92-4753-9505-5be8c9ca13c4 (Circuit Lab). Only the public landing
+page loads its deferred tracker. Local/staging hosts are excluded, Do Not Track
+is respected, and query strings/fragments are excluded. The before-send policy
+accepts only anonymous landing pageviews, canonicalizes them to /, strips
+referrer paths, and allowlists fields rather than forwarding arbitrary payloads.
+No account identifiers, custom events, performance tracking, or session replay
+are enabled. Blocking or losing Umami must not affect signup or the workbench.
+
+The landing CSP permits only the exact Umami script and collector endpoints,
+without inline JavaScript or wildcards. The root-owned receiver and this site's
+Apache configuration require a verified, backed-up bootstrap update before
+CI deploys these assets; the application release itself remains CI-only.
+The existing VPS Umami retention job is configured for 90 days. Its effective
+execution is a separate operational check, not a compliance guarantee.
+
+View visits at https://stats.christopherrehm.de/websites/c85d3632-ce92-4753-9505-5be8c9ca13c4.
+Counts start after deployment and can be reduced by DNT settings or blockers.

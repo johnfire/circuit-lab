@@ -42,7 +42,7 @@
         Require all granted
     </Directory>
     <LocationMatch "^/(landing.html|landing.css)?$">
-        Header always set Content-Security-Policy "default-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+        Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://stats.christopherrehm.de/script.js; connect-src 'self' https://stats.christopherrehm.de/api/send; style-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
     </LocationMatch>
     ErrorLog ${APACHE_LOG_DIR}/circuit-lab-error.log
     CustomLog ${APACHE_LOG_DIR}/circuit-lab-access.log combined

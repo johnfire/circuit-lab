@@ -238,6 +238,12 @@ h1 em {
   display: block;
   color: var(--color-heading);
 }
+.analytics-note {
+  color: var(--color-muted);
+  font-size: 11px;
+  line-height: 1.8;
+  margin: 18px 0 0;
+}
 footer {
   display: flex;
   align-items: center;

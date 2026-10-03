@@ -12,6 +12,17 @@
     <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg" />
     <link rel="stylesheet" href="/theme.css" />
     <link rel="stylesheet" href="/landing.css" />
+    <script defer src="/landing-analytics.js"></script>
+    <script
+      defer
+      src="https://stats.christopherrehm.de/script.js"
+      data-website-id="c85d3632-ce92-4753-9505-5be8c9ca13c4"
+      data-domains="circuit-lab.christopherrehm.de"
+      data-do-not-track="true"
+      data-exclude-search="true"
+      data-exclude-hash="true"
+      data-before-send="filterCircuitLabPageview"
+    ></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -146,6 +157,11 @@
         Examples use generic or ideal models. Passing a check does not verify
         component ratings, real-world wiring, or Raspberry Pi safety.
       </aside>
+      <p class="analytics-note">
+        We use self-hosted Umami to count landing-page visits without analytics
+        cookies. Account IDs and URL query strings are not sent; Do Not Track
+        is respected.
+      </p>
     </main>
     <footer>
       <a class="brand" href="/">Circuit<span>Lab</span></a

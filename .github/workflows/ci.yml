@@ -40,6 +40,7 @@ jobs:
         working-directory: frontend
         run: |
           npm run lint
+          npm run test:unit
           npm run build
       - name: Dependency vulnerability scans
         run: |
@@ -128,5 +129,6 @@ jobs:
           test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/)" = 200
           test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/favicon.svg)" = 200
           test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/theme.css)" = 200
+          test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/landing-analytics.js)" = 200
           test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/workbench)" = 302
           test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/auth/admin/)" = 403
