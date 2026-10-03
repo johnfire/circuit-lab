@@ -3,9 +3,9 @@ import AxeBuilder from '@axe-core/playwright';
 
 test('public landing explains the preview and links to account creation', async ({ page }) => {
   await page.goto('/landing.html');
-  await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(32, 8, 8)');
+  await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(21, 5, 5)');
   await expect(page.locator('html')).toHaveCSS('color', 'rgb(216, 181, 146)');
-  await expect(page.locator('h1')).toHaveCSS('color', 'rgb(243, 205, 104)');
+  await expect(page.locator('h1')).toHaveCSS('color', 'rgb(245, 221, 160)');
   const theme = await page.request.get('/theme.css');
   expect(theme.status()).toBe(200);
   expect(theme.headers()['content-type']).toContain('text/css');

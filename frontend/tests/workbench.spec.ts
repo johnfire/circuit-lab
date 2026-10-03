@@ -28,9 +28,9 @@ test('simulate, change values, inspect failed checks, and export', async ({ page
 
 test('accessible desktop and mobile workbench', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(32, 8, 8)');
+  await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(21, 5, 5)');
   await expect(page.locator('html')).toHaveCSS('color', 'rgb(216, 181, 146)');
-  await expect(page.locator('h1')).toHaveCSS('color', 'rgb(243, 205, 104)');
+  await expect(page.locator('h1')).toHaveCSS('color', 'rgb(245, 221, 160)');
   await page.getByRole('button', { name: 'Run simulation' }).click();
   await expect(page.getByText('Simulation checks passed', { exact: true })).toBeVisible();
   const desktop = await new AxeBuilder({ page }).analyze();
