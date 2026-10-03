@@ -14,6 +14,8 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path('/opt/circuit-lab')
+PUBLIC_PAGES = Path('/var/www/circuit-lab-pages')
+PUBLIC_LINK = Path('/var/www/circuit-lab-public')
 MAX_ARCHIVE = 20 * 1024 * 1024
 
 
@@ -82,19 +84,21 @@ def point_release(name: str, release: Path) -> None:
 
 
 def publish_landing(release: Path) -> None:
-    """Publish only the two public assets, never the release or its configuration."""
+    """Publish only the public landing assets, never release configuration."""
     source = release / 'frontend' / 'public'
     if not (source / 'landing.html').is_file():
         return
-    destination = Path('/var/www/circuit-lab-pages') / release.name
+    destination = PUBLIC_PAGES / release.name
     destination.mkdir(parents=True, mode=0o755, exist_ok=True)
-    for name in ('landing.html', 'landing.css'):
+    for name in ('landing.html', 'landing.css', 'favicon.svg'):
+        if name == 'favicon.svg' and not (source / name).is_file():
+            continue  # Older immutable releases predate the favicon.
         shutil.copyfile(source / name, destination / name)
         (destination / name).chmod(0o644)
-    temporary = Path('/var/www/circuit-lab-public.next')
+    temporary = PUBLIC_LINK.with_name(PUBLIC_LINK.name + '.next')
     temporary.unlink(missing_ok=True)
     temporary.symlink_to(destination)
-    temporary.replace('/var/www/circuit-lab-public')
+    temporary.replace(PUBLIC_LINK)
 
 
 def deploy(release: Path) -> None:

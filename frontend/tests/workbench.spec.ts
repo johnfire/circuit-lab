@@ -3,6 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 
 test('simulate, change values, inspect failed checks, and export', async ({ page }) => {
   await page.goto('/');
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg');
   await expect(page.getByRole('heading', { name: 'Sensor voltage divider' })).toBeVisible();
   await page.getByRole('button', { name: 'Run simulation' }).click();
   await expect(page.getByText('Simulation checks passed', { exact: true })).toBeVisible();

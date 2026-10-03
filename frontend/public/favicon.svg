@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>Circuit Lab</title>
+  <rect width="64" height="64" rx="14" fill="#213d33"/>
+  <path d="M28 20h-6a6 6 0 0 0-6 6v12a6 6 0 0 0 6 6h6M37 20v24h12"
+        fill="none" stroke="#f4f2e9" stroke-width="5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

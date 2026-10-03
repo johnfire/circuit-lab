@@ -50,7 +50,7 @@ recipes, so it is deliberately not used. Failures are not ignored.
 
 ## Public landing and account service
 
-Apache serves only landing.html and landing.css publicly. The workbench, API,
+Apache serves only landing.html, landing.css, and favicon.svg publicly. The workbench, API,
 and application assets pass through OAuth2 Proxy, which replaces incoming
 identity headers. Keycloak provides open registration, required email
 verification, password reset, account management, optional TOTP, and confirmed

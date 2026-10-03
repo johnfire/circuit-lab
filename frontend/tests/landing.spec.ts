@@ -3,6 +3,11 @@ import AxeBuilder from '@axe-core/playwright';
 
 test('public landing explains the preview and links to account creation', async ({ page }) => {
   await page.goto('/landing.html');
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg');
+  const favicon = await page.request.get('/favicon.svg');
+  expect(favicon.status()).toBe(200);
+  expect(favicon.headers()['content-type']).toContain('image/svg+xml');
+  expect(await favicon.text()).toContain('<title>Circuit Lab</title>');
   await expect(page.getByRole('heading', { name: /Good circuits start/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Create your account' })).toHaveAttribute(
     'href', '/oauth2/start?rd=%2Fworkbench&prompt=create',
