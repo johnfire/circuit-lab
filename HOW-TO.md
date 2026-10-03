@@ -8,6 +8,10 @@ for both analog and digital.
 This document is written for two audiences. **Read the part that fits you.**
 Humans: sections under "For Humans". AI agents: sections under "For Agents".
 
+For the new local browser workbench, follow the Web prototype section in
+the README. The command-line harness below remains available. All current
+component models are generic/ideal, not manufacturer-verified models.
+
 ---
 
 # For Humans
@@ -183,12 +187,18 @@ These are the gotchas that break results or lose time:
    converge for a *single* comparator (an inverter works) but multi-input logic
    (`V = ... (a>1.65)*(b>1.65)`) fails with *"timestep too small"*. Use the
    XSPICE **`d_nand`** code model instead — event-driven, no convergence issues.
-   Verified recipe (output reads as logic **0/1**, not rail voltage):
+   Use explicit ADC/DAC bridges around the digital primitive. Analog inputs
+   and output then read as 0/3.3 V, with thresholds on the ADC model and
+   output rails on the DAC model, not unsupported gate parameters:
 
    ```spice
-   vdummy dummy 0 DC=0              ; required — stabilises the digital OP
-   a_x [a b] out nand1              ; inputs in brackets, output scalar
-   .model nand1 d_nand (rise_delay=1n fall_delay=1n in_low=0.7 in_high=1.6 out_low=0 out_high=3.3)
+   vdummy dummy 0 DC=0
+   a_input [a b] [da db] adc1
+   a_x [da db] dout nand1
+   a_output [dout] [out] dac1
+   .model adc1 adc_bridge (in_low=0.7 in_high=1.6)
+   .model nand1 d_nand (rise_delay=1n fall_delay=1n)
+   .model dac1 dac_bridge (out_low=0 out_high=3.3)
    ```
 
    **Sequential memory (SR latch / FF) does NOT settle in this ngspice build** —
@@ -215,7 +225,12 @@ python3 ~/Projects/circuit-lab/harness/run_circuit.py new circuits/analog/my_cir
 ```
 
 Paths are relative to `~/Projects/circuit-lab/`. `--set K=V` substitutes `$K` / `%{K}`
-placeholders; `--sweep K=v1,v2,v3` runs once per value.
+placeholders or a named R/C/L component value. Unknown names and nonnumeric
+values are rejected. Sweeps run once per value in separate temporary
+directories. Simulator errors, missing/malformed output, and plot failures
+return a nonzero exit status. Scaffolding refuses to overwrite an existing
+file. The RC example runs for 80 ms so its default 10 ms time constant has
+time to settle.
 
 ## 5. How to verify a design (do this every time)
 

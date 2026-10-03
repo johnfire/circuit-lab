@@ -34,6 +34,7 @@ Exit codes: 0 = sim ran, 1 = ngspice error.
 """
 
 import argparse
+import math
 import os
 import re
 import shutil
@@ -69,22 +70,32 @@ def find_ngspice() -> str:
 # ---------------------------------------------------------------------------
 # Template substitution
 # ---------------------------------------------------------------------------
-def substitute_netlist(text, params):
-    def repl_brace(m):
-        return str(params.get(m.group(1), m.group(0)))
-
-    def repl_dollar(m):
-        return str(params.get(m.group(1), m.group(0)))
-
-    text = re.sub(r"%\{([A-Za-z0-9_]+)\}", repl_brace, text)
-    text = re.sub(r"\$([A-Za-z_][A-Za-z0-9_]*)", repl_dollar, text)
+def substitute_netlist(text: str, params: dict[str, str]) -> str:
+    """Apply numeric placeholders or explicit passive-component overrides."""
+    for name, value in params.items():
+        if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", name):
+            raise ValueError(f"Invalid parameter name: {name}")
+        if not re.fullmatch(r"[+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?(?:meg|[TGMKkmunpf])?", value):
+            raise ValueError(f"Invalid numeric value for {name}")
+        placeholder = re.compile(r"%\{" + re.escape(name) + r"\}|\$" + re.escape(name) + r"\b")
+        if placeholder.search(text):
+            text = placeholder.sub(lambda _: value, text)
+            continue
+        component = re.compile(
+            r"^(" + re.escape(name) + r"\s+\S+\s+\S+\s+)\S+",
+            re.MULTILINE | re.IGNORECASE,
+        )
+        if name[0].upper() not in "RCL" or not component.search(text):
+            raise ValueError(f"Unknown editable parameter: {name}")
+        text = component.sub(lambda match: match.group(1) + value, text)
     return text
 
 
 # ---------------------------------------------------------------------------
 # ngspice runner
 # ---------------------------------------------------------------------------
-def run_ngspice(netlist_text, workdir, timeout=60):
+def run_ngspice(netlist_text: str, workdir: str | Path, timeout: int = 60) -> tuple[int, str, str]:
+    """Execute ngspice with a deadline and return its exit status and transcripts."""
     net_f = Path(workdir) / "input.cir"
     net_f.write_text(netlist_text)
     log_f = Path(workdir) / "ngspice.log"
@@ -110,7 +121,7 @@ def run_ngspice(netlist_text, workdir, timeout=60):
 # ---------------------------------------------------------------------------
 # Parsing
 # ---------------------------------------------------------------------------
-def parse_operating_point(stdout):
+def parse_operating_point(stdout: str) -> list[tuple[str, float]]:
     """Extract node voltages from `.op`/'print' output. Handles:
          v(out)  =  2.976052e+00     (ngspice print/op form)
          v(out)   2.976052e+00
@@ -125,19 +136,21 @@ def parse_operating_point(stdout):
     return out
 
 
-def read_wrdata_2col(path):
+def read_wrdata_2col(path: str | Path) -> tuple[list[str], list[tuple[float, float]]]:
     """Read a single-vector wrdata CSV (2 columns, space-separated, no header).
     Returns (labels, rows) where labels = ['abscissa', 'value']."""
     p = Path(path)
     if not p.is_file():
-        return None, []
+        return [], []
     rows = []
     with p.open() as f:
         for line in f:
             parts = line.split()
-            if len(parts) >= 2:
+            if len(parts) == 2:
                 try:
-                    rows.append((float(parts[0]), float(parts[1])))
+                    row = (float(parts[0]), float(parts[1]))
+                    if all(math.isfinite(value) for value in row):
+                        rows.append(row)
                 except ValueError:
                     continue
     # label the value column from the filename (e.g. v_out.csv -> v(out))
@@ -145,7 +158,8 @@ def read_wrdata_2col(path):
     return (["abscissa", label], rows)
 
 
-def table(rows, labels, limit=40):
+def table(rows: list[tuple[float, float]], labels: list[str], limit: int = 40) -> str:
+    """Format bounded simulation samples as a Markdown table."""
     if not rows:
         return "(no rows)"
     out = ["| " + " | ".join(labels) + " |", "|" + "---|" * len(labels) + "|"]
@@ -156,7 +170,8 @@ def table(rows, labels, limit=40):
     return "\n".join(out)
 
 
-def plot_csv(path, out_png):
+def plot_csv(path: str, out_png: str) -> bool:
+    """Render optional matplotlib output and report whether a file was produced."""
     try:
         import matplotlib
         matplotlib.use("Agg")
@@ -185,7 +200,8 @@ def plot_csv(path, out_png):
 # ---------------------------------------------------------------------------
 # Commands
 # ---------------------------------------------------------------------------
-def cmd_list(root):
+def cmd_list(root: str) -> None:
+    """List available circuit recipes."""
     circuits = sorted(Path(root).rglob("*.cir"))
     if not circuits:
         print("No .cir files found under", root)
@@ -195,15 +211,15 @@ def cmd_list(root):
     print(f"\n{len(circuits)} circuit file(s).")
 
 
-def cmd_new(name):
+def cmd_new(name: str) -> None:
+    """Create a runnable circuit without overwriting an existing file."""
     tpl = """* {name} — circuit stub. Replace the body. Use .control for analysis.
-VDD 1 0 3.3V
-R1 1 2 10k
+R1 in 2 10k
 C1 2 0 1u
 V0 in 0 PULSE(0 3.3 0 1u 1u 0.5m 1m)
 
 .control
-run
+tran 10u 80m
 * one wrdata per signal -> clean 2-column CSV
 wrdata v_out.csv v(2)
 .endc
@@ -213,78 +229,102 @@ wrdata v_out.csv v(2)
     if p.suffix != ".cir":
         p = p.with_suffix(".cir")
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(tpl.format(name=p.stem))
+    with p.open("x") as circuit_file:
+        circuit_file.write(tpl.format(name=p.stem))
     print("Wrote", p)
 
 
-def cmd_run(args):
+def parse_run_parameters(args: argparse.Namespace) -> list[dict[str, str]]:
+    """Expand validated CLI options into independent parameter sets."""
+    parameters = {}
+    for assignment in args.set or []:
+        name, separator, value = assignment.partition("=")
+        if not separator or not name or not value:
+            raise ValueError("Use --set NAME=VALUE")
+        parameters[name.strip()] = value.strip()
+    if not args.sweep:
+        return [parameters]
+    name, separator, values = args.sweep.partition("=")
+    if not separator or not name or not values:
+        raise ValueError("Use --sweep NAME=VALUE,VALUE")
+    if any(not value.strip() for value in values.split(",")):
+        raise ValueError("Sweep values must not be empty")
+    return [{**parameters, name.strip(): value.strip()} for value in values.split(",")]
+
+
+def print_simulation_tables(workdir: str, transcript: str) -> list[Path]:
+    """Render only the current run's operating point and CSV files."""
+    for node, voltage in parse_operating_point(transcript):
+        print(f"  v({node}) = {voltage:.5g}")
+    csv_paths = sorted(Path(workdir).glob("*.csv"))
+    for csv_path in csv_paths:
+        labels, rows = read_wrdata_2col(csv_path)
+        if not rows or len(csv_path.read_text().splitlines()) != len(rows):
+            raise ValueError(f"Malformed or empty simulator output: {csv_path.name}")
+        print(f"---- {csv_path.name} ({len(rows)} rows) ----")
+        print(table(rows, labels))
+    return csv_paths
+
+
+def simulation_error(status: int, transcript: str, stderr: str) -> str | None:
+    """Treat both failed exits and reported analysis/model errors as failures."""
+    if status == -99:
+        return "Simulation timed out"
+    if status != 0 or re.search(r"(?im)^error\b|simulation interrupted", transcript):
+        return "ngspice rejected the circuit"
+    if re.search(r"(?i)unrecognized parameter|timestep too small|failed", transcript + stderr):
+        return "ngspice reported an invalid model or failed analysis"
+    return None
+
+
+def run_cli_job(netlist: str, values: dict[str, str], args: argparse.Namespace,
+                render_plot: bool) -> bool:
+    """Execute, validate, and display one independent simulation job."""
+    with tempfile.TemporaryDirectory(prefix="crdt_") as workdir:
+        try:
+            status, transcript, stderr = run_ngspice(netlist, workdir, timeout=args.timeout)
+        except (RuntimeError, OSError) as error:
+            print(str(error))
+            return False
+        print(f"=== run with params {values} ===")
+        print(f"[ngspice exit={status}]")
+        error_detail = simulation_error(status, transcript, stderr)
+        if error_detail:
+            print(error_detail)
+            print((transcript or stderr)[-2500:])
+            return False
+        try:
+            csv_paths = print_simulation_tables(workdir, transcript)
+        except ValueError as error:
+            print(str(error))
+            return False
+        if not csv_paths:
+            print("Simulation produced no waveforms")
+            return False
+        return not render_plot or plot_csv(str(csv_paths[0]), args.plot)
+
+
+def cmd_run(args: argparse.Namespace) -> int:
+    """Run isolated sweep jobs and propagate any failure to the CLI."""
     src = Path(args.file)
     if not src.is_absolute():
         src = Path(DEFAULT_ROOT) / src
     if not src.is_file():
         print("Netlist not found:", src)
         return 1
-    text = src.read_text()
-
-    params = {}
-    if args.set:
-        for kv in args.set:
-            k, _, v = kv.partition("=")
-            params[k.strip()] = v.strip()
-    sweep_vals = {}
-    if args.sweep:
-        k, _, v = args.sweep.partition("=")
-        sweep_vals[k.strip()] = [x.strip() for x in v.split(",")]
-        if k.strip() not in params and sweep_vals[k.strip()]:
-            params[k.strip()] = sweep_vals[k.strip()][0]
-
-    runs = 1
-    if args.sweep and sweep_vals:
-        runs = len(next(iter(sweep_vals.values())))
-
-    first_csv = None
-    with tempfile.TemporaryDirectory(prefix="crdt_") as tmp:
-        for iter_n in range(runs):
-            p = params.copy()
-            if sweep_vals:
-                sk = next(iter(sweep_vals))
-                p[sk] = sweep_vals[sk][iter_n]
-            net = substitute_netlist(text, p)
-            rc, stdout_text, stderr_text = run_ngspice(net, tmp, timeout=args.timeout)
-
-            if args.set or args.sweep:
-                print(f"=== run with params {p} ===")
-            print(f"[ngspice exit={rc}]")
-            if rc != 0:
-                tail = stdout_text[-2500:] if stdout_text else (stderr_text or "no output")
-                print("---- ngspice error/transcript (tail) ----")
-                print(tail)
-                continue
-
-            # Operating point / printed scalar values
-            ops = parse_operating_point(stdout_text)
-            if ops:
-                print("---- operating point / printed values ----")
-                for node, val in ops:
-                    print(f"  v({node}) = {val:.5g}")
-
-            # Data tables (each single-vector wrdata CSV)
-            csvs = sorted(Path(tmp).glob("*.csv"))
-            for cpath in csvs:
-                labels, rows = read_wrdata_2col(cpath)
-                if rows:
-                    print(f"---- {cpath.name} ({len(rows)} rows) ----")
-                    print(table(rows, labels))
-            if csvs and first_csv is None:
-                first_csv = str(csvs[0])
-
-        if args.plot and first_csv:
-            plot_csv(first_csv, args.plot)
-
-    return 0
+    try:
+        parameter_sets = parse_run_parameters(args)
+        netlists = [substitute_netlist(src.read_text(), values) for values in parameter_sets]
+    except ValueError as error:
+        print(str(error))
+        return 1
+    outcomes = [run_cli_job(netlist, parameter_sets[index], args, bool(args.plot and index == 0))
+                for index, netlist in enumerate(netlists)]
+    return int(not all(outcomes))
 
 
-def main():
+def main() -> int:
+    """Dispatch the circuit harness command line."""
     ap = argparse.ArgumentParser(description="ngspice circuit harness")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
@@ -305,7 +345,8 @@ def main():
     p_new.set_defaults(func=lambda a: cmd_new(a.name))
 
     args = ap.parse_args()
-    return args.func(args)
+    exit_status = args.func(args)
+    return exit_status if isinstance(exit_status, int) else 0
 
 
 if __name__ == "__main__":

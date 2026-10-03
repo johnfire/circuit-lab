@@ -4,3 +4,15 @@ __pycache__/
 *.raw
 *.png
 *.log
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+node_modules/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
+.env
+*.jsonl

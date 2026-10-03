@@ -6,7 +6,7 @@ R1 in out 10k
 C1 out 0 1u
 
 .control
-tran 0.01m 8m
+tran 0.01m 80m
 wrdata v_in.csv v(in)
 wrdata v_out.csv v(out)
 .endc

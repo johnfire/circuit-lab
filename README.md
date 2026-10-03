@@ -12,6 +12,8 @@ driven from a small Python harness.
 
 ```
 circuit-lab/
+  backend/               # local FastAPI catalog, bounded simulation workers, checks
+  frontend/              # React/TypeScript workbench and browser regressions
   harness/
     run_circuit.py        # ngspice driver: netlist -> parsed results (op/data) + plots
   circuits/
@@ -27,7 +29,54 @@ circuit-lab/
   root. `~/.local/bin` must be on `PATH`.
 - Python 3 + optional `matplotlib` for `--plot`.
 
-## Quick start
+## Web prototype
+
+The first workbench is local-only: nine recipes, editable resistor/capacitor
+values, real ngspice waveforms with zoom/cursor measurements, numerical checks,
+a supported-component connectivity table, netlist inspection, and JSON export.
+It does not yet have AI chat, schematic editing, or persistent saved designs.
+
+The web prototype needs Python 3.12+, uv, and Node.js 26/npm, in addition to
+ngspice. Locked Python and npm dependencies are committed.
+From the repository root:
+
+    uv sync --frozen --all-extras
+    npm ci --prefix frontend
+    npm run build --prefix frontend
+    uv run uvicorn backend.application:app --host 127.0.0.1 --port 8010
+
+Open http://127.0.0.1:8010 on this computer. This is not a public/mobile-hosted
+deployment; do not bind it to the network or put an unauthenticated proxy in
+front of it. Development mode: run the API above, then run the following
+in another terminal:
+
+    npm run dev --prefix frontend
+
+All models are marked generic/ideal. Passing checks are not hardware approval,
+component-rating verification, or permission to connect a Raspberry Pi.
+The API accepts only registered recipes and bounded numeric overrides, not
+arbitrary netlists. Each job has its own temporary directory and process group,
+resource limits, timeouts, and a two-worker ceiling. This is not the planned
+network-isolated simulation container.
+
+Run the same checks used by CI:
+
+    uv run ruff check backend harness tests
+    uv run mypy backend
+    uv run pytest --cov=backend --cov=harness --cov-report=term-missing --cov-fail-under=70
+    npm run lint --prefix frontend
+    npm run build --prefix frontend
+    cd frontend
+    npx playwright install chromium
+    npm run test:e2e
+
+Simulation events are appended to /tmp/circuit-lab-audit.jsonl, with correlation
+IDs and the local-user actor. Set CIRCUIT_AUDIT_PATH for a different local
+destination. Missing audit storage rejects jobs without breaking the catalog.
+This prototype has no authentication or authenticated per-person attribution.
+See [prototype status](docs/prototype-status.md) for scope and next milestones.
+
+## Command-line quick start
 
 ```bash
 # list example circuits
@@ -64,7 +113,7 @@ The harness reads results two ways:
 
 ```
 .control
-tran 0.01m 8m            # or: dc VIN 0 5 0.5   |  ac dec 10 1 1meg
+tran 0.01m 80m           # or: dc VIN 0 5 0.5   |  ac dec 10 1 1meg
 wrdata v_in.csv v(in)     # one signal per file
 wrdata v_out.csv v(out)
 .endc
