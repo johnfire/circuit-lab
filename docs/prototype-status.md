@@ -100,3 +100,7 @@ See [the analog editor scope](plans/2026-10-03-analog-schematic-editor.md) for t
 interaction, security boundaries and intentional first-slice limitations.
 See [observation and AC](plans/2026-10-04-circuit-observation-and-ac.md) for the
 approved design, implementation, limits and local verification evidence.
+See [MCP circuit collaboration](plans/2026-10-04-mcp-circuit-collaboration.md) for
+the proposed shared-project, explicitly shared workspace and direct-AI-edit/undo
+architecture. This MCP interface is not implemented yet; client/dependency
+choices remain open.
