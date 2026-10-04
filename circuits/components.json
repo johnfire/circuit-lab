@@ -1,0 +1,9 @@
+{
+  "R": {"unit": "ohm", "minimum": 1, "maximum": 100000000, "standard_values": [10, 22, 47, 100, 220, 470, 1000, 2200, 4700, 10000, 22000, 47000, 100000, 1000000]},
+  "C": {"unit": "F", "minimum": 1e-12, "maximum": 1, "standard_values": [1e-12, 10e-12, 100e-12, 1e-9, 10e-9, 100e-9, 1e-6, 2.2e-6, 4.7e-6, 10e-6, 22e-6, 47e-6, 100e-6, 1000e-6]},
+  "L": {"unit": "H", "minimum": 1e-9, "maximum": 100, "standard_values": [1e-6, 10e-6, 100e-6, 1e-3, 10e-3, 100e-3, 1]},
+  "V": {"unit": "V", "minimum": -100, "maximum": 100, "standard_values": [1.5, 3.3, 5, 9, 12, 24]},
+  "PULSE": {"unit": "V", "minimum": -100, "maximum": 100, "standard_values": [1.5, 3.3, 5, 9, 12, 24]},
+  "SIN": {"unit": "V_peak", "minimum": 0, "maximum": 100, "standard_values": [1, 2, 3.3, 5, 10, 12]},
+  "GND": {"unit": "V", "minimum": 0, "maximum": 0, "standard_values": [0]}
+}

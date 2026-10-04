@@ -78,6 +78,12 @@ its authenticated identity on simulation events. Hosted mode has a public signup
 landing page and self-hosted Keycloak accounts; see [deployment runbook](deploy/README.md).
 See [prototype status](docs/prototype-status.md) for scope and next milestones.
 
+The MCP interface is being built separately. Its SDK and validated circuit,
+measurement and schema foundations are implemented locally; remote access,
+saved projects and AI editing are not enabled yet. See
+[MCP implementation status](docs/mcp-implementation-status.md) for the exact
+boundary and remaining work.
+
 ## Command-line quick start
 
 ```bash

@@ -4,6 +4,7 @@ WORKDIR /build/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
+COPY circuits/components.json /build/circuits/components.json
 ENV VITE_DEPLOYMENT_MODE=hosted
 RUN npm run build
 

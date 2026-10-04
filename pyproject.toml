@@ -3,7 +3,11 @@ name = "circuit-lab"
 version = "0.1.0"
 description = "Local circuit workbench with real ngspice simulations"
 requires-python = ">=3.12"
-dependencies = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1"]
+dependencies = [
+    "fastapi>=0.115,<1",
+    "mcp==2.3.0",
+    "uvicorn>=0.30,<1",
+]
 
 [project.optional-dependencies]
 plot = ["matplotlib>=3.9"]

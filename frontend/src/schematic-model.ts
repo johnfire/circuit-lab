@@ -1,15 +1,12 @@
 import type { Part, PartKind, Pin, Rotation, Schematic, Wire } from './schematic-types';
+import componentCatalog from '../../circuits/components.json' with { type: 'json' };
 
 export const GRID = 32;
 export const PART_NAMES: Record<PartKind, string> = {
   R: 'Resistor', C: 'Capacitor', L: 'Inductor', V: 'DC source', PULSE: 'Pulse source', SIN: 'Sine source', GND: 'Ground',
 };
-export const STANDARD_VALUES: Record<PartKind, number[]> = {
-  R: [10, 22, 47, 100, 220, 470, 1000, 2200, 4700, 10000, 22000, 47000, 100000, 1000000],
-  C: [1e-12, 10e-12, 100e-12, 1e-9, 10e-9, 100e-9, 1e-6, 2.2e-6, 4.7e-6, 10e-6, 22e-6, 47e-6, 100e-6, 1000e-6],
-  L: [1e-6, 10e-6, 100e-6, 1e-3, 10e-3, 100e-3, 1],
-  V: [1.5, 3.3, 5, 9, 12, 24], PULSE: [1.5, 3.3, 5, 9, 12, 24], SIN: [1, 2, 3.3, 5, 10, 12], GND: [0],
-};
+export const STANDARD_VALUES = Object.fromEntries(Object.entries(componentCatalog)
+  .map(([kind, definition]) => [kind, definition.standard_values])) as Record<PartKind, number[]>;
 
 export function engineering(value: number, unit = ''): string {
   if (value === 0) return '0 ' + unit;

@@ -5,6 +5,8 @@ from typing import Annotated, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from backend.component_catalog import COMPONENTS
+
 Finite = Annotated[float, Field(strict=True, allow_inf_nan=False)]
 Identifier = Annotated[str, Field(pattern=r"^[a-zA-Z][a-zA-Z0-9_]{0,15}$")]
 
@@ -53,9 +55,8 @@ class Part(StrictModel):
     @model_validator(mode="after")
     def validate_value(self) -> Self:
         """Bound physical values without permitting expressions or SPICE text."""
-        limits = {"R": (1, 1e8), "C": (1e-12, 1), "L": (1e-9, 100),
-                  "V": (-100, 100), "PULSE": (-100, 100), "SIN": (0, 100), "GND": (0, 0)}
-        minimum, maximum = limits[self.kind]
+        definition = COMPONENTS[self.kind]
+        minimum, maximum = definition.minimum, definition.maximum
         if not minimum <= self.value <= maximum:
             raise ValueError(f"{self.kind} value must be between {minimum:g} and {maximum:g}")
         if (self.kind == "PULSE") != (self.pulse is not None):

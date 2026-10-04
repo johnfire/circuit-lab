@@ -1,4 +1,5 @@
 import type { Part, Pin, Schematic } from './schematic-types';
+import componentCatalog from '../../circuits/components.json' with { type: 'json' };
 
 const DRAFT_KEY = 'circuit-lab.analog-draft.v1';
 
@@ -18,7 +19,8 @@ function bounded(value: unknown, minimum: number, maximum: number, integer = fal
 
 function parsePart(value: unknown): Part {
   const part = objectShape(value, ['id', 'kind', 'value', 'x', 'y', 'rotation', 'pulse', 'sine']);
-  const limits: Record<string, [number, number]> = { R: [1, 1e8], C: [1e-12, 1], L: [1e-9, 100], V: [-100, 100], PULSE: [-100, 100], SIN: [0, 100], GND: [0, 0] };
+  const limits: Record<string, [number, number]> = Object.fromEntries(Object.entries(componentCatalog)
+    .map(([kind, definition]) => [kind, [definition.minimum, definition.maximum]]));
   if (typeof part.id !== 'string' || !/^[a-zA-Z][a-zA-Z0-9_]{0,15}$/.test(part.id)) throw new Error('Invalid part identifier.');
   if (typeof part.kind !== 'string' || !Object.hasOwn(limits, part.kind)) throw new Error('Only R, C, L, DC, pulse, sine and ground are supported.');
   bounded(part.value, ...limits[part.kind]); bounded(part.x, 2, 38, true); bounded(part.y, 2, 22, true);
