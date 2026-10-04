@@ -70,8 +70,10 @@ Realm import runs only when the realm does not already exist. App delivery must
 not replace customer identity state. Future realm updates require an explicit
 database backup and a reviewed migration, not an overwrite import.
 Backups, signup abuse controls, legal pages, and recovery drills are required
-before commercial launch. No billing, subscriptions, saved projects, or AI
-design loop exists yet.
+before commercial launch. No billing or subscriptions are enabled. Saved-project
+and MCP collaboration code is deployed but remains disabled pending off-host
+backup setup and live browser/Codex verification; see `MCP.md` and
+`docs/mcp-implementation-status.md` for the exact activation state.
 
 To pause delivery, disable the GitHub workflow/deployment environment. To revoke
 the deploy capability, remove its one public key or lock the dedicated account's

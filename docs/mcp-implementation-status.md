@@ -2,8 +2,50 @@
 
 This is the local collaboration implementation of the
 [approved circuit collaboration design](plans/2026-10-04-mcp-circuit-collaboration.md).
-The application mounts an authenticated Streamable HTTP server, but the VPS
-dependencies and actual Codex connection have not been activated or verified.
+The application code is deployed on the VPS. OAuth entries, native MCP routes
+and separate application storage are staged, but saved-circuit access remains
+disabled pending an encrypted off-host backup destination. The actual Codex
+connection has not yet been installed, authenticated or verified.
+
+## Rollout progress
+
+- Chris authorized push and activation. `e3178a6` was pushed; its first CI run
+  correctly blocked deployment when the database browser suite reached a 404
+  because frontend assets had not yet been built.
+- `9dad83e1fbe819e53d1c4d796e107dea2aa03abb` moves the existing frontend build
+  before pytest and adds a build-order regression test. No browser assertion or
+  test timeout was weakened. All CI jobs passed, including 295 pytest checks
+  with 82.66% coverage, real Keycloak lifecycle checks and container isolation.
+- [Verified CI/deployment run](https://github.com/johnfire/circuit-lab/actions/runs/37199435278)
+  delivered that exact revision. Loopback health and the current release pointer
+  confirm it is live. Landing 200, protected workbench 302 and identity admin 403
+  remain correct.
+- Root-private configuration and identity database backups are retained at
+  `/opt/circuit-lab/mcp-rollout-20261004`. The reviewed receiver and this site's
+  Apache MCP route additions were installed after CI passed and Apache validated.
+- Public resource metadata returns 200 with the expected issuer/resource.
+  MCP without a bearer, including a forged actor header, returns a native 401
+  with a resource-metadata challenge, not an HTML login redirect.
+- The reviewed `circuit-lab-codex` and `circuit-lab-mcp-resource` entries, scopes,
+  audiences, browser basic scope and read-only role/scope mappings are installed.
+  Actual resource credentials can read users and lifecycle events. Existing
+  browser-client settings, registration, password policy and SMTP were preserved.
+- A new `circuit-lab_application-db` volume and application-only database are
+  healthy. Both migrations are applied; there are zero customer documents.
+  The initial private dump was restored into `circuit_restore_20261004`, and
+  restored-access invalidation/interrupted-run recovery entrypoints passed.
+  This is an **empty-schema VPS restore**, not recovery of customer history;
+  the populated content/grant restoration test passed separately in CI.
+- `CIRCUIT_ENABLE_PROJECTS=false` remains explicit. The running API has not
+  received the collaboration overlay, and `/api/projects/status` reports disabled.
+  No off-host backup, retention job, Codex configuration or user OAuth sign-in
+  was installed. No production volume, backup or test database was deleted.
+
+Next: choose an encrypted off-host destination/retention policy, install and test
+backup scheduling, then enable the overlay and perform real browser/Codex
+save/share/edit/simulate/view/undo/revoke checks. Confirm whether Codex on this
+computer is the first connection; its staged callback is
+`http://127.0.0.1:8124/callback`.
 
 ## Implemented locally
 
@@ -41,8 +83,8 @@ dependencies and actual Codex connection have not been activated or verified.
   browser flow, real Keycloak verification and pg_dump/psql restore checks.
   CI runs these alongside the unchanged existing suites and coverage gate.
 
-No production database, Keycloak realm, VPS configuration or Codex settings were
-changed. No commit from this task was pushed by this implementation step.
+The initial local implementation step changed no production services or Codex
+settings; the subsequent authorized rollout is recorded above.
 
 ## Capability boundaries
 
@@ -64,15 +106,12 @@ capacity planning are operator work, not silently enabled deletion jobs.
 
 ## Remaining activation gates
 
-1. Push only when Chris requests it; verify CI on the exact revision.
-2. Provision application storage separately from the identity database; configure
-   secrets only in protected VPS environment files.
-3. Add reviewed OAuth clients/scopes, both audience mappers, the basic identity
-   scope, read-only service-account roles **and** role scope mappings. Preserve
-   the existing browser client, SMTP settings and account lifecycle features.
-4. Install/review proxy and receiver changes, test live backup restoration and
-   restored-access invalidation, and configure encrypted backups/retention.
-5. Verify production browser save/share/revoke and account lifecycle, then sign
+1. Configure and verify encrypted off-host backups, retention and monitoring.
+   An initial VPS schema restore and populated CI restoration are complete; a
+   scheduled off-host backup/recovery system is not.
+2. Enable the collaboration overlay only after that gate, preserving separate
+   identity/application stores and VPS-only secrets.
+3. Verify production browser save/share/revoke and account lifecycle, then sign
    Codex in and exercise a shared circuit. A genuine Keycloak bearer was tested
    locally, but the actual Codex app's OAuth sign-in is not yet verified.
 
