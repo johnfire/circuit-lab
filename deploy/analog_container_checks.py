@@ -23,9 +23,30 @@ def check_analog(call: Callable[[str, bytes | None, bool], object]) -> None:
     node = report['pin_nodes']['R2:0']
     voltage = next(trace for trace in report['traces'] if trace['name'] == 'V:' + node)
     assert abs(voltage['values'][-1] - 2.5) < .001
+    check_ac(call, graph)
     try:
         call('/api/schematic/simulate', json.dumps({**graph, 'netlist': 'shell whoami'}).encode(), True)
     except urllib.error.HTTPError as error:
         assert error.code == 422
     else:
         raise AssertionError('Analog API accepted executable input')
+
+
+def check_ac(call: Callable[[str, bytes | None, bool], object], graph: dict[str, object]) -> None:
+    """Require finite real small-signal vectors across the network-disabled worker IPC."""
+    request = {'circuit': graph, 'sweep': {'source': 'V1', 'amplitude': 2, 'phase': 30,
+               'start': 1, 'stop': 1000, 'spacing': 'log', 'points': 20}}
+    report = call('/api/schematic/ac', json.dumps(request).encode(), True)
+    assert isinstance(report, dict) and report['analysis'] == 'ac'
+    assert len(report['frequencies']) == 61
+    node = report['pin_nodes']['R2:0']
+    voltage = next(trace for trace in report['traces'] if trace['name'] == 'V:' + node)
+    assert abs(voltage['real'][0] - .866025403784) < .00001
+    assert abs(voltage['imaginary'][0] - .5) < .00001
+    assert report['dc_biases'] == {'V1': 5}
+    try:
+        call('/api/schematic/ac', json.dumps({**request, 'netlist': 'shell whoami'}).encode(), True)
+    except urllib.error.HTTPError as error:
+        assert error.code == 422
+    else:
+        raise AssertionError('AC API accepted executable input')

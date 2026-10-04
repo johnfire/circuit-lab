@@ -2,13 +2,13 @@ import type { Part, PartKind, Pin, Rotation, Schematic, Wire } from './schematic
 
 export const GRID = 32;
 export const PART_NAMES: Record<PartKind, string> = {
-  R: 'Resistor', C: 'Capacitor', L: 'Inductor', V: 'DC source', PULSE: 'Pulse source', GND: 'Ground',
+  R: 'Resistor', C: 'Capacitor', L: 'Inductor', V: 'DC source', PULSE: 'Pulse source', SIN: 'Sine source', GND: 'Ground',
 };
 export const STANDARD_VALUES: Record<PartKind, number[]> = {
   R: [10, 22, 47, 100, 220, 470, 1000, 2200, 4700, 10000, 22000, 47000, 100000, 1000000],
   C: [1e-12, 10e-12, 100e-12, 1e-9, 10e-9, 100e-9, 1e-6, 2.2e-6, 4.7e-6, 10e-6, 22e-6, 47e-6, 100e-6, 1000e-6],
   L: [1e-6, 10e-6, 100e-6, 1e-3, 10e-3, 100e-3, 1],
-  V: [1.5, 3.3, 5, 9, 12, 24], PULSE: [1.5, 3.3, 5, 9, 12, 24], GND: [0],
+  V: [1.5, 3.3, 5, 9, 12, 24], PULSE: [1.5, 3.3, 5, 9, 12, 24], SIN: [1, 2, 3.3, 5, 10, 12], GND: [0],
 };
 
 export function engineering(value: number, unit = ''): string {
@@ -19,7 +19,7 @@ export function engineering(value: number, unit = ''): string {
 }
 
 export function partValue(part: Part): string {
-  const units: Record<PartKind, string> = { R: 'Ω', C: 'F', L: 'H', V: 'V', PULSE: 'V pulse', GND: 'V reference' };
+  const units: Record<PartKind, string> = { R: 'Ω', C: 'F', L: 'H', V: 'V', PULSE: 'V pulse', SIN: 'V peak sine', GND: 'V reference' };
   return engineering(part.value, units[part.kind]);
 }
 
@@ -57,12 +57,13 @@ export function addWire(schematic: Schematic, a: Pin, b: Pin): Schematic {
 
 export function makePart(kind: PartKind, parts: Part[], x: number, y: number): Part {
   if (parts.length >= 20) throw new Error('This prototype supports up to 20 parts.');
-  const prefix = kind === 'GND' ? 'G' : kind === 'PULSE' ? 'V' : kind;
+  const prefix = kind === 'GND' ? 'G' : kind === 'PULSE' || kind === 'SIN' ? 'V' : kind;
   let suffix = 1;
   while (parts.some(part => part.id === prefix + suffix)) suffix++;
-  const defaults: Record<PartKind, number> = { R: 1000, C: 10e-6, L: 10e-3, V: 5, PULSE: 5, GND: 0 };
+  const defaults: Record<PartKind, number> = { R: 1000, C: 10e-6, L: 10e-3, V: 5, PULSE: 5, SIN: 5, GND: 0 };
   return { id: prefix + suffix, kind, value: defaults[kind], x, y, rotation: kind === 'GND' ? 0 : 90,
-    ...(kind === 'PULSE' ? { pulse: { period: .1, width: .05, delay: .001 } } : {}) };
+    ...(kind === 'PULSE' ? { pulse: { period: .1, width: .05, delay: .001 } } : {}),
+    ...(kind === 'SIN' ? { sine: { offset: 0, frequency: 10, phase: 0 } } : {}) };
 }
 
 export function rotated(rotation: Rotation): Rotation { return ((rotation + 90) % 360) as Rotation; }

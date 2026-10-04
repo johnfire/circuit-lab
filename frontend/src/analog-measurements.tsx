@@ -16,7 +16,7 @@ export function AnalogMeasurements({ schematic, report, frame }: { schematic: Sc
         return <tr key={part.id}><th scope="row">{part.id}</th><td>{voltage(part.id, 0)}</td><td>{voltage(part.id, 1)}</td>
           <td>{current === undefined ? '—' : engineering(current, 'A')}</td></tr>;
       })}</tbody></table></div>
-    <p className="muted">A negative source current means it is supplying energy in this terminal orientation.</p>
+    <p className="muted">Conventional current is signed terminal 0 → 1. Energy delivery depends on ΔV × I, not the current sign alone.</p>
     <button onClick={() => downloadJson('circuit-lab-analog-report.json', report)}>Export simulation</button>
     <ul className="model-warnings">{report.warnings.map(warning => <li key={warning}>{warning}</li>)}</ul>
     <p className="trace-id">Trace: {report.correlation_id}</p>

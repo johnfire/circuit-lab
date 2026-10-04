@@ -50,6 +50,8 @@ def launch_schematic(request: SchematicRequest, correlation_id: str) -> Schemati
         _, expected_nodes, expected_names = compile_schematic(request)
         if response.pin_nodes != expected_nodes or [trace.name for trace in response.traces] != expected_names:
             raise SimulationFailure("Analog worker returned signals for a different circuit")
+        if any(trace.unit != ("V" if trace.name.startswith("V:") else "A") for trace in response.traces):
+            raise SimulationFailure("Analog worker returned mismatched signal units")
         if len(response.times) != math.floor(request.timing.stop / request.timing.step + 1.5):
             raise SimulationFailure("Analog worker returned an unexpected time window")
         if not math.isclose(response.times[1], request.timing.step, rel_tol=1e-6, abs_tol=1e-14):

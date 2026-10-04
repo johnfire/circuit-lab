@@ -30,27 +30,40 @@ class PulseSettings(StrictModel):
         return self
 
 
+class SineSettings(StrictModel):
+    """Transient sine settings, independent of small-signal AC excitation."""
+
+    offset: Finite = Field(ge=-100, le=100)
+    frequency: Finite = Field(ge=.001, le=1e6)
+    phase: Finite = Field(ge=-360, le=360)
+
+
 class Part(StrictModel):
     """One ideal analog component, with visual placement independent of wiring."""
 
     id: Identifier
-    kind: Literal["R", "C", "L", "V", "PULSE", "GND"]
+    kind: Literal["R", "C", "L", "V", "PULSE", "SIN", "GND"]
     value: Finite
     x: int = Field(strict=True, ge=2, le=38)
     y: int = Field(strict=True, ge=2, le=22)
     rotation: Literal[0, 90, 180, 270] = 0
     pulse: PulseSettings | None = None
+    sine: SineSettings | None = None
 
     @model_validator(mode="after")
     def validate_value(self) -> Self:
         """Bound physical values without permitting expressions or SPICE text."""
         limits = {"R": (1, 1e8), "C": (1e-12, 1), "L": (1e-9, 100),
-                  "V": (-100, 100), "PULSE": (-100, 100), "GND": (0, 0)}
+                  "V": (-100, 100), "PULSE": (-100, 100), "SIN": (0, 100), "GND": (0, 0)}
         minimum, maximum = limits[self.kind]
         if not minimum <= self.value <= maximum:
             raise ValueError(f"{self.kind} value must be between {minimum:g} and {maximum:g}")
         if (self.kind == "PULSE") != (self.pulse is not None):
             raise ValueError("Pulse settings are required only for pulse sources")
+        if (self.kind == "SIN") != (self.sine is not None):
+            raise ValueError("Sine settings are required only for sine sources")
+        if self.sine and abs(self.sine.offset) + self.value > 100:
+            raise ValueError("Sine offset plus peak amplitude must stay within ±100 V")
         return self
 
 
@@ -95,6 +108,8 @@ class SchematicRequest(StrictModel):
         for part in self.parts:
             if part.pulse and self.timing.stop / part.pulse.period > 1000:
                 raise ValueError("At most 1000 pulse periods may be simulated")
+            if part.sine and self.timing.stop * part.sine.frequency > 1000:
+                raise ValueError("At most 1000 sine periods may be simulated")
         return self
 
 
@@ -111,6 +126,7 @@ class SchematicResponse(StrictModel):
 
     correlation_id: str
     status: Literal["completed"] = "completed"
+    analysis: Literal["transient"] = "transient"
     times: list[Finite] = Field(min_length=11, max_length=2002)
     traces: list[Trace] = Field(min_length=1, max_length=60)
     pin_nodes: dict[str, str]

@@ -1,10 +1,11 @@
-# Circuit observation and AC — proposed design
+# Circuit observation and AC — approved design and implementation
 
-Status: design only, awaiting interface approval. No application implementation or deployment.
+Status: Chris approved the grid-first design and implementation on 2026-10-04.
+Built and verified locally on main; no push or deployment of this feature yet.
 Date: 2026-10-04. Chris explicitly wants both time-domain AC and frequency sweeps
 in the first release. The workbench's red, pale-yellow and light-brown palette stays.
 
-## 1. What exists and what is missing
+## 1. Starting point before this implementation
 
 The deployed analog builder already exports synchronized node-voltage and signed
 component-current traces. `schematic-part.tsx` renders those values after a run;
@@ -146,8 +147,48 @@ Raspberry Pi GPIO protection assessment or manufacturer-qualified hardware desig
 Recommended: Grid first by default, optional scope beside grid on wide screens;
 signed numeric readings and arrows always available; moving markers and voltage shading
 optional. Confirm the preferred layout and whether moving markers should be on by default.
-No application code should be built or pushed until Chris approves this design.
+Chris approved implementation. Pushing still requires separate explicit authorization.
 
 Technical reference: [ngspice tutorial: transient and small-signal AC analysis](https://ngspice.sourceforge.io/ngspice-tutorial.html).
 The review preview uses an explicitly labeled analytic ideal RC steady-state illustration,
 not a substitute for real ngspice results or proof that the proposed feature is implemented.
+
+## 9. Local implementation and verification — 2026-10-04
+
+- Grid-first Observe mode, compact sticky observation toolbar, hidden construction
+  controls with a Build toggle, fit bounds and deterministic net-label avoidance of
+  symbols, other annotations and orthogonal wires. The synchronized scope is below
+  the grid by default; optional beside-grid layout falls back to stacking on mobile.
+- Signed conventional-current arrows for measured component branches, optional
+  bounded-speed markers, reduced-motion suppression, selected component ΔV and
+  optional fixed full-report signed-voltage shading. No invented ideal-wire currents.
+- Numeric sine sources, resistive/RC/RL examples, separate V/A scope panes, shared
+  time seeking, cycle stepping/windows, full-sample time-weighted mean/total RMS/
+  AC-only RMS/peak-to-peak and explicit undersampling guidance.
+- Time phase requires at least three cycles, at least 40 samples/cycle, a low-residual
+  fit and stable consecutive cycles at one sine frequency. Reference selection is
+  explicit; unsuitable or startup windows show unavailable. 100 samples/cycle remains
+  a recommended starting point, not an accuracy guarantee. ngspice's internal maximum
+  step is one tenth of the uniform output interval to reduce transient phase error.
+- Genuine small-signal AC endpoint and allow-listed worker operation, finite complex
+  vectors, excitation/DC metadata, amplitude/gain/dB/phase plots, frequency cursor,
+  zero-amplitude phase gaps, wrapped grid readings, optional plot unwrapping and
+  selected-probe phasor. Log density is requested points per decade; ngspice 47 aligns
+  both endpoints. Linear and log sweeps remain bounded to 2–1000 frequency points.
+- Each relevant edit invalidates only the affected report; mode switching reuses
+  valid reports without rerunning. Version-2 circuit envelopes retain legacy imports.
+  Probes/display/sweep choices are session-only; circuit drafts remain browser-only.
+- Existing identity/origin checks, no-network/read-only/non-root worker, two shared
+  job slots, resource/time limits and correlated actor audit events remain intact.
+  New hosted AC authorization and mixed transient/AC concurrency tests are included.
+
+Final local checks: 237 Python tests (84.85% backend/harness coverage), 20 frontend
+unit tests and 16 browser tests passed. Lint, strict typing, production build and both
+dependency audits passed with zero known vulnerabilities. Existing tests remain
+unchanged; erroneous new fixture/locator/theory assertions were corrected, never
+skipped or weakened. Python emits one upstream TestClient deprecation warning.
+Real local container checks pass all nine recipes, analog transient and AC jobs,
+proxy/executable-input rejection and outbound-network blocking.
+
+This is ideal R/C/L simulation, not hardware rating or Raspberry Pi GPIO validation.
+The new feature is local only; CI and public deployment await an authorized push.

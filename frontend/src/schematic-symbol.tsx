@@ -7,8 +7,9 @@ export function SchematicSymbol({ kind }: { kind: PartKind }) {
     {kind === 'R' && <path d="M-32 0 L-26 -12 L-16 12 L-6 -12 L4 12 L14 -12 L24 12 L32 0" />}
     {kind === 'C' && <path d="M-32 0 H-7 M-7 -24 V24 M7 -24 V24 M7 0 H32" />}
     {kind === 'L' && <path d="M-32 0 C-32 -24 -16 -24 -16 0 C-16 -24 0 -24 0 0 C0 -24 16 -24 16 0 C16 -24 32 -24 32 0" />}
-    {(kind === 'V' || kind === 'PULSE') && <><circle r="32" />
+    {(kind === 'V' || kind === 'PULSE' || kind === 'SIN') && <><circle r="32" />
       {kind === 'V' ? <path d="M-22 0 H-10 M-16 -6 V6 M10 0 H22" />
-        : <path d="M-23 10 H-12 V-10 H8 V10 H23" />}</>}
+        : kind === 'SIN' ? <path d="M-23 0 C-16 -23 -7 -23 0 0 C7 23 16 23 23 0" />
+          : <path d="M-23 10 H-12 V-10 H8 V10 H23" />}</>}
   </g>;
 }

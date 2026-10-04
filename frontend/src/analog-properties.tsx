@@ -1,5 +1,5 @@
 import { PART_NAMES, partValue, rotated, snapped, STANDARD_VALUES } from './schematic-model';
-import type { Part, Pulse } from './schematic-types';
+import type { Part, Pulse, Sine } from './schematic-types';
 import type { EditorState } from './use-schematic-editor';
 
 function ValueControls({ part, onUpdate }: { part: Part; onUpdate: (part: Part) => void }) {
@@ -9,7 +9,17 @@ function ValueControls({ part, onUpdate }: { part: Part; onUpdate: (part: Part) 
     {!standards.includes(part.value) && <option value={part.value}>{partValue(part)} (custom)</option>}
     {standards.map(value => <option key={value} value={value}>{partValue({ ...part, value })}</option>)}</select></label>
     <label>Custom value (SI units)<input type="number" step="any" value={part.value} onChange={event => onUpdate({ ...part, value: Number(event.target.value) })} /></label>
-    {part.pulse && <PulseControls part={part} onUpdate={onUpdate} />}</>;
+    {part.pulse && <PulseControls part={part} onUpdate={onUpdate} />}
+    {part.sine && <SineControls part={part} onUpdate={onUpdate} />}</>;
+}
+
+function SineControls({ part, onUpdate }: { part: Part; onUpdate: (part: Part) => void }) {
+  const sine = part.sine;
+  if (!sine) return null;
+  const fields: [keyof Sine, string][] = [['offset', 'DC offset (V)'], ['frequency', 'Sine frequency (Hz)'], ['phase', 'Sine phase (degrees)']];
+  return <><p className="muted">Source value is peak amplitude, not RMS. AC sweep excitation is set separately.</p>
+    {fields.map(([key, label]) => <label key={key}>{label}<input type="number" step="any" value={sine[key]}
+      onChange={event => onUpdate({ ...part, sine: { ...sine, [key]: Number(event.target.value) } })} /></label>)}</>;
 }
 
 function PulseControls({ part, onUpdate }: { part: Part; onUpdate: (part: Part) => void }) {

@@ -1,0 +1,49 @@
+.observation-layout { grid-template-columns: minmax(0, 1fr); }
+.analog-sidebar[hidden] { display: none; }
+.observation-toolbar { position: sticky; top: 0; z-index: 4; box-shadow: 0 4px 18px #0005; }
+.observation-mode-controls, .scope-options, .probe-panel, .cycle-controls { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; }
+.observation-mode-controls label, .scope-options label, .probe-panel label, .cycle-controls label { margin: 0; }
+.observation-mode-controls { margin-bottom: 12px; }
+.observation-mode-controls .run-button { width: auto; margin: 0; min-width: 130px; }
+.observation-toolbar .playback-controls label { margin-top: 0; flex: 0; min-width: 220px; }
+.observation-toolbar .playback-controls .checkbox-label { min-width: auto; }
+.observation-toolbar { padding: 12px 16px; }
+.observation-toolbar output { font-family: ui-monospace, monospace; color: var(--color-heading); }
+.observation-split { display: grid; gap: 18px; min-width: 0; }
+.observing-grid.zoom-fit { min-width: 620px; }
+.scope-beside { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: start; }
+.scope-beside .observing-grid.zoom-fit { min-width: 620px; }
+.scope-beside .observation-scope { padding: 16px; }
+.observation-plot { margin-top: 22px; min-width: 0; }
+.observation-plot h3 { font-size: 13px; color: var(--color-heading); margin: 0 0 10px; }
+.observation-plot svg { display: block; width: 100%; min-height: 110px; cursor: crosshair; touch-action: pan-y; }
+.observation-plot svg text, .phasor-panel svg text { fill: var(--color-text); font-size: 10px; font-family: ui-monospace, monospace; }
+.scope-gridline { fill: none; stroke: var(--color-control-border); stroke-width: 1; }
+.scope-trace { fill: none; stroke-width: 2; }
+.scope-cursor { fill: none; stroke: var(--color-heading); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.scope-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; }
+.scope-legend span { padding-left: 8px; border-left: 3px solid; overflow-wrap: anywhere; }
+.reading-leader { fill: none; stroke: var(--color-text); stroke-width: 1; stroke-dasharray: 3 3; }
+.reading-background { fill: var(--color-surface); stroke: var(--color-control-border); stroke-width: 1; }
+.observation-node-labels { pointer-events: none; }
+.branch-direction { pointer-events: none; fill: none; stroke: #9ecde6; stroke-width: 2; }
+.flow-marker { fill: #9ecde6; stroke: none; animation: explanatory-flow 1s linear infinite; }
+@keyframes explanatory-flow { from { transform: translateX(-32px); } to { transform: translateX(32px); } }
+.observation-display-controls .checkbox-label, .scope-options .checkbox-label { display: flex; align-items: center; gap: 8px; }
+.observation-display-controls input[type=checkbox], .scope-options input[type=checkbox] { width: auto; }
+.observation-display-controls { margin-top: 22px; }
+.probe-panel > p { flex-basis: 100%; margin: 0; font-size: 12px; color: var(--color-muted); }
+.probe-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.probe-chips button { font-size: 11px; }
+.observation-statistics { margin-top: 22px; }
+.observation-statistics table td, .observation-statistics table th { padding: 10px 12px; }
+.phasor-panel { margin-top: 20px; }
+.phasor-panel svg { width: 240px; max-width: 100%; display: block; }
+.phasor-reference { fill: none; stroke: #9ecde6; stroke-width: 2; }
+.cycle-controls p { flex-basis: 100%; }
+.editor-file-controls > label:not(.file-button) { font-size: 12px; display: flex; align-items: center; gap: 8px; }
+.editor-file-controls select { background: var(--color-surface); color: var(--color-heading); border: 1px solid var(--color-control-border); border-radius: 4px; padding: 10px; }
+.voltage-legend { color: var(--color-heading); font-size: 12px; }
+@media (max-width: 1150px) { .scope-beside { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .observation-toolbar { position: static; }.observing-grid.zoom-fit { min-width: 620px; }.observation-mode-controls { gap: 8px; } }
+@media (prefers-reduced-motion: reduce) { .flow-marker { animation: none; display: none; } }

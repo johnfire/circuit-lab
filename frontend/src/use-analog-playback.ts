@@ -4,7 +4,8 @@ import type { AnalogReport } from './schematic-types';
 
 export function useAnalogPlayback(report: AnalogReport) {
   const last = report.times.at(-1) ?? 0;
-  const [cursor, setCursor] = useState(0);
+  const [cursor, setCursor] = useState(() => report.times.find((_, index) =>
+    report.traces.some(trace => Math.abs(trace.values[index]) > 1e-9)) ?? 0);
   const [playing, setPlaying] = useState(false);
   const [loop, setLoop] = useState(false);
   const [rate, setRate] = useState(.01);

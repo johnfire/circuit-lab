@@ -10,6 +10,8 @@ from typing import cast
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from backend.schematic_ac_gateway import launch_ac
+from backend.schematic_ac_models import ACJob
 from backend.schematic_models import SchematicJob
 from backend.simulation_engine import SimulationFailure
 from backend.simulation_models import SimulationRequest
@@ -39,6 +41,10 @@ class SimulationHandler(BaseRequestHandler):
             payload = receive_frame(connection, MAX_REQUEST_BYTES)
             if payload == {"operation": "health"}:
                 send_frame(connection, {"status": "ok"})
+                return
+            if payload.get("operation") == "schematic_ac":
+                ac_job = ACJob.model_validate(payload)
+                send_frame(connection, launch_ac(ac_job.request, ac_job.correlation_id).model_dump())
                 return
             if payload.get("operation") == "schematic":
                 schematic = SchematicJob.model_validate(payload)

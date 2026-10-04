@@ -1,5 +1,6 @@
 import { downloadJson } from './schematic-files';
 import { starterCircuit } from './schematic-model';
+import { sineExample } from './analog-examples';
 import type { EditorState } from './use-schematic-editor';
 
 export function AnalogFileControls({ editor }: { editor: EditorState }) {
@@ -17,7 +18,13 @@ export function AnalogFileControls({ editor }: { editor: EditorState }) {
   };
   return <div className="editor-file-controls"><button disabled={editor.running} onClick={() => replace(true)}>New blank</button>
     <button disabled={editor.running} onClick={() => replace(false)}>RC example</button>
-    <button onClick={() => downloadJson('circuit-lab-schematic.json', editor.schematic)}>Export circuit</button>
+    <label>AC example<select aria-label="AC example" disabled={editor.running} defaultValue="" onChange={event => {
+      if (event.target.value && window.confirm('Replace the current draft with an AC example? Export first to keep it.')) {
+        editor.commit(sineExample(event.target.value as 'R' | 'C' | 'L'), 'circuit.ac-example'); editor.setSelected('R1');
+      }
+      event.target.value = '';
+    }}><option value="">Choose…</option><option value="R">Resistive AC</option><option value="C">RC low-pass</option><option value="L">RL phase</option></select></label>
+    <button onClick={() => downloadJson('circuit-lab-schematic.json', { version: 2, circuit: editor.schematic })}>Export circuit</button>
     <label className="file-button">Import circuit<input type="file" accept=".json,application/json" disabled={editor.running}
       onChange={event => { void importFile(event.target.files?.[0]); event.target.value = ''; }} /></label>
     <button onClick={() => downloadJson('circuit-lab-session-history.json', editor.history.current)}>Export edit history</button>

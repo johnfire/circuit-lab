@@ -22,7 +22,11 @@ def component_lines(part: Part, index: int, nodes: dict[str, str], step: float) 
         edge = min(step / 10, pulse.width / 10, (pulse.period - pulse.width) / 10)
         source = (f"PULSE(0 {source} {pulse.delay:.12g} {edge:.12g} {edge:.12g} "
                   f"{pulse.width:.12g} {pulse.period:.12g})")
-    prefix = "V" if part.kind == "PULSE" else part.kind
+    if part.sine:
+        sine = part.sine
+        source = (f"DC {sine.offset:.12g} SIN({sine.offset:.12g} {part.value:.12g} "
+                  f"{sine.frequency:.12g} 0 0 {sine.phase:.12g})")
+    prefix = "V" if part.kind in {"PULSE", "SIN"} else part.kind
     return [f"Vprobe{index} {first} {internal} 0", f"{prefix}{index} {internal} {second} {source}"]
 
 
@@ -38,7 +42,7 @@ def compile_schematic(submitted: SchematicRequest) -> tuple[str, dict[str, str],
     for index, part in enumerate(submitted.parts):
         lines.extend(component_lines(part, index, nodes, timing.step))
     lines.extend([".control", "set wr_singlescale", "set numdgt=12",
-                  f"tran {timing.step:.12g} {timing.stop:.12g} 0 {timing.step:.12g}",
+                  f"tran {timing.step:.12g} {timing.stop:.12g} 0 {timing.step / 10:.12g}",
                   f"linearize {' '.join(vectors)}", f"wrdata frames.csv {' '.join(vectors)}",
                   "quit", ".endc", ".end"])
     return "\n".join(lines) + "\n", nodes, names
