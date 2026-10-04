@@ -1,0 +1,11 @@
+# Connection recipe, NOT installed or authenticated by this commit.
+[mcp_servers.circuit_lab]
+url = "https://circuit-lab.christopherrehm.de/mcp"
+oauth_resource = "https://circuit-lab.christopherrehm.de/mcp"
+scopes = ["circuit:read", "circuit:edit", "circuit:simulate", "circuit:view"]
+required = false
+
+[mcp_servers.circuit_lab.oauth]
+client_id = "circuit-lab-codex"
+callback_url = "http://127.0.0.1:8124/callback"
+callback_port = 8124

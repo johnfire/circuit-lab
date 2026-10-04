@@ -30,6 +30,7 @@ class Principal:
     grant: str | None = None
     client: str | None = None
     scopes: frozenset[str] = frozenset()
+    issued_at: int | None = None
 
 
 class EditorCircuit(StrictModel):

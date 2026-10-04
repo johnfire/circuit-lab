@@ -33,6 +33,8 @@ def reject_unsafe_request(request: Request) -> JSONResponse | None:
     configured = public_url()
     request.state.actor = "user:local"
     origin = request.headers.get("origin")
+    if request.url.path in {"/mcp", "/.well-known/oauth-protected-resource/mcp"}:
+        return None  # The SDK independently enforces bearer identity, Host, Origin and protocol body size.
     if configured:
         if request.url.path == "/api/health" and request.url.hostname in LOCAL_HOSTS:
             return None

@@ -32,5 +32,13 @@ export function useAnalogPlayback(report: AnalogReport) {
   const window = (next: [number, number]) => {
     if (next[0] >= 0 && next[1] <= last && next[1] > next[0]) { setBounds(next); setPlaying(false); setCursor(next[0]); }
   };
-  return { index, cursor, playing: playing && !atEnd, loop, rate, bounds, toggle, seek, step, window, setLoop, setRate };
+  return { index, cursor, playing: playing && !atEnd, loop, rate, bounds, toggle, seek, step, window, setLoop, setRate,
+    seekFull: (seconds: number) => seekFullAxis(seconds, last, setBounds, setPlaying, setCursor) };
+}
+
+function seekFullAxis(seconds: number, last: number, setBounds: (bounds: [number, number]) => void,
+  setPlaying: (playing: boolean) => void, setCursor: (cursor: number) => void) {
+  setBounds([0, last]);
+  setPlaying(false);
+  setCursor(Math.max(0, Math.min(last, seconds)));
 }

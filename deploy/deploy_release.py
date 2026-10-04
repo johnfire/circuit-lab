@@ -53,8 +53,12 @@ def compose(release: Path, *arguments: str) -> None:
     registry_config.mkdir(mode=0o700, exist_ok=True)
     environment = dict(os.environ, CIRCUIT_IMAGE_TAG=release.name,
                        DOCKER_CONFIG=str(registry_config))
+    configured = dict(line.split('=', 1) for line in (ROOT / '.env').read_text().splitlines()
+                      if line and not line.startswith('#'))
+    project_overlay = release / 'compose.projects.yaml'
+    overlays = ['-f', str(project_overlay)] if configured.get('CIRCUIT_ENABLE_PROJECTS') == 'true' and project_overlay.is_file() else []
     subprocess.run(['docker', 'compose', '-p', 'circuit-lab', '--env-file',
-                    str(ROOT / '.env'), '-f', str(release / 'compose.yaml'), *arguments],
+                    str(ROOT / '.env'), '-f', str(release / 'compose.yaml'), *overlays, *arguments],
                    env=environment, check=True, timeout=600)
 
 

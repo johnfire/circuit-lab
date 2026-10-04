@@ -1,4 +1,5 @@
 import { AnalogFileControls } from './analog-file-controls';
+import { AnalogProjectControls } from './analog-project-controls';
 import { useState } from 'react';
 import { AnalogPartsPanel } from './analog-parts-panel';
 import { AnalogProperties } from './analog-properties';
@@ -20,7 +21,7 @@ function ScopedAnalogWorkbench({ scope }: { scope: string | null }) {
   const controls = { observing, setObserving };
   return <main className="analog-workbench"><div className="analog-intro"><span className="small-label">BUILD / ANALOG</span>
     <h1>Your circuit, one instant at a time.</h1><p>Place standard components. Connect their terminals. See what actually happens.</p>
-    <AnalogFileControls editor={editor} /></div>
+    <AnalogFileControls editor={editor} /></div><AnalogProjectControls editor={editor} />
     {editor.error && <div className="error-message" role="alert">{editor.error}</div>}
     <div className="run-status" role="status">{editor.running ? 'Running real ngspice in the isolated worker…'
       : editor.failedAnalysis === editor.analysis ? 'Simulation failed. No current readings are displayed; correct the reported problem and run again.'
@@ -37,7 +38,7 @@ function ScopedAnalogWorkbench({ scope }: { scope: string | null }) {
             : 'The initial RC example charges then discharges. Try an AC example to watch a sine wave, current reversal and phase relationships.'}</p>
           <p>Change R1 or C1, simulate again, and compare. Electrical edits clear old readings.</p></section></>}
       </div></div>
-    <p className="muted">Prototype: browser-only drafts and file exports. Ideal analog simulation is not a hardware safety check.</p>
+    <p className="muted">Local drafts stay in this browser. Saved circuits and AI sharing are explicit. Ideal analog simulation is not a hardware safety check.</p>
   </main>;
 }
 

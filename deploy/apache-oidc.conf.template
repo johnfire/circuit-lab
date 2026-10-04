@@ -28,6 +28,17 @@
     ProxyPassReverse /auth/ http://127.0.0.1:8104/auth/
     ProxyPass /oauth2/ http://127.0.0.1:8103/oauth2/
     ProxyPassReverse /oauth2/ http://127.0.0.1:8103/oauth2/
+    # MCP carries its own verified OAuth bearer: no browser-login redirect.
+    <Location /mcp>
+        LimitRequestBody 65536
+    </Location>
+    <Location /api/projects>
+        LimitRequestBody 16384
+    </Location>
+    ProxyPass /.well-known/oauth-protected-resource/mcp http://127.0.0.1:8102/.well-known/oauth-protected-resource/mcp
+    ProxyPassReverse /.well-known/oauth-protected-resource/mcp http://127.0.0.1:8102/.well-known/oauth-protected-resource/mcp
+    ProxyPass /mcp http://127.0.0.1:8102/mcp
+    ProxyPassReverse /mcp http://127.0.0.1:8102/mcp
     ProxyPass /workbench http://127.0.0.1:8103/workbench
     ProxyPassReverse /workbench http://127.0.0.1:8103/workbench
     ProxyPass /api/ http://127.0.0.1:8103/api/

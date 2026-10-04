@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { simulateAnalog, simulateAC } from './schematic-api';
-import type { ACReport, AnalogReport, Schematic, Sweep } from './schematic-types';
+import type { ACReport, AnalogReport, ObservationReport, Schematic, Sweep } from './schematic-types';
 
 export const DEFAULT_SWEEP: Sweep = { source: 'V1', amplitude: 1, phase: 0, start: 1, stop: 1000, spacing: 'log', points: 50 };
 
@@ -33,6 +33,11 @@ export function useAnalogAnalysis(schematic: Schematic, initialError: string) {
       audit('simulation.' + analysis + '.failed');
     } finally { setRunning(false); }
   };
-  return { report, acReport, sweep, analysis, error, running, stale, failedAnalysis, setAnalysis, setError, invalidate, run,
+  const receiveReport = (completed: ObservationReport) => {
+    if (running) return;
+    if (completed.analysis === 'ac') setACReport(completed); else setReport(completed);
+    setAnalysis(completed.analysis === 'ac' ? 'ac' : 'transient'); setStale(false); setFailedAnalysis(null);
+  };
+  return { report, acReport, sweep, analysis, error, running, stale, failedAnalysis, setAnalysis, setError, invalidate, run, receiveReport,
     updateSweep: (next: Sweep) => { setSweep(next); invalidate('ac'); } };
 }

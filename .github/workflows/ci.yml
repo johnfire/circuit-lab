@@ -31,6 +31,8 @@ jobs:
           sudo bash deploy/build_ngspice.sh /usr/local
           uv sync --frozen --all-extras
           npm ci --prefix frontend
+          cd frontend
+          npx playwright install --with-deps chromium
       - name: Python lint, strict types, and unit/integration tests
         run: |
           uv run ruff check backend harness tests deploy
@@ -52,7 +54,6 @@ jobs:
       - name: Browser, mobile, and accessibility regression tests
         working-directory: frontend
         run: |
-          npx playwright install --with-deps chromium
           npm run test:e2e
       - name: Retain browser failure diagnostics
         if: failure()
@@ -81,6 +82,14 @@ jobs:
         run: |
           docker compose -p circuit-lab-identity-ci --env-file deploy/identity-test.env -f compose.identity.yaml up -d --build --wait --wait-timeout 180
           python3 deploy/identity_checks.py
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9 # v7
+        with:
+          version: "0.12.10"
+          python-version: "3.13"
+      - name: Real MCP token and account lifecycle verification
+        run: |
+          uv sync --frozen
+          uv run python -m deploy.mcp_identity_checks
       - name: Verify worker isolation
         run: |
           worker=$(docker compose -p circuit-lab-ci ps -q worker)

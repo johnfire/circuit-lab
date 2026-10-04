@@ -1,0 +1,31 @@
+# Opt-in application storage only. Never point CIRCUIT_DATABASE_URL at Keycloak's database.
+services:
+  application-db:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    environment:
+      POSTGRES_DB: circuit_application
+      POSTGRES_USER: circuit_application
+      POSTGRES_PASSWORD: ${CIRCUIT_APPLICATION_DATABASE_PASSWORD:?Application database password required}
+    volumes: [application-db:/var/lib/postgresql/data]
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 100
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U circuit_application -d circuit_application"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    logging:
+      options: {max-size: 5m, max-file: "3"}
+  api:
+    environment:
+      CIRCUIT_DATABASE_URL: ${CIRCUIT_DATABASE_URL:?Separate application DSN required}
+      CIRCUIT_MCP_CLIENTS: ${CIRCUIT_MCP_CLIENTS:?Reviewed OAuth client IDs required}
+      CIRCUIT_MCP_INTROSPECTION_CLIENT: circuit-lab-mcp-resource
+      CIRCUIT_MCP_INTROSPECTION_SECRET: ${CIRCUIT_MCP_INTROSPECTION_SECRET:?Resource secret required}
+      CIRCUIT_IDENTITY_INTERNAL_URL: http://identity:8080/auth/realms/circuit-lab
+    depends_on:
+      application-db: {condition: service_healthy}
+volumes:
+  application-db:

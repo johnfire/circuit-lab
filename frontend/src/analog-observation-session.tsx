@@ -11,6 +11,7 @@ import { ObservationDisplayControls } from './observation-display-controls';
 import { SchematicCanvas } from './schematic-canvas';
 import { useObservationProbes } from './use-observation-probes';
 import { useAnalogPlayback } from './use-analog-playback';
+import { useAIObservationView } from './use-ai-observation-view';
 import type { DisplayControls } from './observation-display-controls';
 import type { ObservationControls } from './observation-toolbar';
 import type { EditorState } from './use-schematic-editor';
@@ -22,10 +23,11 @@ function useObservationDisplay(): DisplayControls {
 }
 
 interface SessionProps { editor: EditorState; report: ObservationReport; controls: ObservationControls }
-interface Clock { frame: number; bounds: [number, number]; onSeek: (index: number) => void; playing: boolean }
+interface Clock { frame: number; bounds: [number, number]; onSeek: (index: number) => void; onAISeek?: (index: number) => void; playing: boolean }
 
 function ObservationGridAndScope({ editor, report, controls, clock }: SessionProps & { clock: Clock }) {
   const probes = useObservationProbes(editor.schematic), display = useObservationDisplay();
+  useAIObservationView(editor, report, clock.frame, clock.onAISeek ?? clock.onSeek, probes.replace);
   const voltageLimit = useMemo(() => voltageScale(report), [report]);
   const observation = { observing: controls.observing, markers: display.markers, shading: display.shading, playing: clock.playing,
     onPin: probes.pin, onCurrent: (part: string) => probes.add({ kind: 'current', part }) };
@@ -39,7 +41,8 @@ function ObservationGridAndScope({ editor, report, controls, clock }: SessionPro
 
 function TransientSession({ editor, report, controls }: SessionProps & { report: AnalogReport }) {
   const playback = useAnalogPlayback(report);
-  const clock = { frame: playback.index, bounds: playback.bounds, onSeek: (index: number) => playback.seek(report.times[index]), playing: playback.playing };
+  const clock = { frame: playback.index, bounds: playback.bounds, onSeek: (index: number) => playback.seek(report.times[index]),
+    onAISeek: (index: number) => playback.seekFull(report.times[index]), playing: playback.playing };
   return <><ObservationToolbar editor={editor} controls={controls}><TimePlaybackControls playback={playback} report={report} /></ObservationToolbar>
     <ObservationGridAndScope editor={editor} report={report} controls={controls} clock={clock} />
     <AnalogTimeline playback={playback} report={report} /><section className="editor-card"><h2>AC cycle window</h2>

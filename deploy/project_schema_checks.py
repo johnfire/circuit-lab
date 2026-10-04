@@ -6,7 +6,7 @@ from pathlib import Path
 from uuid import uuid4
 
 POSTGRES_IMAGE = "postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24"
-MIGRATION = Path(__file__).resolve().parents[1] / "backend/migrations/001_collaboration.sql"
+MIGRATIONS = Path(__file__).resolve().parents[1] / "backend/migrations"
 
 SCHEMA_CHECKS = """
 BEGIN;
@@ -79,7 +79,7 @@ def run_command(arguments: list[str], submitted: str | None = None) -> str:
 def wait_for_database(container: str) -> None:
     """Wait briefly for only the container created by this check."""
     for _ in range(50):
-        ready = subprocess.run(["docker", "exec", container, "pg_isready", "-U", "postgres"],
+        ready = subprocess.run(["docker", "exec", container, "pg_isready", "-h", "127.0.0.1", "-U", "postgres"],
                                capture_output=True, timeout=3)
         if ready.returncode == 0:
             return
@@ -96,7 +96,7 @@ def check_schema() -> None:
     try:
         wait_for_database(container)
         psql = ["docker", "exec", "-i", container, "psql", "-U", "postgres", "-v", "ON_ERROR_STOP=1"]
-        migration = MIGRATION.read_text()
+        migration = "\n".join(path.read_text() for path in sorted(MIGRATIONS.glob("*.sql")))
         run_command(psql, migration)
         run_command(psql, migration)
         print(run_command(psql, SCHEMA_CHECKS).strip())

@@ -4,6 +4,8 @@ import pytest
 
 from backend.schematic_models import SchematicRequest
 
+pytest_plugins = ["tests.project_database_fixture"]
+
 
 @pytest.fixture
 def analog_request() -> SchematicRequest:

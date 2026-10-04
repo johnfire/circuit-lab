@@ -20,7 +20,7 @@ export function useObservationProbes(schematic: Schematic) {
     }
     if (tool === 'current') add({ kind: 'current', part: selected.part });
   };
-  return { probes, tool, first, message, pin, add, setMessage,
+  return { probes, tool, first, message, pin, add, setMessage, replace: (next: Probe[]) => setProbes(next.slice(0, 8)),
     chooseTool: (next: Probe['kind']) => { setTool(next); setFirst(null); },
     remove: (probe: Probe) => setProbes(previous => previous.filter(existing => probeKey(existing) !== probeKey(probe))) };
 }

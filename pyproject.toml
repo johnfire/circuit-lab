@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Local circuit workbench with real ngspice simulations"
 requires-python = ">=3.12"
 dependencies = [
+    "asyncpg==0.31.0",
     "fastapi>=0.115,<1",
     "mcp==2.3.0",
     "uvicorn>=0.30,<1",
@@ -29,6 +30,7 @@ line-length = 100
 select = ["E4", "E7", "E9", "F", "I"]
 
 [tool.mypy]
+mypy_path = "typings"
 python_version = "3.12"
 files = ["backend"]
 strict = true

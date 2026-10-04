@@ -29,5 +29,5 @@ export type ObservationReport = AnalogReport | ACReport;
 export type Probe = { kind: 'node'; pin: Pin } | { kind: 'current'; part: string }
   | { kind: 'differential'; first: Pin; second: Pin };
 export interface EditorAction {
-  timestamp: string; actor: 'user:browser'; action: string; correlation_id: string; outcome: 'success' | 'failure';
+  timestamp: string; actor: string; action: string; correlation_id: string; outcome: 'success' | 'failure';
 }

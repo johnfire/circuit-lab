@@ -66,3 +66,8 @@
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 @media (max-width: 850px) { .analog-layout { grid-template-columns: 1fr; }.analog-sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); }.analog-board { grid-row: 1; }.analog-workbench { padding: 24px 20px; }.workbench-modes { padding-inline: 20px; } }
 @media (max-width: 520px) { .analog-sidebar { grid-template-columns: 1fr; }.editor-card { padding: 16px; }.editor-file-controls { gap: 8px; }.editor-file-controls button, .file-button { font-size: 11px; }.grid-toolbar > span { flex-basis: 100%; }.analog-workbench { padding: 22px 16px; } }
+.collaboration-panel { margin-block: 1rem; }
+.project-actions { display: flex; align-items: end; flex-wrap: wrap; gap: .6rem; margin-block: .7rem; }
+.project-actions label { display: grid; gap: .3rem; }
+.collaboration-panel code { overflow-wrap: anywhere; }
+.collaboration-panel time { display: block; color: var(--muted); font-size: .8rem; }
