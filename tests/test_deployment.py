@@ -10,6 +10,16 @@ import pytest
 from deploy import deploy_release
 
 
+def test_ci_builds_frontend_before_real_database_browser_suite() -> None:
+    """The pytest-launched browser needs built assets on a clean runner."""
+    workflow = Path(__file__).resolve().parents[1] / '.github' / 'workflows' / 'ci.yml'
+    configuration = workflow.read_text()
+    build_step = configuration.index('- name: Frontend lint and production build')
+    python_step = configuration.index('- name: Python lint, strict types, and unit/integration tests')
+    assert build_step < python_step
+    assert 'npm run build' in configuration[build_step:python_step]
+
+
 def test_favicon_is_self_contained_brand_svg() -> None:
     icon_path = Path(__file__).resolve().parents[1] / 'frontend' / 'public' / 'favicon.svg'
     icon = ElementTree.fromstring(icon_path.read_text())

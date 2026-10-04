@@ -33,6 +33,12 @@ jobs:
           npm ci --prefix frontend
           cd frontend
           npx playwright install --with-deps chromium
+      - name: Frontend lint and production build
+        working-directory: frontend
+        run: |
+          npm run lint
+          npm run test:unit
+          npm run build
       - name: Python lint, strict types, and unit/integration tests
         run: |
           uv run ruff check backend harness tests deploy
@@ -40,12 +46,6 @@ jobs:
           uv run pytest --cov=backend --cov=harness --cov-report=term-missing --cov-fail-under=70
       - name: Collaboration migration against real PostgreSQL
         run: uv run python -m deploy.project_schema_checks
-      - name: Frontend lint and production build
-        working-directory: frontend
-        run: |
-          npm run lint
-          npm run test:unit
-          npm run build
       - name: Dependency vulnerability scans
         run: |
           uv export --quiet --frozen --no-dev --all-extras --format requirements-txt --output-file /tmp/circuit-lab-requirements.txt
