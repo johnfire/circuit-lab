@@ -2,6 +2,7 @@ import { AnalogFileControls } from './analog-file-controls';
 import { AnalogProjectControls } from './analog-project-controls';
 import { useState } from 'react';
 import { AnalogPartsPanel } from './analog-parts-panel';
+import { BlockLibraryPanel } from './block-library-panel';
 import { AnalogProperties } from './analog-properties';
 import { AnalogRunControls } from './analog-run-controls';
 import { AnalogSweepControls } from './analog-sweep-controls';
@@ -30,7 +31,7 @@ function ScopedAnalogWorkbench({ scope }: { scope: string | null }) {
           : 'Simulation complete. Paused for inspection. Zero readings at time zero may be the initial DC state; move the cursor to watch the response.'
         : editor.stale ? 'Readings stale after electrical or analysis edits. Run again; old readings are hidden.' : 'Not simulated. Run to show voltages and currents.'}</div>
     <div className={'analog-layout ' + (observing ? 'observation-layout' : '')}><aside hidden={observing} className="analog-sidebar" aria-label="Circuit building controls">
-      <AnalogPartsPanel editor={editor} /><AnalogProperties editor={editor} />
+      <AnalogPartsPanel editor={editor} /><BlockLibraryPanel editor={editor} /><AnalogProperties editor={editor} />
       {editor.analysis === 'ac' ? <AnalogSweepControls editor={editor} /> : <AnalogRunControls editor={editor} />}<AnalogWiresPanel editor={editor} /><BoardPinout schematic={editor.schematic} /></aside>
       <div className="analog-board">{report ? <AnalogObservationSession key={report.correlation_id} editor={editor} report={report} controls={controls} />
         : <><ObservationToolbar editor={editor} controls={controls} /><SchematicCanvas editor={editor} report={null} frame={0} /><section className="editor-card ready-note">

@@ -1,0 +1,166 @@
+{
+  "id": "pi_npn_led_switch",
+  "name": "NPN switch for a brighter LED",
+  "category": "switching",
+  "description": "Pi GPIO17 switches a 5 V, 15 mA LED through a 2N3904, so the pin only supplies ~0.3 mA.",
+  "notes": "Base resistor 10 kΩ keeps pin current tiny; the 200 Ω collector resistor sets LED current.",
+  "expectations": [
+    {
+      "signal": "I:D1",
+      "statistic": "final",
+      "value": 0.0145,
+      "tolerance": 0.002,
+      "meaning": "LED current about 14.5 mA"
+    },
+    {
+      "signal": "I:P1",
+      "statistic": "final",
+      "value": -0.00025,
+      "tolerance": 0.0001,
+      "meaning": "the Pi pin sources only about 0.25 mA"
+    }
+  ],
+  "circuit": {
+    "parts": [
+      {
+        "id": "P1",
+        "kind": "PIN",
+        "value": 0,
+        "x": 4,
+        "y": 10,
+        "rotation": 0,
+        "board_pin": {
+          "board": "raspberry_pi_4",
+          "pin": "11",
+          "mode": "output_high"
+        }
+      },
+      {
+        "id": "RB",
+        "kind": "R",
+        "value": 10000,
+        "x": 9,
+        "y": 10,
+        "rotation": 0
+      },
+      {
+        "id": "Q1",
+        "kind": "NPN",
+        "value": 0,
+        "x": 15,
+        "y": 10,
+        "rotation": 0,
+        "device": "2n3904"
+      },
+      {
+        "id": "RC",
+        "kind": "R",
+        "value": 200,
+        "x": 16,
+        "y": 4,
+        "rotation": 90
+      },
+      {
+        "id": "D1",
+        "kind": "D",
+        "value": 0,
+        "x": 21,
+        "y": 6,
+        "rotation": 90,
+        "device": "led_red_5mm"
+      },
+      {
+        "id": "VS",
+        "kind": "V",
+        "value": 5,
+        "x": 26,
+        "y": 8,
+        "rotation": 90
+      },
+      {
+        "id": "G1",
+        "kind": "GND",
+        "value": 0,
+        "x": 16,
+        "y": 16,
+        "rotation": 0
+      }
+    ],
+    "wires": [
+      {
+        "a": {
+          "part": "P1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "RB",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "RB",
+          "terminal": 1
+        },
+        "b": {
+          "part": "Q1",
+          "terminal": 1
+        }
+      },
+      {
+        "a": {
+          "part": "Q1",
+          "terminal": 2
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "Q1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "RC",
+          "terminal": 1
+        }
+      },
+      {
+        "a": {
+          "part": "RC",
+          "terminal": 0
+        },
+        "b": {
+          "part": "D1",
+          "terminal": 1
+        }
+      },
+      {
+        "a": {
+          "part": "D1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "VS",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "VS",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      }
+    ],
+    "timing": {
+      "stop": 0.001,
+      "step": 1e-05
+    }
+  }
+}

@@ -116,3 +116,18 @@ test('placing a board pin lets you choose board, header pin and mode', async ({ 
   await page.getByLabel(/^Header pin/).selectOption('1');
   expect(await page.getByLabel(/^Mode/).locator('option').allTextContents()).toEqual(['Power supply']);
 });
+
+test('circuit library: insert a block beside the circuit, or open one and simulate it', async ({ page }) => {
+  await page.goto('/?mode=build');
+  await page.getByText(/^Circuit library/).click();
+  await page.getByRole('button', { name: 'Insert LED on a Pi GPIO pin', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Select P1 GPIO17', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Select R1 1 kΩ', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Select R2 330 Ω', exact: true })).toBeVisible();
+  page.once('dialog', dialog => { void dialog.accept(); });
+  await page.getByRole('button', { name: 'Open Relay or solenoid driver', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Select Q1 IRLZ44N', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Simulate circuit' }).click();
+  await expect(page.getByRole('region', { name: /Part ratings/ })).toContainText('All 9 within limits', { timeout: 15000 });
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});

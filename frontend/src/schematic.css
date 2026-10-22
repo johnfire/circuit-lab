@@ -85,3 +85,9 @@
 .pin-ground { opacity: .7; }
 .pin-special, .pin-input_only { border-style: dashed; }
 .pin-used { background: var(--color-raised); outline: 2px solid var(--color-accent); }
+
+.block-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 10px; }
+.block-entry { padding: 10px; border: 1px solid var(--color-border); border-radius: 6px; }
+.block-entry h3, .block-category { margin: 0 0 6px; font-size: 13px; color: var(--color-heading); }
+.block-category { margin-top: 14px; }
+.block-entry p { font-size: 12px; margin: 0 0 6px; }

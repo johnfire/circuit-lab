@@ -1,0 +1,227 @@
+{
+  "id": "pi_relay_driver",
+  "name": "Relay or solenoid driver",
+  "category": "switching",
+  "description": "Pi GPIO17 switches a 12 V coil (400 Ω, 100 mH) through a logic-level IRLZ44N, with a 1N5819 flyback diode, 100 Ω gate resistor and 100 kΩ pull-down.",
+  "notes": "Delete the flyback diode and simulate to see the drain spike fail the MOSFET's rating.",
+  "expectations": [
+    {
+      "signal": "I:LC",
+      "statistic": "max",
+      "value": 0.03,
+      "tolerance": 0.002,
+      "meaning": "coil current reaches 12 V / 400 Ω = 30 mA"
+    },
+    {
+      "signal": "V:Q1:0",
+      "statistic": "max",
+      "value": 12.3,
+      "tolerance": 0.4,
+      "meaning": "the flyback diode clamps the drain near 12 V"
+    }
+  ],
+  "circuit": {
+    "parts": [
+      {
+        "id": "P1",
+        "kind": "PIN",
+        "value": 0,
+        "x": 4,
+        "y": 12,
+        "rotation": 0,
+        "board_pin": {
+          "board": "raspberry_pi_4",
+          "pin": "11",
+          "mode": "pulse"
+        },
+        "pulse": {
+          "period": 0.02,
+          "width": 0.01,
+          "delay": 0.001
+        }
+      },
+      {
+        "id": "RG",
+        "kind": "R",
+        "value": 100,
+        "x": 9,
+        "y": 12,
+        "rotation": 0
+      },
+      {
+        "id": "RPD",
+        "kind": "R",
+        "value": 100000,
+        "x": 12,
+        "y": 16,
+        "rotation": 90
+      },
+      {
+        "id": "Q1",
+        "kind": "NMOS",
+        "value": 0,
+        "x": 16,
+        "y": 12,
+        "rotation": 0,
+        "device": "irlz44n"
+      },
+      {
+        "id": "RC",
+        "kind": "R",
+        "value": 400,
+        "x": 17,
+        "y": 4,
+        "rotation": 90
+      },
+      {
+        "id": "LC",
+        "kind": "L",
+        "value": 0.1,
+        "x": 17,
+        "y": 8,
+        "rotation": 90
+      },
+      {
+        "id": "D1",
+        "kind": "D",
+        "value": 0,
+        "x": 22,
+        "y": 6,
+        "rotation": 270,
+        "device": "1n5819"
+      },
+      {
+        "id": "VS",
+        "kind": "V",
+        "value": 12,
+        "x": 27,
+        "y": 8,
+        "rotation": 90
+      },
+      {
+        "id": "G1",
+        "kind": "GND",
+        "value": 0,
+        "x": 16,
+        "y": 19,
+        "rotation": 0
+      }
+    ],
+    "wires": [
+      {
+        "a": {
+          "part": "P1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "RG",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "RG",
+          "terminal": 1
+        },
+        "b": {
+          "part": "Q1",
+          "terminal": 1
+        }
+      },
+      {
+        "a": {
+          "part": "RPD",
+          "terminal": 0
+        },
+        "b": {
+          "part": "Q1",
+          "terminal": 1
+        }
+      },
+      {
+        "a": {
+          "part": "RPD",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "Q1",
+          "terminal": 2
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "VS",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "VS",
+          "terminal": 0
+        },
+        "b": {
+          "part": "RC",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "RC",
+          "terminal": 1
+        },
+        "b": {
+          "part": "LC",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "LC",
+          "terminal": 1
+        },
+        "b": {
+          "part": "Q1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "D1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "Q1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "D1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "VS",
+          "terminal": 0
+        }
+      }
+    ],
+    "timing": {
+      "stop": 0.04,
+      "step": 2e-05
+    }
+  }
+}

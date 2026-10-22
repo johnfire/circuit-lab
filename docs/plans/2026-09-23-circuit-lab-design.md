@@ -185,7 +185,12 @@ real part must meet.
   ESP32-DevKitC) with header pinouts, a "Board pin" part with pin protection checks, a pinout
   view, and MCP `list_boards` / `get_board`. Switching regulators and firmware simulation are
   out of scope for now.
-- ⬜ Human review of draft parts and boards against datasheets → `verified`. ← **next for Chris**
+- ✅ **Circuit library** (2026-10-22): 10 curated blocks with CI-checked expectations; insert/open in
+  the browser; MCP `list_circuit_blocks`, `get_circuit_block`, `insert_block`. Personal saved circuits
+  use the existing project storage, which goes live with the backup gate.
+- ⬜ Encrypted off-host backups → switch on saved projects and MCP. ← **needs Chris: destination**
+- ⬜ KiCad export (netlist + BOM with footprints and LCSC numbers) as the path to ordering PCBs.
+- ⬜ Human review of draft parts and boards against datasheets → `verified`.
 - ⬜ Benchmark 1 (GPIO → MOSFET → relay) simulates correctly in tests; it still needs an AI
   client over MCP to design it end to end once MCP is switched on. Benchmark 2's op-amp option
   needs subcircuit support; its divider + Zener option works today.

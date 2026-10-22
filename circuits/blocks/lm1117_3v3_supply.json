@@ -1,0 +1,165 @@
+{
+  "id": "lm1117_3v3_supply",
+  "name": "5 V to 3.3 V supply (LM1117)",
+  "category": "power",
+  "description": "An LM1117-3.3 low-dropout regulator with 10 µF input and output capacitors, loaded with 100 mA.",
+  "notes": "Dissipation is (5 − 3.3) V × load current; at 100 mA that's 0.17 W, well within its SOT-223 limit.",
+  "expectations": [
+    {
+      "signal": "V:U1:0",
+      "statistic": "final",
+      "value": 3.3,
+      "tolerance": 0.01,
+      "meaning": "regulated 3.3 V"
+    }
+  ],
+  "circuit": {
+    "parts": [
+      {
+        "id": "VIN",
+        "kind": "V",
+        "value": 5,
+        "x": 4,
+        "y": 8,
+        "rotation": 90
+      },
+      {
+        "id": "C1",
+        "kind": "C",
+        "value": 1e-05,
+        "x": 9,
+        "y": 11,
+        "rotation": 90
+      },
+      {
+        "id": "U1",
+        "kind": "REG",
+        "value": 0,
+        "x": 14,
+        "y": 8,
+        "rotation": 0,
+        "device": "lm1117_3v3"
+      },
+      {
+        "id": "C2",
+        "kind": "C",
+        "value": 1e-05,
+        "x": 19,
+        "y": 11,
+        "rotation": 90
+      },
+      {
+        "id": "RL",
+        "kind": "R",
+        "value": 33,
+        "x": 24,
+        "y": 11,
+        "rotation": 90
+      },
+      {
+        "id": "G1",
+        "kind": "GND",
+        "value": 0,
+        "x": 14,
+        "y": 16,
+        "rotation": 0
+      }
+    ],
+    "wires": [
+      {
+        "a": {
+          "part": "VIN",
+          "terminal": 0
+        },
+        "b": {
+          "part": "U1",
+          "terminal": 1
+        }
+      },
+      {
+        "a": {
+          "part": "VIN",
+          "terminal": 0
+        },
+        "b": {
+          "part": "C1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "C1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "U1",
+          "terminal": 2
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "U1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "C2",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "C2",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "U1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "RL",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "RL",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "VIN",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      }
+    ],
+    "timing": {
+      "stop": 0.001,
+      "step": 1e-05
+    }
+  }
+}

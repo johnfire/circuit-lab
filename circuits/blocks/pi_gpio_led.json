@@ -1,0 +1,94 @@
+{
+  "id": "pi_gpio_led",
+  "name": "LED on a Pi GPIO pin",
+  "category": "indicators",
+  "description": "Pi 4 GPIO17 (pin 11) drives a red LED through 330 Ω (about 3.6 mA).",
+  "notes": "Raise the resistor for a dimmer LED; never go below ~120 Ω on a Pi pin.",
+  "expectations": [
+    {
+      "signal": "I:D1",
+      "statistic": "final",
+      "value": 0.0036,
+      "tolerance": 0.0005,
+      "meaning": "LED current about 3.6 mA"
+    }
+  ],
+  "circuit": {
+    "parts": [
+      {
+        "id": "P1",
+        "kind": "PIN",
+        "value": 0,
+        "x": 4,
+        "y": 6,
+        "rotation": 0,
+        "board_pin": {
+          "board": "raspberry_pi_4",
+          "pin": "11",
+          "mode": "output_high"
+        }
+      },
+      {
+        "id": "R1",
+        "kind": "R",
+        "value": 330,
+        "x": 10,
+        "y": 6,
+        "rotation": 0
+      },
+      {
+        "id": "D1",
+        "kind": "D",
+        "value": 0,
+        "x": 16,
+        "y": 9,
+        "rotation": 90,
+        "device": "led_red_5mm"
+      },
+      {
+        "id": "G1",
+        "kind": "GND",
+        "value": 0,
+        "x": 16,
+        "y": 14,
+        "rotation": 0
+      }
+    ],
+    "wires": [
+      {
+        "a": {
+          "part": "P1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "R1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "R1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "D1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "D1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      }
+    ],
+    "timing": {
+      "stop": 0.001,
+      "step": 1e-05
+    }
+  }
+}

@@ -15,7 +15,8 @@ def test_real_sdk_discovers_only_implemented_orientation_tools() -> None:
             catalog = await client.list_tools()
             assert {tool.name for tool in catalog.tools} == {
                 "get_app_guide", "get_capabilities", "list_components", "get_component",
-                "list_library_parts", "get_library_part", "list_boards", "get_board", "list_examples"}
+                "list_library_parts", "get_library_part", "list_boards", "get_board",
+                "list_circuit_blocks", "get_circuit_block", "list_examples"}
             for tool in catalog.tools:
                 assert tool.annotations is not None
                 assert tool.annotations.read_only_hint is True

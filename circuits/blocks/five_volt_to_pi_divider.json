@@ -1,0 +1,121 @@
+{
+  "id": "five_volt_to_pi_divider",
+  "name": "5 V signal into a Pi pin",
+  "category": "interfacing",
+  "description": "A 10 kΩ / 20 kΩ divider brings a 0–5 V sensor output to 3.33 V for a Pi GPIO input.",
+  "notes": "Fine for slow signals; for fast or bidirectional lines use the BSS138 level shifter.",
+  "expectations": [
+    {
+      "signal": "V:P1:0",
+      "statistic": "final",
+      "value": 3.333,
+      "tolerance": 0.02,
+      "meaning": "the Pi pin sees 5 V × 20k / 30k"
+    }
+  ],
+  "circuit": {
+    "parts": [
+      {
+        "id": "VS",
+        "kind": "V",
+        "value": 5,
+        "x": 4,
+        "y": 8,
+        "rotation": 90
+      },
+      {
+        "id": "R1",
+        "kind": "R",
+        "value": 10000,
+        "x": 10,
+        "y": 6,
+        "rotation": 0
+      },
+      {
+        "id": "R2",
+        "kind": "R",
+        "value": 20000,
+        "x": 14,
+        "y": 10,
+        "rotation": 90
+      },
+      {
+        "id": "P1",
+        "kind": "PIN",
+        "value": 0,
+        "x": 20,
+        "y": 6,
+        "rotation": 0,
+        "board_pin": {
+          "board": "raspberry_pi_4",
+          "pin": "11",
+          "mode": "input"
+        }
+      },
+      {
+        "id": "G1",
+        "kind": "GND",
+        "value": 0,
+        "x": 10,
+        "y": 15,
+        "rotation": 0
+      }
+    ],
+    "wires": [
+      {
+        "a": {
+          "part": "VS",
+          "terminal": 0
+        },
+        "b": {
+          "part": "R1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "R1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "R2",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "R1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "P1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "R2",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "VS",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      }
+    ],
+    "timing": {
+      "stop": 0.001,
+      "step": 1e-05
+    }
+  }
+}

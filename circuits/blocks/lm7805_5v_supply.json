@@ -1,0 +1,165 @@
+{
+  "id": "lm7805_5v_supply",
+  "name": "12 V to 5 V supply (7805)",
+  "category": "power",
+  "description": "An LM7805 from 12 V with 330 nF input and 100 nF output capacitors, loaded with 100 mA.",
+  "notes": "A linear regulator burns (12 − 5) V × current as heat: 0.7 W here, but 0.5 A would exceed its 2 W free-air limit.",
+  "expectations": [
+    {
+      "signal": "V:U1:0",
+      "statistic": "final",
+      "value": 5.0,
+      "tolerance": 0.01,
+      "meaning": "regulated 5 V"
+    }
+  ],
+  "circuit": {
+    "parts": [
+      {
+        "id": "VIN",
+        "kind": "V",
+        "value": 12,
+        "x": 4,
+        "y": 8,
+        "rotation": 90
+      },
+      {
+        "id": "C1",
+        "kind": "C",
+        "value": 3.3e-07,
+        "x": 9,
+        "y": 11,
+        "rotation": 90
+      },
+      {
+        "id": "U1",
+        "kind": "REG",
+        "value": 0,
+        "x": 14,
+        "y": 8,
+        "rotation": 0,
+        "device": "lm7805"
+      },
+      {
+        "id": "C2",
+        "kind": "C",
+        "value": 1e-07,
+        "x": 19,
+        "y": 11,
+        "rotation": 90
+      },
+      {
+        "id": "RL",
+        "kind": "R",
+        "value": 50,
+        "x": 24,
+        "y": 11,
+        "rotation": 90
+      },
+      {
+        "id": "G1",
+        "kind": "GND",
+        "value": 0,
+        "x": 14,
+        "y": 16,
+        "rotation": 0
+      }
+    ],
+    "wires": [
+      {
+        "a": {
+          "part": "VIN",
+          "terminal": 0
+        },
+        "b": {
+          "part": "U1",
+          "terminal": 1
+        }
+      },
+      {
+        "a": {
+          "part": "VIN",
+          "terminal": 0
+        },
+        "b": {
+          "part": "C1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "C1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "U1",
+          "terminal": 2
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "U1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "C2",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "C2",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "U1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "RL",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "RL",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "VIN",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      }
+    ],
+    "timing": {
+      "stop": 0.001,
+      "step": 1e-05
+    }
+  }
+}

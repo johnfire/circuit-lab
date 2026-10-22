@@ -8,8 +8,10 @@ from uuid import UUID
 
 from pydantic import Field, model_validator
 
+from backend.block_library import BLOCKS, merge_block
 from backend.component_catalog import terminal_count
 from backend.model_primitives import Identifier, StrictModel
+from backend.part_library_models import PartId
 from backend.schematic_ac_models import Sweep
 from backend.schematic_models import Part, Pin, Timing, Wire
 
@@ -127,6 +129,15 @@ class DisconnectPins(StrictModel):
     b: Pin
 
 
+class InsertBlock(StrictModel):
+    """Merge a curated library block into the circuit, top-left part at (x, y)."""
+
+    operation: Literal["insert_block"]
+    block: PartId
+    x: int = Field(strict=True, ge=2, le=38)
+    y: int = Field(strict=True, ge=2, le=22)
+
+
 class SetTiming(StrictModel):
     """Update solver output timing, not visual playback speed."""
 
@@ -141,8 +152,8 @@ class SetSweep(StrictModel):
     sweep: Sweep | None
 
 
-Edit = Annotated[PutPart | RemovePart | ConnectPins | DisconnectPins | SetTiming | SetSweep,
-                 Field(discriminator="operation")]
+Edit = Annotated[PutPart | RemovePart | ConnectPins | DisconnectPins | InsertBlock | SetTiming
+                 | SetSweep, Field(discriminator="operation")]
 
 
 class EditDocument(RevisionCommand):
@@ -195,6 +206,15 @@ def apply_edits(contents: DocumentContents, edits: list[Edit]) -> DocumentConten
                 graph["wires"] = [wire for wire in graph["wires"] if
                                   {Pin(**wire["a"]).model_dump_json(),
                                    Pin(**wire["b"]).model_dump_json()} != edge]
+            case InsertBlock(block=block_id, x=column, y=row):
+                block = BLOCKS.get(block_id)
+                if block is None:
+                    raise ProjectFailure("Unknown circuit block; call list_circuit_blocks")
+                try:
+                    graph["parts"], graph["wires"] = merge_block(graph["parts"], graph["wires"],
+                                                                 block, column, row)
+                except ValueError as error:
+                    raise ProjectFailure(str(error)) from error
             case SetTiming(timing=timing):
                 graph["timing"] = timing.model_dump()
             case SetSweep(sweep=sweep):

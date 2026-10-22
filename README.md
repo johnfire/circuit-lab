@@ -160,11 +160,18 @@ Development boards (Raspberry Pi 4 and 5, Pi Pico, Arduino Uno R3, ESP32-DevKitC
 drive resistance, pulls and ESD clamp diodes, and checked for pin current, overvoltage (5 V into a
 Pi) and supply budgets. Firmware is not simulated.
 
+The circuit library (`circuits/blocks/<id>.json`) holds curated building blocks: LED on a Pi pin,
+NPN switch, relay driver, 5 V → Pi divider, BSS138 level shifter, PWM filter, op-amp follower and
+gain stage, and LM1117/7805 supplies. Each is a complete circuit with stated expectations ("LED
+current about 3.6 mA"); CI simulates every block and requires its expectations and every part rating
+to pass. The browser can insert a block beside your circuit or open it; MCP clients use
+`list_circuit_blocks`, `get_circuit_block` and the `insert_block` edit.
+
 ```bash
 uv run python -m backend.parts_cli list                           # parts and trust level
 uv run python -m backend.parts_cli verify [ids...]                # characterization on real ngspice
 uv run python -m backend.parts_cli new mosfet/irf3708 --kind NMOS # scaffold part.draft.json
-uv run python -m backend.parts_cli index                          # regenerate the parts and boards indexes
+uv run python -m backend.parts_cli index                          # regenerate the parts, boards and blocks indexes
 ```
 
 Adding a part:

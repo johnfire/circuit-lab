@@ -1,0 +1,1773 @@
+[
+ {
+  "category": "indicators",
+  "circuit": {
+   "parts": [
+    {
+     "board_pin": {
+      "board": "raspberry_pi_4",
+      "mode": "output_high",
+      "pin": "11"
+     },
+     "device": null,
+     "id": "P1",
+     "kind": "PIN",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 4,
+     "y": 6
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "R1",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 330.0,
+     "x": 10,
+     "y": 6
+    },
+    {
+     "board_pin": null,
+     "device": "led_red_5mm",
+     "id": "D1",
+     "kind": "D",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 0.0,
+     "x": 16,
+     "y": 9
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "G1",
+     "kind": "GND",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 16,
+     "y": 14
+    }
+   ],
+   "timing": {
+    "step": 1e-05,
+    "stop": 0.001
+   },
+   "wires": [
+    {
+     "a": {
+      "part": "P1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "R1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "R1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "D1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "D1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    }
+   ]
+  },
+  "description": "Pi 4 GPIO17 (pin 11) drives a red LED through 330 Ω (about 3.6 mA).",
+  "expectations": [
+   {
+    "meaning": "LED current about 3.6 mA",
+    "signal": "I:D1",
+    "statistic": "final",
+    "tolerance": 0.0005,
+    "value": 0.0036
+   }
+  ],
+  "id": "pi_gpio_led",
+  "name": "LED on a Pi GPIO pin",
+  "notes": "Raise the resistor for a dimmer LED; never go below ~120 Ω on a Pi pin."
+ },
+ {
+  "category": "interfacing",
+  "circuit": {
+   "parts": [
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "VS",
+     "kind": "V",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 5.0,
+     "x": 4,
+     "y": 8
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "R1",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 10000.0,
+     "x": 10,
+     "y": 6
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "R2",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 20000.0,
+     "x": 14,
+     "y": 10
+    },
+    {
+     "board_pin": {
+      "board": "raspberry_pi_4",
+      "mode": "input",
+      "pin": "11"
+     },
+     "device": null,
+     "id": "P1",
+     "kind": "PIN",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 20,
+     "y": 6
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "G1",
+     "kind": "GND",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 10,
+     "y": 15
+    }
+   ],
+   "timing": {
+    "step": 1e-05,
+    "stop": 0.001
+   },
+   "wires": [
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 0
+     },
+     "b": {
+      "part": "R1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "R1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "R2",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "R1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "P1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "R2",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    }
+   ]
+  },
+  "description": "A 10 kΩ / 20 kΩ divider brings a 0–5 V sensor output to 3.33 V for a Pi GPIO input.",
+  "expectations": [
+   {
+    "meaning": "the Pi pin sees 5 V × 20k / 30k",
+    "signal": "V:P1:0",
+    "statistic": "final",
+    "tolerance": 0.02,
+    "value": 3.333
+   }
+  ],
+  "id": "five_volt_to_pi_divider",
+  "name": "5 V signal into a Pi pin",
+  "notes": "Fine for slow signals; for fast or bidirectional lines use the BSS138 level shifter."
+ },
+ {
+  "category": "interfacing",
+  "circuit": {
+   "parts": [
+    {
+     "board_pin": {
+      "board": "raspberry_pi_4",
+      "mode": "pulse",
+      "pin": "3"
+     },
+     "device": null,
+     "id": "P1",
+     "kind": "PIN",
+     "pulse": {
+      "delay": 1e-05,
+      "period": 0.0002,
+      "width": 0.0001
+     },
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 4,
+     "y": 10
+    },
+    {
+     "board_pin": {
+      "board": "raspberry_pi_4",
+      "mode": "supply",
+      "pin": "1"
+     },
+     "device": null,
+     "id": "P2",
+     "kind": "PIN",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 10,
+     "y": 3
+    },
+    {
+     "board_pin": null,
+     "device": "bss138",
+     "id": "Q1",
+     "kind": "NMOS",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 0.0,
+     "x": 13,
+     "y": 10
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RH",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 10000.0,
+     "x": 20,
+     "y": 6
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "V5",
+     "kind": "V",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 5.0,
+     "x": 24,
+     "y": 4
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "G1",
+     "kind": "GND",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 24,
+     "y": 12
+    }
+   ],
+   "timing": {
+    "step": 1e-06,
+    "stop": 0.0006
+   },
+   "wires": [
+    {
+     "a": {
+      "part": "P1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "Q1",
+      "terminal": 2
+     }
+    },
+    {
+     "a": {
+      "part": "P2",
+      "terminal": 0
+     },
+     "b": {
+      "part": "Q1",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "Q1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "RH",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "RH",
+      "terminal": 0
+     },
+     "b": {
+      "part": "V5",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "V5",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    }
+   ]
+  },
+  "description": "The classic BSS138 bidirectional shifter: Pi GPIO2 (SDA, 1.8 kΩ board pull-up) on the low side, a 10 kΩ pull-up to 5 V on the high side.",
+  "expectations": [
+   {
+    "meaning": "the 5 V side goes high when the Pi side is high",
+    "signal": "V:Q1:0",
+    "statistic": "max",
+    "tolerance": 0.05,
+    "value": 5.0
+   },
+   {
+    "meaning": "the 5 V side goes low when the Pi side is low",
+    "signal": "V:Q1:0",
+    "statistic": "min",
+    "tolerance": 0.15,
+    "value": 0.2
+   }
+  ],
+  "id": "bss138_level_shifter",
+  "name": "I2C level shifter (3.3 V ↔ 5 V)",
+  "notes": "Here the Pi pin pulses as if sending data; watch the 5 V side follow. Use one per I2C line."
+ },
+ {
+  "category": "power",
+  "circuit": {
+   "parts": [
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "VIN",
+     "kind": "V",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 12.0,
+     "x": 4,
+     "y": 8
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "C1",
+     "kind": "C",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 3.3e-07,
+     "x": 9,
+     "y": 11
+    },
+    {
+     "board_pin": null,
+     "device": "lm7805",
+     "id": "U1",
+     "kind": "REG",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 14,
+     "y": 8
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "C2",
+     "kind": "C",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 1e-07,
+     "x": 19,
+     "y": 11
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RL",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 50.0,
+     "x": 24,
+     "y": 11
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "G1",
+     "kind": "GND",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 14,
+     "y": 16
+    }
+   ],
+   "timing": {
+    "step": 1e-05,
+    "stop": 0.001
+   },
+   "wires": [
+    {
+     "a": {
+      "part": "VIN",
+      "terminal": 0
+     },
+     "b": {
+      "part": "U1",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "VIN",
+      "terminal": 0
+     },
+     "b": {
+      "part": "C1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "C1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 2
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "C2",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "C2",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "RL",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "RL",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VIN",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    }
+   ]
+  },
+  "description": "An LM7805 from 12 V with 330 nF input and 100 nF output capacitors, loaded with 100 mA.",
+  "expectations": [
+   {
+    "meaning": "regulated 5 V",
+    "signal": "V:U1:0",
+    "statistic": "final",
+    "tolerance": 0.01,
+    "value": 5.0
+   }
+  ],
+  "id": "lm7805_5v_supply",
+  "name": "12 V to 5 V supply (7805)",
+  "notes": "A linear regulator burns (12 − 5) V × current as heat: 0.7 W here, but 0.5 A would exceed its 2 W free-air limit."
+ },
+ {
+  "category": "power",
+  "circuit": {
+   "parts": [
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "VIN",
+     "kind": "V",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 5.0,
+     "x": 4,
+     "y": 8
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "C1",
+     "kind": "C",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 1e-05,
+     "x": 9,
+     "y": 11
+    },
+    {
+     "board_pin": null,
+     "device": "lm1117_3v3",
+     "id": "U1",
+     "kind": "REG",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 14,
+     "y": 8
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "C2",
+     "kind": "C",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 1e-05,
+     "x": 19,
+     "y": 11
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RL",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 33.0,
+     "x": 24,
+     "y": 11
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "G1",
+     "kind": "GND",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 14,
+     "y": 16
+    }
+   ],
+   "timing": {
+    "step": 1e-05,
+    "stop": 0.001
+   },
+   "wires": [
+    {
+     "a": {
+      "part": "VIN",
+      "terminal": 0
+     },
+     "b": {
+      "part": "U1",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "VIN",
+      "terminal": 0
+     },
+     "b": {
+      "part": "C1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "C1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 2
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "C2",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "C2",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "RL",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "RL",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VIN",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    }
+   ]
+  },
+  "description": "An LM1117-3.3 low-dropout regulator with 10 µF input and output capacitors, loaded with 100 mA.",
+  "expectations": [
+   {
+    "meaning": "regulated 3.3 V",
+    "signal": "V:U1:0",
+    "statistic": "final",
+    "tolerance": 0.01,
+    "value": 3.3
+   }
+  ],
+  "id": "lm1117_3v3_supply",
+  "name": "5 V to 3.3 V supply (LM1117)",
+  "notes": "Dissipation is (5 − 3.3) V × load current; at 100 mA that's 0.17 W, well within its SOT-223 limit."
+ },
+ {
+  "category": "signal",
+  "circuit": {
+   "parts": [
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "VS",
+     "kind": "V",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 3.3,
+     "x": 26,
+     "y": 4
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "VIN",
+     "kind": "V",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 0.8,
+     "x": 4,
+     "y": 11
+    },
+    {
+     "board_pin": null,
+     "device": "mcp6002",
+     "id": "U1",
+     "kind": "OPAMP",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 14,
+     "y": 9
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RF",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 10000.0,
+     "x": 19,
+     "y": 14
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RG",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 10000.0,
+     "x": 9,
+     "y": 16
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RL",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 10000.0,
+     "x": 24,
+     "y": 12
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "G1",
+     "kind": "GND",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 14,
+     "y": 20
+    }
+   ],
+   "timing": {
+    "step": 1e-05,
+    "stop": 0.001
+   },
+   "wires": [
+    {
+     "a": {
+      "part": "VIN",
+      "terminal": 0
+     },
+     "b": {
+      "part": "U1",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "RF",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "RF",
+      "terminal": 0
+     },
+     "b": {
+      "part": "U1",
+      "terminal": 2
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 2
+     },
+     "b": {
+      "part": "RG",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "RG",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "RL",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "RL",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 0
+     },
+     "b": {
+      "part": "U1",
+      "terminal": 3
+     }
+    },
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 4
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VIN",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    }
+   ]
+  },
+  "description": "A non-inverting MCP6002 stage on 3.3 V: gain = 1 + RF/RG = 2, so 0.8 V in gives 1.6 V out.",
+  "expectations": [
+   {
+    "meaning": "0.8 V × gain 2 = 1.6 V",
+    "signal": "V:U1:0",
+    "statistic": "final",
+    "tolerance": 0.01,
+    "value": 1.6
+   }
+  ],
+  "id": "opamp_noninverting_gain",
+  "name": "Op-amp amplifier, gain of 2",
+  "notes": "Keep the output below the supply: input × gain must stay under about 3.25 V here."
+ },
+ {
+  "category": "signal",
+  "circuit": {
+   "parts": [
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "VS",
+     "kind": "V",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 3.3,
+     "x": 4,
+     "y": 6
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "R1",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 10000.0,
+     "x": 10,
+     "y": 4
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "R2",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 10000.0,
+     "x": 12,
+     "y": 9
+    },
+    {
+     "board_pin": null,
+     "device": "mcp6002",
+     "id": "U1",
+     "kind": "OPAMP",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 19,
+     "y": 10
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RL",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 1000.0,
+     "x": 25,
+     "y": 13
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "G1",
+     "kind": "GND",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 14,
+     "y": 18
+    }
+   ],
+   "timing": {
+    "step": 1e-05,
+    "stop": 0.001
+   },
+   "wires": [
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 0
+     },
+     "b": {
+      "part": "R1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "R1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "R2",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "R2",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "R1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "U1",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "U1",
+      "terminal": 2
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "RL",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "RL",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 0
+     },
+     "b": {
+      "part": "U1",
+      "terminal": 3
+     }
+    },
+    {
+     "a": {
+      "part": "U1",
+      "terminal": 4
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    }
+   ]
+  },
+  "description": "An MCP6002 rail-to-rail op-amp on 3.3 V buffers a 1.65 V divider so a load can't pull it down.",
+  "expectations": [
+   {
+    "meaning": "the output follows the 1.65 V divider",
+    "signal": "V:U1:0",
+    "statistic": "final",
+    "tolerance": 0.01,
+    "value": 1.65
+   }
+  ],
+  "id": "opamp_buffer_3v3",
+  "name": "Op-amp voltage follower (3.3 V)",
+  "notes": "Swap the divider for your sensor; the follower's output tracks its input with almost no load on it."
+ },
+ {
+  "category": "signal",
+  "circuit": {
+   "parts": [
+    {
+     "board_pin": {
+      "board": "raspberry_pi_4",
+      "mode": "pulse",
+      "pin": "12"
+     },
+     "device": null,
+     "id": "P1",
+     "kind": "PIN",
+     "pulse": {
+      "delay": 0.0,
+      "period": 0.001,
+      "width": 0.0005
+     },
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 4,
+     "y": 8
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "R1",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 10000.0,
+     "x": 10,
+     "y": 8
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "C1",
+     "kind": "C",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 1e-06,
+     "x": 15,
+     "y": 11
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "G1",
+     "kind": "GND",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 15,
+     "y": 16
+    }
+   ],
+   "timing": {
+    "step": 4e-05,
+    "stop": 0.08
+   },
+   "wires": [
+    {
+     "a": {
+      "part": "P1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "R1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "R1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "C1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "C1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    }
+   ]
+  },
+  "description": "Pi GPIO18 PWM at 1 kHz, 50 % through a 10 kΩ / 1 µF low-pass filter (τ = 10 ms) gives about 1.65 V.",
+  "expectations": [
+   {
+    "meaning": "50 % PWM of 3.3 V averages 1.65 V",
+    "signal": "V:C1:0",
+    "statistic": "settled_mean",
+    "tolerance": 0.05,
+    "value": 1.65
+   }
+  ],
+  "id": "pwm_rc_filter",
+  "name": "PWM to analog voltage",
+  "notes": "Larger RC means less ripple but slower response; buffer the output with an op-amp for loads."
+ },
+ {
+  "category": "switching",
+  "circuit": {
+   "parts": [
+    {
+     "board_pin": {
+      "board": "raspberry_pi_4",
+      "mode": "output_high",
+      "pin": "11"
+     },
+     "device": null,
+     "id": "P1",
+     "kind": "PIN",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 4,
+     "y": 10
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RB",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 10000.0,
+     "x": 9,
+     "y": 10
+    },
+    {
+     "board_pin": null,
+     "device": "2n3904",
+     "id": "Q1",
+     "kind": "NPN",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 15,
+     "y": 10
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RC",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 200.0,
+     "x": 16,
+     "y": 4
+    },
+    {
+     "board_pin": null,
+     "device": "led_red_5mm",
+     "id": "D1",
+     "kind": "D",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 0.0,
+     "x": 21,
+     "y": 6
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "VS",
+     "kind": "V",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 5.0,
+     "x": 26,
+     "y": 8
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "G1",
+     "kind": "GND",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 16,
+     "y": 16
+    }
+   ],
+   "timing": {
+    "step": 1e-05,
+    "stop": 0.001
+   },
+   "wires": [
+    {
+     "a": {
+      "part": "P1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "RB",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "RB",
+      "terminal": 1
+     },
+     "b": {
+      "part": "Q1",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "Q1",
+      "terminal": 2
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "Q1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "RC",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "RC",
+      "terminal": 0
+     },
+     "b": {
+      "part": "D1",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "D1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "VS",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    }
+   ]
+  },
+  "description": "Pi GPIO17 switches a 5 V, 15 mA LED through a 2N3904, so the pin only supplies ~0.3 mA.",
+  "expectations": [
+   {
+    "meaning": "LED current about 14.5 mA",
+    "signal": "I:D1",
+    "statistic": "final",
+    "tolerance": 0.002,
+    "value": 0.0145
+   },
+   {
+    "meaning": "the Pi pin sources only about 0.25 mA",
+    "signal": "I:P1",
+    "statistic": "final",
+    "tolerance": 0.0001,
+    "value": -0.00025
+   }
+  ],
+  "id": "pi_npn_led_switch",
+  "name": "NPN switch for a brighter LED",
+  "notes": "Base resistor 10 kΩ keeps pin current tiny; the 200 Ω collector resistor sets LED current."
+ },
+ {
+  "category": "switching",
+  "circuit": {
+   "parts": [
+    {
+     "board_pin": {
+      "board": "raspberry_pi_4",
+      "mode": "pulse",
+      "pin": "11"
+     },
+     "device": null,
+     "id": "P1",
+     "kind": "PIN",
+     "pulse": {
+      "delay": 0.001,
+      "period": 0.02,
+      "width": 0.01
+     },
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 4,
+     "y": 12
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RG",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 100.0,
+     "x": 9,
+     "y": 12
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RPD",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 100000.0,
+     "x": 12,
+     "y": 16
+    },
+    {
+     "board_pin": null,
+     "device": "irlz44n",
+     "id": "Q1",
+     "kind": "NMOS",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 16,
+     "y": 12
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "RC",
+     "kind": "R",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 400.0,
+     "x": 17,
+     "y": 4
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "LC",
+     "kind": "L",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 0.1,
+     "x": 17,
+     "y": 8
+    },
+    {
+     "board_pin": null,
+     "device": "1n5819",
+     "id": "D1",
+     "kind": "D",
+     "pulse": null,
+     "rotation": 270,
+     "sine": null,
+     "value": 0.0,
+     "x": 22,
+     "y": 6
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "VS",
+     "kind": "V",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 12.0,
+     "x": 27,
+     "y": 8
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "id": "G1",
+     "kind": "GND",
+     "pulse": null,
+     "rotation": 0,
+     "sine": null,
+     "value": 0.0,
+     "x": 16,
+     "y": 19
+    }
+   ],
+   "timing": {
+    "step": 2e-05,
+    "stop": 0.04
+   },
+   "wires": [
+    {
+     "a": {
+      "part": "P1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "RG",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "RG",
+      "terminal": 1
+     },
+     "b": {
+      "part": "Q1",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "RPD",
+      "terminal": 0
+     },
+     "b": {
+      "part": "Q1",
+      "terminal": 1
+     }
+    },
+    {
+     "a": {
+      "part": "RPD",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "Q1",
+      "terminal": 2
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 0
+     },
+     "b": {
+      "part": "RC",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "RC",
+      "terminal": 1
+     },
+     "b": {
+      "part": "LC",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "LC",
+      "terminal": 1
+     },
+     "b": {
+      "part": "Q1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "D1",
+      "terminal": 0
+     },
+     "b": {
+      "part": "Q1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "D1",
+      "terminal": 1
+     },
+     "b": {
+      "part": "VS",
+      "terminal": 0
+     }
+    }
+   ]
+  },
+  "description": "Pi GPIO17 switches a 12 V coil (400 Ω, 100 mH) through a logic-level IRLZ44N, with a 1N5819 flyback diode, 100 Ω gate resistor and 100 kΩ pull-down.",
+  "expectations": [
+   {
+    "meaning": "coil current reaches 12 V / 400 Ω = 30 mA",
+    "signal": "I:LC",
+    "statistic": "max",
+    "tolerance": 0.002,
+    "value": 0.03
+   },
+   {
+    "meaning": "the flyback diode clamps the drain near 12 V",
+    "signal": "V:Q1:0",
+    "statistic": "max",
+    "tolerance": 0.4,
+    "value": 12.3
+   }
+  ],
+  "id": "pi_relay_driver",
+  "name": "Relay or solenoid driver",
+  "notes": "Delete the flyback diode and simulate to see the drain spike fail the MOSFET's rating."
+ }
+]

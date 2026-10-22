@@ -5,6 +5,7 @@ import json
 import sys
 from pathlib import Path
 
+from backend.block_library import BLOCKS_INDEX_PATH, block_summaries
 from backend.board_library import BOARDS_INDEX_PATH, board_summaries
 from backend.part_characterization import CharacterizationResult, characterize
 from backend.part_library import INDEX_PATH, LIBRARY, PARTS_ROOT, library_summaries
@@ -97,10 +98,16 @@ def boards_index_text() -> str:
     return json.dumps(board_summaries(), indent=1, sort_keys=True, ensure_ascii=False) + "\n"
 
 
+def blocks_index_text() -> str:
+    """The browser's copy of the curated circuit blocks."""
+    return json.dumps(block_summaries(), indent=1, sort_keys=True, ensure_ascii=False) + "\n"
+
+
 def write_index() -> int:
-    """Regenerate the browser's parts and boards indexes after changing either."""
+    """Regenerate the browser's parts, boards and blocks indexes after changing any of them."""
     INDEX_PATH.write_text(index_text())
     BOARDS_INDEX_PATH.write_text(boards_index_text())
+    BLOCKS_INDEX_PATH.write_text(blocks_index_text())
     print(f"Wrote {len(LIBRARY)} part(s) to {INDEX_PATH} and the boards to {BOARDS_INDEX_PATH}")
     return 0
 
@@ -115,7 +122,7 @@ def main(arguments: list[str] | None = None) -> int:
     create = commands.add_parser("new", help="scaffold a draft part file")
     create.add_argument("target", help="<category>/<id>, e.g. mosfet/irlz44n")
     create.add_argument("--kind", required=True, help="D, NMOS, PMOS, NPN or PNP")
-    commands.add_parser("index", help="regenerate the browser parts and boards indexes")
+    commands.add_parser("index", help="regenerate the browser parts, boards and blocks indexes")
     options = parser.parse_args(arguments)
     if options.command == "list":
         return list_parts()

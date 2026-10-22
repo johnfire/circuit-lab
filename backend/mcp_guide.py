@@ -4,6 +4,7 @@ from mcp.server import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp_types import ToolAnnotations
 
+from backend.block_library import BLOCKS
 from backend.board_library import BOARDS, board_summary
 from backend.circuit_catalog import list_circuits
 from backend.component_catalog import component_definitions
@@ -30,7 +31,9 @@ get_circuit with its revision. Never assume a particular browser tab is active.
 inspect_connectivity and validate_circuit distinguish an unfinished design from one
 ready to simulate. Drawn crossings are not connections; wires join named terminals.
 Use apply_circuit_edits for atomic direct edits: put_part (also move/rotate/set value),
-remove_part, connect, disconnect, set_timing and set_sweep. Supply expected_revision,
+remove_part, connect, disconnect, insert_block (a curated block from list_circuit_blocks,
+its top-left part at x, y; clashing part ids are renamed), set_timing and set_sweep.
+Prefer a curated block over hand-building a common circuit, then adapt and re-simulate. Supply expected_revision,
 idempotency_key and a short reason. Reread on conflict; don't overwrite human edits.
 Each edit is a new revision and undo_last_change restores the previous snapshot.
 Use simulate_transient or simulate_ac for real ngspice evidence, then get_simulation,
@@ -121,6 +124,21 @@ def get_board(board_id: str) -> dict[str, object]:
     return board_summary(board) | {"trust_notes": board.trust.notes}
 
 
+def list_circuit_blocks(category: str | None = None) -> list[dict[str, object]]:
+    """List curated, simulation-checked building blocks (indicators, switching, interfacing...)."""
+    return [{"id": block.id, "name": block.name, "category": block.category,
+             "description": block.description} for block in sorted(BLOCKS.values(), key=lambda block: block.name)
+            if category is None or block.category == category]
+
+
+def get_circuit_block(block_id: str) -> dict[str, object]:
+    """Read one block: its complete circuit, notes and the measured behaviour it promises."""
+    block = BLOCKS.get(block_id)
+    if block is None:
+        raise ToolError("Unknown circuit block; call list_circuit_blocks")
+    return block.model_dump(mode="json")
+
+
 def list_examples() -> list[dict[str, object]]:
     """List actual curated recipes; recipes are not editable schematic graphs."""
     return [circuit.model_dump() for circuit in list_circuits()]
@@ -150,7 +168,8 @@ def register_guide(server: MCPServer[None]) -> None:
     """Make app guidance available even to clients that do not discover prompts."""
     read_only = ToolAnnotations(read_only_hint=True, destructive_hint=False, open_world_hint=False)
     for handler in (get_app_guide, get_capabilities, list_components, get_component,
-                    list_library_parts, get_library_part, list_boards, get_board, list_examples):
+                    list_library_parts, get_library_part, list_boards, get_board,
+                    list_circuit_blocks, get_circuit_block, list_examples):
         server.tool(annotations=read_only)(handler)
     server.resource("circuit-lab://guide", mime_type="text/plain")(get_app_guide)
     for prompt in (get_started, explain_circuit, debug_circuit, improve_circuit):

@@ -1,0 +1,175 @@
+{
+  "id": "opamp_buffer_3v3",
+  "name": "Op-amp voltage follower (3.3 V)",
+  "category": "signal",
+  "description": "An MCP6002 rail-to-rail op-amp on 3.3 V buffers a 1.65 V divider so a load can't pull it down.",
+  "notes": "Swap the divider for your sensor; the follower's output tracks its input with almost no load on it.",
+  "expectations": [
+    {
+      "signal": "V:U1:0",
+      "statistic": "final",
+      "value": 1.65,
+      "tolerance": 0.01,
+      "meaning": "the output follows the 1.65 V divider"
+    }
+  ],
+  "circuit": {
+    "parts": [
+      {
+        "id": "VS",
+        "kind": "V",
+        "value": 3.3,
+        "x": 4,
+        "y": 6,
+        "rotation": 90
+      },
+      {
+        "id": "R1",
+        "kind": "R",
+        "value": 10000,
+        "x": 10,
+        "y": 4,
+        "rotation": 0
+      },
+      {
+        "id": "R2",
+        "kind": "R",
+        "value": 10000,
+        "x": 12,
+        "y": 9,
+        "rotation": 90
+      },
+      {
+        "id": "U1",
+        "kind": "OPAMP",
+        "value": 0,
+        "x": 19,
+        "y": 10,
+        "rotation": 0,
+        "device": "mcp6002"
+      },
+      {
+        "id": "RL",
+        "kind": "R",
+        "value": 1000,
+        "x": 25,
+        "y": 13,
+        "rotation": 90
+      },
+      {
+        "id": "G1",
+        "kind": "GND",
+        "value": 0,
+        "x": 14,
+        "y": 18,
+        "rotation": 0
+      }
+    ],
+    "wires": [
+      {
+        "a": {
+          "part": "VS",
+          "terminal": 0
+        },
+        "b": {
+          "part": "R1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "R1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "R2",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "R2",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "R1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "U1",
+          "terminal": 1
+        }
+      },
+      {
+        "a": {
+          "part": "U1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "U1",
+          "terminal": 2
+        }
+      },
+      {
+        "a": {
+          "part": "U1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "RL",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "RL",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "VS",
+          "terminal": 0
+        },
+        "b": {
+          "part": "U1",
+          "terminal": 3
+        }
+      },
+      {
+        "a": {
+          "part": "U1",
+          "terminal": 4
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "VS",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      }
+    ],
+    "timing": {
+      "stop": 0.001,
+      "step": 1e-05
+    }
+  }
+}

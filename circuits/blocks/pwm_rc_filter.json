@@ -1,0 +1,98 @@
+{
+  "id": "pwm_rc_filter",
+  "name": "PWM to analog voltage",
+  "category": "signal",
+  "description": "Pi GPIO18 PWM at 1 kHz, 50 % through a 10 kΩ / 1 µF low-pass filter (τ = 10 ms) gives about 1.65 V.",
+  "notes": "Larger RC means less ripple but slower response; buffer the output with an op-amp for loads.",
+  "expectations": [
+    {
+      "signal": "V:C1:0",
+      "statistic": "settled_mean",
+      "value": 1.65,
+      "tolerance": 0.05,
+      "meaning": "50 % PWM of 3.3 V averages 1.65 V"
+    }
+  ],
+  "circuit": {
+    "parts": [
+      {
+        "id": "P1",
+        "kind": "PIN",
+        "value": 0,
+        "x": 4,
+        "y": 8,
+        "rotation": 0,
+        "board_pin": {
+          "board": "raspberry_pi_4",
+          "pin": "12",
+          "mode": "pulse"
+        },
+        "pulse": {
+          "period": 0.001,
+          "width": 0.0005,
+          "delay": 0
+        }
+      },
+      {
+        "id": "R1",
+        "kind": "R",
+        "value": 10000,
+        "x": 10,
+        "y": 8,
+        "rotation": 0
+      },
+      {
+        "id": "C1",
+        "kind": "C",
+        "value": 1e-06,
+        "x": 15,
+        "y": 11,
+        "rotation": 90
+      },
+      {
+        "id": "G1",
+        "kind": "GND",
+        "value": 0,
+        "x": 15,
+        "y": 16,
+        "rotation": 0
+      }
+    ],
+    "wires": [
+      {
+        "a": {
+          "part": "P1",
+          "terminal": 0
+        },
+        "b": {
+          "part": "R1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "R1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "C1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "C1",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      }
+    ],
+    "timing": {
+      "stop": 0.08,
+      "step": 4e-05
+    }
+  }
+}
