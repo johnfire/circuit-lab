@@ -1,0 +1,9 @@
+[Unit]
+Description=Back up Circuit Lab databases and audit log
+Wants=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/circuit-lab/backup/circuit-lab-backup.sh
+Nice=10

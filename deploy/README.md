@@ -69,11 +69,12 @@ the master realm and admin API.
 Realm import runs only when the realm does not already exist. App delivery must
 not replace customer identity state. Future realm updates require an explicit
 database backup and a reviewed migration, not an overwrite import.
-Backups, signup abuse controls, legal pages, and recovery drills are required
-before commercial launch. No billing or subscriptions are enabled. Saved-project
-and MCP collaboration code is deployed but remains disabled pending off-host
-backup setup and live browser/Codex verification; see `MCP.md` and
-`docs/mcp-implementation-status.md` for the exact activation state.
+Daily database and audit-log backups run on the VPS (`deploy/backup/`, timer
+`circuit-lab-backup.timer`), on-host for now; an off-host copy is still required.
+Signup abuse controls, legal pages, and recovery drills are required before
+commercial launch. No billing or subscriptions are enabled. Saved projects
+and MCP collaboration were switched on 2026-10-22 (`CIRCUIT_ENABLE_PROJECTS=true`);
+see `MCP.md` and `docs/mcp-implementation-status.md` for the exact state.
 
 To pause delivery, disable the GitHub workflow/deployment environment. To revoke
 the deploy capability, remove its one public key or lock the dedicated account's

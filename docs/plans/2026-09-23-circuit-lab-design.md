@@ -188,7 +188,8 @@ real part must meet.
 - ✅ **Circuit library** (2026-10-22): 10 curated blocks with CI-checked expectations; insert/open in
   the browser; MCP `list_circuit_blocks`, `get_circuit_block`, `insert_block`. Personal saved circuits
   use the existing project storage, which goes live with the backup gate.
-- ⬜ Encrypted off-host backups → switch on saved projects and MCP. ← **needs Chris: destination**
+- ✅ Daily backups (on the VPS for now; off-host copy still to do) and saved projects + MCP switched
+  on in production (2026-10-22).
 - ⬜ KiCad export (netlist + BOM with footprints and LCSC numbers) as the path to ordering PCBs.
 - ⬜ Human review of draft parts and boards against datasheets → `verified`.
 - ⬜ Benchmark 1 (GPIO → MOSFET → relay) simulates correctly in tests; it still needs an AI

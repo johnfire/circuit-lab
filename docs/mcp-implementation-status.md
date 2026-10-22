@@ -1,4 +1,23 @@
-# MCP implementation status — 2026-10-04
+# MCP implementation status — 2026-10-04 (activation update 2026-10-22)
+
+## 2026-10-22: switched on
+
+- **Backups:** `deploy/backup/` holds the backup script and its systemd unit. It is installed on the
+  VPS at `/opt/circuit-lab/backup/`, and the `circuit-lab-backup.timer` runs daily at 02:30 UTC. Each
+  run dumps the application and identity databases (`pg_dump -Fc`, checked with
+  `pg_restore --list`) and the audit log into `/var/backups/circuit-lab/<UTC stamp>/` with
+  `SHA256SUMS`. The first backup was restored into scratch databases with matching table counts
+  (10/10, 101/101). Nothing is deleted automatically, so retention is Chris's decision.
+- **Limitation:** backups are **on the same host** (Chris's interim choice). They protect against
+  corruption, bad migrations and mistakes, but not against losing the VPS. Next: a nightly copy to
+  one of Chris's machines (as Nextcloud already does to philips3).
+- **Switch:** `CIRCUIT_ENABLE_PROJECTS=true`; release 97d4857 runs with the projects overlay.
+  Verified: projects status reports enabled, the deployment simulation passes, MCP metadata returns
+  200, MCP without a bearer returns 401, and the workbench still requires login. The previous `.env`
+  is kept root-only at `/opt/circuit-lab/backup/env-before-projects-20261022` for rollback.
+- **Still to verify with a real account:** browser save/share/revoke, and a first AI-client sign-in.
+  Only `circuit-lab-codex` is registered; a Claude Code client (`circuit-lab-claude`) still needs a
+  Keycloak entry and `CIRCUIT_MCP_CLIENTS` updated.
 
 This is the local collaboration implementation of the
 [approved circuit collaboration design](plans/2026-10-04-mcp-circuit-collaboration.md).
