@@ -5,6 +5,7 @@ from pathlib import Path
 from backend.part_library_models import LibraryPart
 
 PARTS_ROOT = Path(__file__).resolve().parent.parent / "circuits" / "parts"
+INDEX_PATH = Path(__file__).resolve().parent.parent / "circuits" / "parts-index.json"
 MODEL_TYPES = {"D": "D", "NMOS": "VDMOS", "PMOS": "VDMOS", "NPN": "NPN", "PNP": "PNP"}
 
 

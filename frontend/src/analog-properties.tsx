@@ -1,9 +1,24 @@
-import { PART_NAMES, partValue, rotated, snapped, STANDARD_VALUES } from './schematic-model';
+import { engineering, PART_NAMES, partValue, rotated, snapped, STANDARD_VALUES } from './schematic-model';
+import { isDeviceKind, libraryPart, partsOfKind } from './part-library';
+import type { DeviceKind } from './schematic-types';
 import type { Part, Pulse, Sine } from './schematic-types';
 import type { EditorState } from './use-schematic-editor';
 
+function DeviceControls({ part, kind, onUpdate }: { part: Part; kind: DeviceKind; onUpdate: (part: Part) => void }) {
+  const chosen = libraryPart(part.device);
+  return <><label>Library part<select value={part.device ?? ''} onChange={event => onUpdate({ ...part, device: event.target.value })}>
+    {partsOfKind(kind).map(option => <option key={option.id} value={option.id}>{option.name} — {option.package}{option.trust === 'draft' ? ' (draft)' : ''}</option>)}
+  </select></label>
+    {chosen && <><p className="muted">{chosen.description}. Terminals: {chosen.terminals.join(', ')}.</p>
+      <p className="muted"><strong>{chosen.trust === 'verified' ? 'Verified' : 'Draft'}</strong>{chosen.trust === 'draft'
+        ? ': model and ratings not yet reviewed against the datasheet.' : ': reviewed against its datasheet.'}</p>
+      <ul className="model-warnings">{Object.entries(chosen.ratings).map(([name, rating]) =>
+        <li key={name}>{name.replace('_max', '')} max {engineering(rating.value, rating.unit)}</li>)}</ul></>}</>;
+}
+
 function ValueControls({ part, onUpdate }: { part: Part; onUpdate: (part: Part) => void }) {
   if (part.kind === 'GND') return <p className="muted">Ground is the 0 V reference. All ground symbols share this reference.</p>;
+  if (isDeviceKind(part.kind)) return <DeviceControls part={part} kind={part.kind} onUpdate={onUpdate} />;
   const standards = STANDARD_VALUES[part.kind];
   return <><label>Standard value<select value={part.value} onChange={event => onUpdate({ ...part, value: Number(event.target.value) })}>
     {!standards.includes(part.value) && <option value={part.value}>{partValue(part)} (custom)</option>}

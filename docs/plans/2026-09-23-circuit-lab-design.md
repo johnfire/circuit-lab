@@ -173,9 +173,16 @@ real part must meet.
 - ✅ MCP server with revisioned edits, runs, measurements, and undo. Deployed but **switched off**
   pending encrypted off-host backups and a real AI-client sign-in test (see
   `docs/mcp-implementation-status.md`).
-- ⬜ **Parts library**: format, loader, characterization runner, starter parts, semiconductor
-  support in the model, editor, and MCP, plus rating checks on every run. ← **next**
-- ⬜ Human review of starter parts → `verified`.
+- ✅ **Parts library** (2026-10-22): `part.json` format, loader with trust gating,
+  characterization runner and `parts_cli`, 23 draft starter parts (diodes, Schottkys, Zeners,
+  LEDs, BJTs, N/P MOSFETs). Devices work in the circuit model, the browser editor, transient/AC
+  analysis and MCP (`list_library_parts`, `get_library_part`). Every transient run checks ratings
+  with ngspice `meas` on raw solver points, so it catches spikes between output frames. Transient
+  analysis uses Gear integration to stop the trapezoidal ringing that inductive switching caused.
+- ⬜ Human review of starter parts against datasheets → `verified`. ← **next for Chris**
+- ⬜ Benchmark 1 (GPIO → MOSFET → relay) simulates correctly in tests; it still needs an AI
+  client over MCP to design it end to end once MCP is switched on. Benchmark 2's op-amp option
+  needs subcircuit support; its divider + Zener option works today.
 - **Done when:** all three benchmark circuits (§8) are designed end to end on the live site **by an
   AI client over MCP**, and verified.
 

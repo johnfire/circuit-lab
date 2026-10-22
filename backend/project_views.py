@@ -4,6 +4,7 @@ from uuid import UUID, uuid4
 
 from pydantic import Field
 
+from backend.component_catalog import terminal_count
 from backend.model_primitives import Finite, StrictModel
 from backend.project_access import audit_action, authorize
 from backend.project_database import ProjectDatabase, decode_record
@@ -33,7 +34,7 @@ async def set_view(database: ProjectDatabase, principal: Principal, document: UU
         snapshot = await read_snapshot(connection, document, command.revision)
         contents = DocumentContents.model_validate(snapshot["contents"])
         pins = {f"{part.id}:{terminal}" for part in contents.circuit.parts
-                for terminal in range(1 if part.kind == "GND" else 2)}
+                for terminal in range(terminal_count(part.kind))}
         if any(f"{pin.part}:{pin.terminal}" not in pins for pin in command.pins) or (
                 command.time is not None and command.frequency is not None):
             raise ProjectFailure("Choose existing pins and only one physical cursor axis")

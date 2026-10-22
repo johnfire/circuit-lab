@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { voltageScale } from './observation-signals';
 import { AnalogMeasurements } from './analog-measurements';
+import { AnalogRatings } from './analog-ratings';
 import { AnalogTimeline } from './analog-timeline';
 import { ACMeasurements } from './observation-ac-measurements';
 import { ObservationScope } from './observation-scope';
@@ -45,6 +46,7 @@ function TransientSession({ editor, report, controls }: SessionProps & { report:
     onAISeek: (index: number) => playback.seekFull(report.times[index]), playing: playback.playing };
   return <><ObservationToolbar editor={editor} controls={controls}><TimePlaybackControls playback={playback} report={report} /></ObservationToolbar>
     <ObservationGridAndScope editor={editor} report={report} controls={controls} clock={clock} />
+    <AnalogRatings report={report} />
     <AnalogTimeline playback={playback} report={report} /><section className="editor-card"><h2>AC cycle window</h2>
       <ObservationCycleControls schematic={editor.schematic} playback={playback} /></section>
     <AnalogMeasurements schematic={editor.schematic} report={report} frame={playback.index} /></>;

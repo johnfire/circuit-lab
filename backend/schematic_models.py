@@ -5,8 +5,10 @@ from typing import Literal, Self
 
 from pydantic import Field, model_validator
 
-from backend.component_catalog import COMPONENTS
+from backend.component_catalog import COMPONENTS, DEVICE_KINDS
 from backend.model_primitives import Finite, Identifier, StrictModel
+from backend.part_library import LIBRARY
+from backend.part_library_models import PartId
 
 
 class PulseSettings(StrictModel):
@@ -33,16 +35,30 @@ class SineSettings(StrictModel):
 
 
 class Part(StrictModel):
-    """One ideal analog component, with visual placement independent of wiring."""
+    """One ideal component or library device, with placement independent of wiring."""
 
     id: Identifier
-    kind: Literal["R", "C", "L", "V", "PULSE", "SIN", "GND"]
+    kind: Literal["R", "C", "L", "V", "PULSE", "SIN", "GND", "D", "NMOS", "PMOS", "NPN", "PNP"]
     value: Finite
     x: int = Field(strict=True, ge=2, le=38)
     y: int = Field(strict=True, ge=2, le=22)
     rotation: Literal[0, 90, 180, 270] = 0
     pulse: PulseSettings | None = None
     sine: SineSettings | None = None
+    device: PartId | None = None
+
+    @model_validator(mode="after")
+    def validate_device(self) -> Self:
+        """Device kinds name an existing library part of the same kind; others name none."""
+        if (self.kind in DEVICE_KINDS) != (self.device is not None):
+            raise ValueError("Set device to a library part for diodes and transistors only")
+        if self.device is not None:
+            library_part = LIBRARY.get(self.device)
+            if library_part is None:
+                raise ValueError(f"Unknown library part {self.device}; call list_library_parts")
+            if library_part.kind != self.kind:
+                raise ValueError(f"{self.device} is a {library_part.kind}, not a {self.kind}")
+        return self
 
     @model_validator(mode="after")
     def validate_value(self) -> Self:
@@ -64,7 +80,7 @@ class Pin(StrictModel):
     """A stable terminal reference, unaffected by moving or rotating a part."""
 
     part: Identifier
-    terminal: Literal[0, 1]
+    terminal: Literal[0, 1, 2]
 
 
 class Wire(StrictModel):
@@ -114,6 +130,20 @@ class Trace(StrictModel):
     values: list[Finite] = Field(min_length=11, max_length=2002)
 
 
+class RatingCheck(StrictModel):
+    """One library part's stress during a run, compared with its absolute maximum."""
+
+    part: Identifier
+    device: PartId
+    rating: str
+    statistic: Literal["peak", "average"]
+    measured: Finite
+    limit: Finite
+    unit: Literal["V", "A", "W"]
+    passed: bool
+    trust: Literal["draft", "verified"]
+
+
 class SchematicResponse(StrictModel):
     """Every trace has one value per uniformly sampled frame."""
 
@@ -125,6 +155,7 @@ class SchematicResponse(StrictModel):
     pin_nodes: dict[str, str]
     netlist: str
     warnings: list[str]
+    ratings: list[RatingCheck] = Field(default_factory=list, max_length=80)
 
     @model_validator(mode="after")
     def validate_frames(self) -> Self:

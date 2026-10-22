@@ -1,6 +1,7 @@
 import type { KeyboardEvent, PointerEvent } from 'react';
 import { engineering, GRID, partValue, pinKey, pinPosition, pinsFor, snapped } from './schematic-model';
 import { SchematicSymbol } from './schematic-symbol';
+import { terminalCount, terminalLetter, terminalName, voltageReferenceTerminal } from './part-library';
 import type { ObservationReport, Part, Pin } from './schematic-types';
 import { namedSignal, probeSignal } from './observation-signals';
 import { signalReading } from './observation-readings';
@@ -34,12 +35,16 @@ function Terminal({ pin, props }: { pin: Pin; props: PartProps }) {
   } };
   return <g>
     <circle className={'terminal ' + (pending ? 'pending' : '')} cx={position.x} cy={position.y} r="9"
-      role="button" tabIndex={props.disabled ? -1 : 0} aria-label={props.part.id + ' terminal ' + pin.terminal}
+      role="button" tabIndex={props.disabled ? -1 : 0} aria-label={props.part.id + ' terminal ' + terminalName(props.part, pin.terminal)}
       aria-pressed={Boolean(pending)} onClick={event => { event.stopPropagation(); activate(); }}
       onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } }} />
-    <text className="terminal-label" aria-hidden="true" x={position.x + 12} y={position.y + 18}>{pin.terminal}</text>
+    <text className="terminal-label" aria-hidden="true" x={position.x + 12} y={position.y + 18}>{terminalLetter(props.part, pin.terminal)}</text>
     {value !== undefined && !props.observation?.observing && <text className="node-reading" x={position.x + 12} y={position.y - 15}>{engineering(value, 'V')}</text>}
   </g>;
+}
+
+function currentReference(part: Part): string {
+  return terminalCount(part.kind) === 3 ? '(into ' + terminalLetter(part, 0) + ')' : '(' + terminalLetter(part, 0) + '→' + terminalLetter(part, 1) + ')';
 }
 
 export function SchematicPart(props: PartProps) {
@@ -54,15 +59,15 @@ export function SchematicPart(props: PartProps) {
       onPointerDown={props.onStartDrag}>
       <rect className="part-hitbox" x={part.x * GRID - 48} y={part.y * GRID - 48} width="96" height="96" rx="8" />
       <g className="symbol" transform={'translate(' + part.x * GRID + ' ' + part.y * GRID + ') rotate(' + part.rotation + ')'}>
-        <SchematicSymbol kind={part.kind} />
+        <SchematicSymbol part={part} />
       </g>
       <text className="part-label" x={part.x * GRID + 48} y={part.y * GRID - 27}>{part.id}</text>
       <text className="part-value" x={part.x * GRID + 48} y={part.y * GRID - 7}>{partValue(part)}</text>
       {current && props.report && <text className="current-reading" x={part.x * GRID + 86} y={part.y * GRID + 18}>
-        I {signalReading(props.report, current, props.frame)} {props.report.analysis !== 'ac' && '(0→1)'}</text>}
+        I {signalReading(props.report, current, props.frame)} {props.report.analysis !== 'ac' && currentReference(part)}</text>}
       {props.selected && props.report && props.observation?.observing && part.kind !== 'GND' &&
         <text className="current-reading" x={part.x * GRID + 86} y={part.y * GRID + 40}>ΔV {signalReading(props.report,
-          probeSignal(props.report, { kind: 'differential', first: { part: part.id, terminal: 0 }, second: { part: part.id, terminal: 1 } }), props.frame)}</text>}
+          probeSignal(props.report, { kind: 'differential', first: { part: part.id, terminal: 0 }, second: { part: part.id, terminal: voltageReferenceTerminal(part.kind) } }), props.frame)}</text>}
     </g>
     {pinsFor(part).map(pin => <Terminal key={pinKey(pin)} pin={pin} props={props} />)}
     {props.report && props.observation?.observing && <BranchDirection part={part} report={props.report} frame={props.frame} observation={props.observation} />}

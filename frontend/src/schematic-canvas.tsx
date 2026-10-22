@@ -43,6 +43,6 @@ export function SchematicCanvas({ editor, report, frame, observation }: {
         {observation?.observing && report && <NodeReadings parts={parts} wires={editor.schematic.wires} report={report} frame={frame} />}
       </svg>
     </div>
-    <p className="grid-footnote">Crossings are not junctions. Only explicit terminal connections conduct. Current signs: terminal 0 → 1.</p>
+    <p className="grid-footnote">Crossings are not junctions. Only explicit terminal connections conduct. Current signs: into terminal 0 (0 → 1 for two-terminal parts).</p>
   </section>;
 }

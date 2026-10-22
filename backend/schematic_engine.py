@@ -4,6 +4,15 @@ import math
 import tempfile
 from pathlib import Path
 
+from backend.component_catalog import DEVICE_KINDS
+from backend.part_ratings import (
+    RatingProbe,
+    rating_control_lines,
+    rating_probes,
+    rating_warnings,
+    read_ratings,
+)
+from backend.schematic_devices import device_lines, model_cards
 from backend.schematic_models import Part, SchematicRequest, SchematicResponse, Trace
 from backend.schematic_topology import assign_nodes
 from backend.simulation_engine import SimulationFailure
@@ -14,6 +23,8 @@ def component_lines(part: Part, index: int, nodes: dict[str, str], step: float) 
     """Insert a zero-volt series probe for signed terminal-0-to-1 current."""
     if part.kind == "GND":
         return []
+    if part.kind in DEVICE_KINDS:
+        return device_lines(part, index, nodes)
     first, second = nodes[f"{part.id}:0"], nodes[f"{part.id}:1"]
     internal = f"p{index}"
     source = f"{part.value:.12g}"
@@ -30,22 +41,25 @@ def component_lines(part: Part, index: int, nodes: dict[str, str], step: float) 
     return [f"Vprobe{index} {first} {internal} 0", f"{prefix}{index} {internal} {second} {source}"]
 
 
-def compile_schematic(submitted: SchematicRequest) -> tuple[str, dict[str, str], list[str]]:
+def compile_schematic(submitted: SchematicRequest) -> tuple[str, dict[str, str], list[str],
+                                                            list[RatingProbe]]:
     """Generate all executable syntax server-side, never from submitted text."""
     nodes = assign_nodes(submitted)
+    probes = rating_probes(submitted, nodes)
     voltage_nodes = sorted(set(nodes.values()) - {"0"})
     active = [(index, part) for index, part in enumerate(submitted.parts) if part.kind != "GND"]
     vectors = [f"v({node})" for node in voltage_nodes] + [f"i(Vprobe{i})" for i, _ in active]
     names = [f"V:{node}" for node in voltage_nodes] + [f"I:{part.id}" for _, part in active]
     timing = submitted.timing
-    lines = ["Circuit Lab ideal analog schematic", ".options numdgt=12"]
+    lines = ["Circuit Lab analog schematic", ".options numdgt=12 method=gear", *model_cards(submitted.parts)]
     for index, part in enumerate(submitted.parts):
         lines.extend(component_lines(part, index, nodes, timing.step))
     lines.extend([".control", "set wr_singlescale", "set numdgt=12",
                   f"tran {timing.step:.12g} {timing.stop:.12g} 0 {timing.step / 10:.12g}",
+                  *rating_control_lines(probes),
                   f"linearize {' '.join(vectors)}", f"wrdata frames.csv {' '.join(vectors)}",
                   "quit", ".endc", ".end"])
-    return "\n".join(lines) + "\n", nodes, names
+    return "\n".join(lines) + "\n", nodes, names, probes
 
 
 def read_frames(path: Path, names: list[str]) -> tuple[list[float], list[Trace]]:
@@ -71,15 +85,17 @@ def read_frames(path: Path, names: list[str]) -> tuple[list[float], list[Trace]]
 
 def simulate_schematic(submitted: SchematicRequest, correlation_id: str) -> SchematicResponse:
     """Run an ideal analog graph under the existing isolated worker limits."""
-    netlist, nodes, names = compile_schematic(submitted)
+    netlist, nodes, names, probes = compile_schematic(submitted)
     with tempfile.TemporaryDirectory(prefix="circuit-lab-analog-") as workdir:
         status, transcript, stderr = run_ngspice(netlist, workdir, timeout=10)
         failure = simulation_error(status, transcript, stderr)
         if failure:
             raise SimulationFailure("Analog solver failed to converge. Check sources and connections.")
         times, traces = read_frames(Path(workdir) / "frames.csv", names)
+        ratings = read_ratings(probes, transcript)
     return SchematicResponse(correlation_id=correlation_id, times=times, traces=traces,
                              pin_nodes=nodes, netlist=netlist,
-                             warnings=["Ideal R/C/L and sources only; no component ratings or Pi GPIO protection checks.",
+                             ratings=ratings,
+                             warnings=[*rating_warnings(submitted),
                                        "Uniform frames are interpolated by ngspice; use a smaller interval for fast changes.",
                                        "Initial state is the DC operating point, not an uncharged capacitor."])

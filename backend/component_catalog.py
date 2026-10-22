@@ -4,6 +4,9 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, RootModel
 
+DEVICE_KINDS = frozenset({"D", "NMOS", "PMOS", "NPN", "PNP"})
+THREE_TERMINAL_KINDS = frozenset({"NMOS", "PMOS", "NPN", "PNP"})
+
 
 class ComponentDefinition(BaseModel):
     """Static numeric primitive definition, not a manufacturer part rating."""
@@ -23,9 +26,18 @@ CATALOG_PATH = Path(__file__).resolve().parent.parent / "circuits" / "components
 COMPONENTS = ComponentCatalog.model_validate_json(CATALOG_PATH.read_text()).root
 
 
+def terminal_count(kind: str) -> int:
+    """Ground has one terminal, transistors three, everything else two."""
+    if kind == "GND":
+        return 1
+    return 3 if kind in THREE_TERMINAL_KINDS else 2
+
+
 def component_definitions() -> list[dict[str, object]]:
-    """Describe existing ideal primitives without inventing device models."""
+    """Describe ideal primitives and the library-backed device kinds honestly."""
     return [{"kind": kind, **definition.model_dump(),
-             "terminals": [0] if kind == "GND" else [0, 1],
-             "model": "generic ideal; not a manufacturer rating or hardware approval"}
+             "terminals": list(range(terminal_count(kind))),
+             "model": ("library part: set `device` to a library part id of this kind; value must be 0"
+                       if kind in DEVICE_KINDS
+                       else "generic ideal; not a manufacturer rating or hardware approval")}
             for kind, definition in COMPONENTS.items()]

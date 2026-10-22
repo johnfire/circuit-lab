@@ -1,5 +1,6 @@
 """Pure graph validation and deterministic terminal-to-node assignment."""
 
+from backend.component_catalog import terminal_count
 from backend.schematic_models import Part, Pin, SchematicRequest
 
 
@@ -9,8 +10,8 @@ def pin_key(pin: Pin) -> str:
 
 
 def part_pins(part: Part) -> list[str]:
-    """Ground has one terminal; all other supported parts have two."""
-    return [f"{part.id}:{terminal}" for terminal in range(1 if part.kind == "GND" else 2)]
+    """Ground has one terminal, transistors three, all other parts two."""
+    return [f"{part.id}:{terminal}" for terminal in range(terminal_count(part.kind))]
 
 
 def merge_sets(groups: list[set[str]], first: str, second: str) -> list[set[str]]:
@@ -45,7 +46,7 @@ def validate_ground_path(submitted: SchematicRequest, nodes: dict[str, str]) -> 
     if reachable != set(nodes.values()):
         raise ValueError("Every component must have a path to ground; remove floating islands")
     for part in submitted.parts:
-        if part.kind != "GND" and nodes[f"{part.id}:0"] == nodes[f"{part.id}:1"]:
+        if part.kind != "GND" and len({nodes[pin] for pin in part_pins(part)}) == 1:
             raise ValueError(f"{part.id} has shorted terminals; remove the bypass wire")
 
 

@@ -146,6 +146,29 @@ owns; your netlist should use plain relative filenames.
      `... V = 3.3*((V(a)<1.65)|(V(b)<1.65))`. XSPICE digital primitives
      (`a1 ...`) are also available when the exact gate model is wanted.
 
+## Parts library
+
+Real diodes, LEDs, Zeners, MOSFETs and BJTs for the schematic editor and MCP clients live in
+`circuits/parts/<category>/<id>/part.json`: structured model parameters (our code writes the
+`.model` line), absolute-maximum ratings, characterization tests, and a trust record. Every
+transient run checks each library part against its ratings on the solver's own timepoints.
+
+```bash
+uv run python -m backend.parts_cli list                           # parts and trust level
+uv run python -m backend.parts_cli verify [ids...]                # characterization on real ngspice
+uv run python -m backend.parts_cli new mosfet/irf3708 --kind NMOS # scaffold part.draft.json
+uv run python -m backend.parts_cli index                          # regenerate circuits/parts-index.json
+```
+
+Adding a part:
+1. Scaffold it, fill in the draft, and rename it to `part.json`.
+2. Run `verify`.
+3. Run `index`, which CI checks is current.
+
+A part becomes `verified` only after a named human checks every value against the datasheet. The
+loader rejects `verified` unless the file has a datasheet URL, `datasheet p.N` citations on every
+rating and test, a reviewer and a date. All starter parts are currently drafts.
+
 ## Notes / pitfalls
 
 - `op ; print v(x)` can return stale/zero values if the engine isn't fully

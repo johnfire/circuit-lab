@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 from backend.part_characterization import CharacterizationResult, characterize
-from backend.part_library import LIBRARY, PARTS_ROOT
+from backend.part_library import INDEX_PATH, LIBRARY, PARTS_ROOT, library_summaries
 from backend.part_library_models import CATEGORY_KINDS, RATING_UNITS, REQUIRED_RATINGS, TEST_KINDS
 
 UNCONFIRMED = "unconfirmed: replace with 'datasheet p.N' after checking the datasheet"
@@ -82,7 +82,19 @@ def new_part(target: str, kind: str) -> int:
     path = folder / "part.draft.json"
     path.write_text(json.dumps(scaffold(category, part_id, kind), indent=2) + "\n")
     print(f"Created {path}.\nFill in the model, ratings and test values, rename it to part.json, "
-          f"then run: python -m backend.parts_cli verify {part_id}")
+          f"then run: python -m backend.parts_cli verify {part_id} && python -m backend.parts_cli index")
+    return 0
+
+
+def index_text() -> str:
+    """The browser's copy of the library: summaries only, in a stable order."""
+    return json.dumps(library_summaries(), indent=1, sort_keys=True) + "\n"
+
+
+def write_index() -> int:
+    """Regenerate circuits/parts-index.json after adding or changing a part."""
+    INDEX_PATH.write_text(index_text())
+    print(f"Wrote {len(LIBRARY)} part(s) to {INDEX_PATH}")
     return 0
 
 
@@ -96,9 +108,12 @@ def main(arguments: list[str] | None = None) -> int:
     create = commands.add_parser("new", help="scaffold a draft part file")
     create.add_argument("target", help="<category>/<id>, e.g. mosfet/irlz44n")
     create.add_argument("--kind", required=True, help="D, NMOS, PMOS, NPN or PNP")
+    commands.add_parser("index", help="regenerate the browser parts index")
     options = parser.parse_args(arguments)
     if options.command == "list":
         return list_parts()
+    if options.command == "index":
+        return write_index()
     if options.command == "verify":
         return verify_parts(options.parts)
     return new_part(options.target, options.kind)

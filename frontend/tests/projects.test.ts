@@ -8,9 +8,9 @@ const contents: CircuitContents = { circuit: starterCircuit(), sweep: null };
 const binding: CircuitSnapshot = { document: 'test-document', revision: 'first', name: 'private', kind: 'workspace',
   parent: null, actor: 'user:test', reason: 'Created', contents };
 
-test('optional source nulls and JSON property order do not create false unsent edits', () => {
+test('optional source and device nulls and JSON property order do not create false unsent edits', () => {
   const normalized = { ...contents, circuit: { ...contents.circuit, parts: contents.circuit.parts.map(part =>
-    ({ sine: null, pulse: null, ...part })) } } as CircuitContents;
+    ({ sine: null, pulse: null, device: null, ...part })) } } as CircuitContents;
   assert.equal(contentsFingerprint(normalized), contentsFingerprint(contents));
 });
 

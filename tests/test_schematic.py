@@ -85,7 +85,7 @@ def test_time_budget_is_bounded(step: float) -> None:
 def test_rotation_and_position_never_change_electrical_nodes(analog_request: SchematicRequest) -> None:
     moved = [part.model_copy(update={"x": 4, "y": 4, "rotation": 270}) for part in analog_request.parts]
     assert assign_nodes(analog_request.model_copy(update={"parts": moved})) == assign_nodes(analog_request)
-    netlist, _, _ = compile_schematic(analog_request)
+    netlist, _, _, _ = compile_schematic(analog_request)
     assert "Vprobe" in netlist and "linearize" in netlist
 
 

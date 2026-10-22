@@ -38,6 +38,7 @@
 #analog-dots circle { fill: var(--color-border); }
 .schematic-wire { fill: none; stroke: var(--color-text); stroke-width: 3; pointer-events: none; }
 .symbol { fill: none; stroke: var(--color-accent); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.symbol .symbol-fill { fill: var(--color-accent); }
 .part-hitbox { fill: transparent; stroke: transparent; }
 .schematic-part { cursor: grab; touch-action: none; }.schematic-part:active { cursor: grabbing; }
 .selected-part .part-hitbox { fill: var(--color-surface); stroke: var(--color-control-border); stroke-dasharray: 5 5; }

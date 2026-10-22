@@ -3,6 +3,7 @@ import { namedSignal, probeSignal, sampleSignal, tintedVoltage } from './observa
 import { signalReading } from './observation-readings';
 import type { ObservationReport, Part, Pin, Wire } from './schematic-types';
 import { nodeLabels } from './observation-layout';
+import { terminalCount } from './part-library';
 
 export interface GridObservation {
   observing: boolean; markers: boolean; playing: boolean; shading: boolean;
@@ -24,13 +25,15 @@ export function BranchDirection({ part, report, frame, observation }: {
   if (report.analysis === 'ac' || part.kind === 'GND') return null;
   const current = sampleSignal(namedSignal(report, 'I:' + part.id), frame)?.real;
   if (current === undefined || Math.abs(current) < 1e-12) return null;
-  const direction = current < 0 ? '1 → 0' : '0 → 1';
+  const direction = terminalCount(part.kind) === 3 ? (current < 0 ? 'out of terminal 0' : 'into terminal 0') : current < 0 ? '1 → 0' : '0 → 1';
   const duration = Math.max(.4, Math.min(3, 1 / (1 + Math.abs(current) * 1000)));
   return <g className="branch-direction" role="img" aria-label={part.id + ' current ' + engineering(current, 'A') + ', direction ' + direction}
     data-direction={direction} transform={'translate(' + part.x * GRID + ' ' + part.y * GRID + ') rotate(' + part.rotation + ')'}>
-    <g transform={current < 0 ? 'rotate(180)' : undefined}><path d="M-34 34 H34 M24 26 L34 34 L24 42" />
-      {observation.markers && observation.playing && <circle className="flow-marker" r="3" cy="34"
-        style={{ animationDuration: duration + 's' }} />}</g>
+    {terminalCount(part.kind) === 3
+      ? <g transform={'translate(56 -48)' + (current < 0 ? ' rotate(180)' : '')}><path d="M0 -18 V18 M-8 8 L0 18 L8 8" /></g>
+      : <g transform={current < 0 ? 'rotate(180)' : undefined}><path d="M-34 34 H34 M24 26 L34 34 L24 42" />
+        {observation.markers && observation.playing && <circle className="flow-marker" r="3" cy="34"
+          style={{ animationDuration: duration + 's' }} />}</g>}
   </g>;
 }
 

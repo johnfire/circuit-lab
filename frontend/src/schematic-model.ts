@@ -1,9 +1,11 @@
-import type { Part, PartKind, Pin, Rotation, Schematic, Wire } from './schematic-types';
+import type { Part, PartKind, Pin, Rotation, Schematic, Terminal, Wire } from './schematic-types';
 import componentCatalog from '../../circuits/components.json' with { type: 'json' };
+import { isDeviceKind, libraryPart, partsOfKind, terminalCount } from './part-library.ts';
 
 export const GRID = 32;
 export const PART_NAMES: Record<PartKind, string> = {
   R: 'Resistor', C: 'Capacitor', L: 'Inductor', V: 'DC source', PULSE: 'Pulse source', SIN: 'Sine source', GND: 'Ground',
+  D: 'Diode / LED', NMOS: 'N-MOSFET', PMOS: 'P-MOSFET', NPN: 'NPN transistor', PNP: 'PNP transistor',
 };
 export const STANDARD_VALUES = Object.fromEntries(Object.entries(componentCatalog)
   .map(([kind, definition]) => [kind, definition.standard_values])) as Record<PartKind, number[]>;
@@ -16,19 +18,26 @@ export function engineering(value: number, unit = ''): string {
 }
 
 export function partValue(part: Part): string {
-  const units: Record<PartKind, string> = { R: 'Ω', C: 'F', L: 'H', V: 'V', PULSE: 'V pulse', SIN: 'V peak sine', GND: 'V reference' };
+  if (isDeviceKind(part.kind)) return libraryPart(part.device)?.name ?? 'unknown part';
+  const units: Record<string, string> = { R: 'Ω', C: 'F', L: 'H', V: 'V', PULSE: 'V pulse', SIN: 'V peak sine', GND: 'V reference' };
   return engineering(part.value, units[part.kind]);
 }
 
 export function pinKey(pin: Pin): string { return pin.part + ':' + pin.terminal; }
 export function samePin(first: Pin, second: Pin): boolean { return pinKey(first) === pinKey(second); }
 export function pinsFor(part: Part): Pin[] {
-  return part.kind === 'GND' ? [{ part: part.id, terminal: 0 }]
-    : [{ part: part.id, terminal: 0 }, { part: part.id, terminal: 1 }];
+  return ([0, 1, 2] as Terminal[]).slice(0, terminalCount(part.kind)).map(terminal => ({ part: part.id, terminal }));
 }
 
-export function pinPosition(part: Part, terminal: 0 | 1): { x: number; y: number } {
-  const offset = part.kind === 'GND' ? { x: 0, y: -2 } : { x: terminal === 0 ? -2 : 2, y: 0 };
+/** Grid offsets: two-terminal leads left/right; transistors drain/collector up, gate/base left, source/emitter down. */
+function terminalOffset(part: Part, terminal: Terminal): { x: number; y: number } {
+  if (part.kind === 'GND') return { x: 0, y: -2 };
+  if (terminalCount(part.kind) === 3) return [{ x: 1, y: -2 }, { x: -2, y: 0 }, { x: 1, y: 2 }][terminal];
+  return { x: terminal === 0 ? -2 : 2, y: 0 };
+}
+
+export function pinPosition(part: Part, terminal: Terminal): { x: number; y: number } {
+  const offset = terminalOffset(part, terminal);
   const angle = part.rotation * Math.PI / 180;
   return { x: (part.x + Math.round(offset.x * Math.cos(angle) - offset.y * Math.sin(angle))) * GRID,
     y: (part.y + Math.round(offset.x * Math.sin(angle) + offset.y * Math.cos(angle))) * GRID };
@@ -54,10 +63,13 @@ export function addWire(schematic: Schematic, a: Pin, b: Pin): Schematic {
 
 export function makePart(kind: PartKind, parts: Part[], x: number, y: number): Part {
   if (parts.length >= 20) throw new Error('This prototype supports up to 20 parts.');
-  const prefix = kind === 'GND' ? 'G' : kind === 'PULSE' || kind === 'SIN' ? 'V' : kind;
+  const prefix = kind === 'GND' ? 'G' : kind === 'PULSE' || kind === 'SIN' ? 'V' : isDeviceKind(kind) ? (kind === 'D' ? 'D' : 'Q') : kind;
   let suffix = 1;
   while (parts.some(part => part.id === prefix + suffix)) suffix++;
-  const defaults: Record<PartKind, number> = { R: 1000, C: 10e-6, L: 10e-3, V: 5, PULSE: 5, SIN: 5, GND: 0 };
+  if (isDeviceKind(kind)) {
+    return { id: prefix + suffix, kind, value: 0, x, y, rotation: 0, device: partsOfKind(kind)[0]?.id ?? null };
+  }
+  const defaults: Record<string, number> = { R: 1000, C: 10e-6, L: 10e-3, V: 5, PULSE: 5, SIN: 5, GND: 0 };
   return { id: prefix + suffix, kind, value: defaults[kind], x, y, rotation: kind === 'GND' ? 0 : 90,
     ...(kind === 'PULSE' ? { pulse: { period: .1, width: .05, delay: .001 } } : {}),
     ...(kind === 'SIN' ? { sine: { offset: 0, frequency: 10, phase: 0 } } : {}) };

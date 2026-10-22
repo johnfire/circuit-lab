@@ -47,9 +47,12 @@ def launch_schematic(request: SchematicRequest, correlation_id: str) -> Schemati
             response = SchematicResponse.model_validate_json(run_payload(json.dumps(payload)))
         if response.correlation_id != correlation_id:
             raise SimulationFailure("Analog worker returned a mismatched report")
-        _, expected_nodes, expected_names = compile_schematic(request)
+        _, expected_nodes, expected_names, expected_probes = compile_schematic(request)
         if response.pin_nodes != expected_nodes or [trace.name for trace in response.traces] != expected_names:
             raise SimulationFailure("Analog worker returned signals for a different circuit")
+        if [(check.part, check.rating) for check in response.ratings] != [
+                (probe.part.id, probe.rating) for probe in expected_probes]:
+            raise SimulationFailure("Analog worker returned rating checks for a different circuit")
         if any(trace.unit != ("V" if trace.name.startswith("V:") else "A") for trace in response.traces):
             raise SimulationFailure("Analog worker returned mismatched signal units")
         if len(response.times) != math.floor(request.timing.stop / request.timing.step + 1.5):

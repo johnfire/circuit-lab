@@ -7,7 +7,7 @@ import pytest
 from pydantic import ValidationError
 
 from backend import parts_cli
-from backend.part_library import LIBRARY, library_summaries, load_library, model_card
+from backend.part_library import INDEX_PATH, LIBRARY, library_summaries, load_library, model_card
 from backend.part_library_models import LibraryPart
 
 DATASHEET = "https://example.com/1n4148.pdf"
@@ -112,3 +112,8 @@ def test_cli_scaffold_is_a_draft_the_loader_ignores(tmp_path: Path,
 
 def test_cli_verify_rejects_unknown_part() -> None:
     assert parts_cli.main(["verify", "no_such_part"]) == 2
+
+
+def test_browser_parts_index_matches_the_part_files() -> None:
+    assert INDEX_PATH.read_text() == parts_cli.index_text(), \
+        "run: python -m backend.parts_cli index"

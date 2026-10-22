@@ -1,3 +1,4 @@
+import { isDeviceKind, libraryPart, terminalCount } from './part-library.ts';
 import type { Part, Pin, Schematic } from './schematic-types';
 import componentCatalog from '../../circuits/components.json' with { type: 'json' };
 
@@ -18,11 +19,12 @@ function bounded(value: unknown, minimum: number, maximum: number, integer = fal
 }
 
 function parsePart(value: unknown): Part {
-  const part = objectShape(value, ['id', 'kind', 'value', 'x', 'y', 'rotation', 'pulse', 'sine']);
+  const part = objectShape(value, ['id', 'kind', 'value', 'x', 'y', 'rotation', 'pulse', 'sine', 'device']);
   const limits: Record<string, [number, number]> = Object.fromEntries(Object.entries(componentCatalog)
     .map(([kind, definition]) => [kind, [definition.minimum, definition.maximum]]));
   if (typeof part.id !== 'string' || !/^[a-zA-Z][a-zA-Z0-9_]{0,15}$/.test(part.id)) throw new Error('Invalid part identifier.');
-  if (typeof part.kind !== 'string' || !Object.hasOwn(limits, part.kind)) throw new Error('Only R, C, L, DC, pulse, sine and ground are supported.');
+  if (typeof part.kind !== 'string' || !Object.hasOwn(limits, part.kind)) throw new Error('Only supported part kinds are allowed.');
+  parseDevice(part);
   bounded(part.value, ...limits[part.kind]); bounded(part.x, 2, 38, true); bounded(part.y, 2, 22, true);
   if (![0, 90, 180, 270].includes(Number(part.rotation)) || typeof part.rotation !== 'number') throw new Error('Invalid rotation.');
   if (part.kind === 'PULSE') {
@@ -39,10 +41,22 @@ function parsePart(value: unknown): Part {
   return part as unknown as Part;
 }
 
+function parseDevice(part: Record<string, unknown>): void {
+  if (!isDeviceKind(part.kind as Part['kind'])) {
+    if (part.device !== undefined && part.device !== null) throw new Error('Only diodes and transistors name a library part.');
+    return;
+  }
+  const library = libraryPart(typeof part.device === 'string' ? part.device : null);
+  if (!library) throw new Error('This circuit uses a library part that is not available.');
+  if (library.kind !== part.kind) throw new Error(library.name + ' is not a ' + String(part.kind) + '.');
+}
+
 function parsePin(value: unknown, parts: Part[]): Pin {
   const pin = objectShape(value, ['part', 'terminal']);
   const part = parts.find(part => part.id === pin.part);
-  if (!part || (pin.terminal !== 0 && pin.terminal !== 1) || (part.kind === 'GND' && pin.terminal === 1)) throw new Error('A wire points to a missing terminal.');
+  if (!part || (pin.terminal !== 0 && pin.terminal !== 1 && pin.terminal !== 2) || pin.terminal >= terminalCount(part.kind)) {
+    throw new Error('A wire points to a missing terminal.');
+  }
   return { part: part.id, terminal: pin.terminal };
 }
 

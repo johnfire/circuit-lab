@@ -6,6 +6,7 @@ from mcp import Client
 
 from backend.component_catalog import COMPONENTS
 from backend.mcp_server import create_mcp_server
+from backend.part_library import LIBRARY
 
 
 def test_real_sdk_discovers_only_implemented_orientation_tools() -> None:
@@ -13,7 +14,8 @@ def test_real_sdk_discovers_only_implemented_orientation_tools() -> None:
         async with Client(create_mcp_server()) as client:
             catalog = await client.list_tools()
             assert {tool.name for tool in catalog.tools} == {
-                "get_app_guide", "get_capabilities", "list_components", "get_component", "list_examples"}
+                "get_app_guide", "get_capabilities", "list_components", "get_component",
+                "list_library_parts", "get_library_part", "list_examples"}
             for tool in catalog.tools:
                 assert tool.annotations is not None
                 assert tool.annotations.read_only_hint is True
@@ -21,6 +23,24 @@ def test_real_sdk_discovers_only_implemented_orientation_tools() -> None:
             assert capabilities.structured_content is not None
             assert capabilities.structured_content["collaboration_enabled"] is False
             assert capabilities.structured_content["arbitrary_netlists"] is False
+            assert capabilities.structured_content["library_parts"] == len(LIBRARY)
+    asyncio.run(round_trip())
+
+
+def test_real_sdk_library_discovery_reports_trust_and_rejects_unknown_parts() -> None:
+    async def round_trip() -> None:
+        async with Client(create_mcp_server()) as client:
+            mosfets = await client.call_tool("list_library_parts", {"category": "mosfet"})
+            assert mosfets.structured_content is not None
+            listed = mosfets.structured_content["result"]
+            assert {part["category"] for part in listed} == {"mosfet"}
+            assert all(part["trust"] in {"draft", "verified"} for part in listed)
+            detail = await client.call_tool("get_library_part", {"part_id": "irlz44n"})
+            assert detail.structured_content is not None
+            assert detail.structured_content["terminals"] == ["drain", "gate", "source"]
+            assert "vds_max" in detail.structured_content["ratings"]
+            unknown = await client.call_tool("get_library_part", {"part_id": "made_up_fet"})
+            assert unknown.is_error is True and "Unknown library part" in str(unknown.content)
     asyncio.run(round_trip())
 
 

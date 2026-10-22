@@ -1,19 +1,25 @@
-export type PartKind = 'R' | 'C' | 'L' | 'V' | 'PULSE' | 'SIN' | 'GND';
+export type DeviceKind = 'D' | 'NMOS' | 'PMOS' | 'NPN' | 'PNP';
+export type PartKind = 'R' | 'C' | 'L' | 'V' | 'PULSE' | 'SIN' | 'GND' | DeviceKind;
+export type Terminal = 0 | 1 | 2;
 export type Rotation = 0 | 90 | 180 | 270;
 export interface Pulse { period: number; width: number; delay: number }
 export interface Sine { offset: number; frequency: number; phase: number }
 export interface Part {
   id: string; kind: PartKind; value: number; x: number; y: number;
-  rotation: Rotation; pulse?: Pulse | null; sine?: Sine | null;
+  rotation: Rotation; pulse?: Pulse | null; sine?: Sine | null; device?: string | null;
 }
-export interface Pin { part: string; terminal: 0 | 1 }
+export interface Pin { part: string; terminal: Terminal }
 export interface Wire { a: Pin; b: Pin }
 export interface Schematic { parts: Part[]; wires: Wire[]; timing: { stop: number; step: number } }
 export interface AnalogTrace { name: string; unit: 'V' | 'A'; values: number[] }
+export interface RatingCheck {
+  part: string; device: string; rating: string; statistic: 'peak' | 'average'; measured: number;
+  limit: number; unit: 'V' | 'A' | 'W'; passed: boolean; trust: 'draft' | 'verified';
+}
 export interface AnalogReport {
   analysis?: 'transient';
   status: 'completed'; correlation_id: string; times: number[]; traces: AnalogTrace[];
-  pin_nodes: Record<string, string>; warnings: string[]; netlist: string;
+  pin_nodes: Record<string, string>; warnings: string[]; netlist: string; ratings?: RatingCheck[];
 }
 export interface Sweep {
   source: string; amplitude: number; phase: number; start: number; stop: number;

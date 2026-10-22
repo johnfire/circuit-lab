@@ -1,0 +1,637 @@
+[
+ {
+  "category": "bjt",
+  "datasheet": null,
+  "description": "General-purpose NPN transistor, up to ~600 mA",
+  "id": "2n2222a",
+  "kind": "NPN",
+  "name": "2N2222A",
+  "package": "TO-92 / TO-18",
+  "ratings": {
+   "ic_max": {
+    "unit": "A",
+    "value": 0.6
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 0.625
+   },
+   "vceo_max": {
+    "unit": "V",
+    "value": 40.0
+   }
+  },
+  "terminals": [
+   "collector",
+   "base",
+   "emitter"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "bjt",
+  "datasheet": null,
+  "description": "General-purpose small-signal NPN transistor",
+  "id": "2n3904",
+  "kind": "NPN",
+  "name": "2N3904",
+  "package": "TO-92",
+  "ratings": {
+   "ic_max": {
+    "unit": "A",
+    "value": 0.2
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 0.625
+   },
+   "vceo_max": {
+    "unit": "V",
+    "value": 40.0
+   }
+  },
+  "terminals": [
+   "collector",
+   "base",
+   "emitter"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "bjt",
+  "datasheet": null,
+  "description": "General-purpose small-signal PNP transistor",
+  "id": "2n3906",
+  "kind": "PNP",
+  "name": "2N3906",
+  "package": "TO-92",
+  "ratings": {
+   "ic_max": {
+    "unit": "A",
+    "value": 0.2
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 0.625
+   },
+   "vceo_max": {
+    "unit": "V",
+    "value": 40.0
+   }
+  },
+  "terminals": [
+   "collector",
+   "base",
+   "emitter"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "bjt",
+  "datasheet": null,
+  "description": "Small-signal NPN transistor, gain group B",
+  "id": "bc547b",
+  "kind": "NPN",
+  "name": "BC547B",
+  "package": "TO-92",
+  "ratings": {
+   "ic_max": {
+    "unit": "A",
+    "value": 0.1
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 0.5
+   },
+   "vceo_max": {
+    "unit": "V",
+    "value": 45.0
+   }
+  },
+  "terminals": [
+   "collector",
+   "base",
+   "emitter"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "bjt",
+  "datasheet": null,
+  "description": "Small-signal PNP transistor, gain group B",
+  "id": "bc557b",
+  "kind": "PNP",
+  "name": "BC557B",
+  "package": "TO-92",
+  "ratings": {
+   "ic_max": {
+    "unit": "A",
+    "value": 0.1
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 0.5
+   },
+   "vceo_max": {
+    "unit": "V",
+    "value": 45.0
+   }
+  },
+  "terminals": [
+   "collector",
+   "base",
+   "emitter"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "diode",
+  "datasheet": null,
+  "description": "1 A general-purpose rectifier, 50 V",
+  "id": "1n4001",
+  "kind": "D",
+  "name": "1N4001",
+  "package": "DO-41",
+  "ratings": {
+   "if_max": {
+    "unit": "A",
+    "value": 1.0
+   },
+   "vr_max": {
+    "unit": "V",
+    "value": 50.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "diode",
+  "datasheet": null,
+  "description": "1 A general-purpose rectifier, 1000 V",
+  "id": "1n4007",
+  "kind": "D",
+  "name": "1N4007",
+  "package": "DO-41",
+  "ratings": {
+   "if_max": {
+    "unit": "A",
+    "value": 1.0
+   },
+   "vr_max": {
+    "unit": "V",
+    "value": 1000.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "diode",
+  "datasheet": null,
+  "description": "Fast small-signal switching diode",
+  "id": "1n4148",
+  "kind": "D",
+  "name": "1N4148",
+  "package": "DO-35",
+  "ratings": {
+   "if_max": {
+    "unit": "A",
+    "value": 0.2
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 0.5
+   },
+   "vr_max": {
+    "unit": "V",
+    "value": 100.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "led",
+  "datasheet": null,
+  "description": "Generic 5 mm blue InGaN indicator LED",
+  "id": "led_blue_5mm",
+  "kind": "D",
+  "name": "LED blue 5 mm",
+  "package": "5 mm THT",
+  "ratings": {
+   "if_max": {
+    "unit": "A",
+    "value": 0.03
+   },
+   "vr_max": {
+    "unit": "V",
+    "value": 5.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "led",
+  "datasheet": null,
+  "description": "Generic 5 mm red indicator LED",
+  "id": "led_red_5mm",
+  "kind": "D",
+  "name": "LED red 5 mm",
+  "package": "5 mm THT",
+  "ratings": {
+   "if_max": {
+    "unit": "A",
+    "value": 0.03
+   },
+   "vr_max": {
+    "unit": "V",
+    "value": 5.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "led",
+  "datasheet": null,
+  "description": "Generic 5 mm white (blue + phosphor) LED",
+  "id": "led_white_5mm",
+  "kind": "D",
+  "name": "LED white 5 mm",
+  "package": "5 mm THT",
+  "ratings": {
+   "if_max": {
+    "unit": "A",
+    "value": 0.03
+   },
+   "vr_max": {
+    "unit": "V",
+    "value": 5.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "led",
+  "datasheet": null,
+  "description": "Generic 5 mm yellow indicator LED",
+  "id": "led_yellow_5mm",
+  "kind": "D",
+  "name": "LED yellow 5 mm",
+  "package": "5 mm THT",
+  "ratings": {
+   "if_max": {
+    "unit": "A",
+    "value": 0.03
+   },
+   "vr_max": {
+    "unit": "V",
+    "value": 5.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "mosfet",
+  "datasheet": null,
+  "description": "Small-signal N-channel MOSFET, 60 V",
+  "id": "2n7000",
+  "kind": "NMOS",
+  "name": "2N7000",
+  "package": "TO-92",
+  "ratings": {
+   "id_max": {
+    "unit": "A",
+    "value": 0.2
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 0.4
+   },
+   "vds_max": {
+    "unit": "V",
+    "value": 60.0
+   },
+   "vgs_max": {
+    "unit": "V",
+    "value": 20.0
+   }
+  },
+  "terminals": [
+   "drain",
+   "gate",
+   "source"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "mosfet",
+  "datasheet": null,
+  "description": "Logic-level N-channel MOSFET, 30 V, 5.7 A; switches from 3.3 V GPIO",
+  "id": "ao3400a",
+  "kind": "NMOS",
+  "name": "AO3400A",
+  "package": "SOT-23",
+  "ratings": {
+   "id_max": {
+    "unit": "A",
+    "value": 5.7
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 1.4
+   },
+   "vds_max": {
+    "unit": "V",
+    "value": 30.0
+   },
+   "vgs_max": {
+    "unit": "V",
+    "value": 12.0
+   }
+  },
+  "terminals": [
+   "drain",
+   "gate",
+   "source"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "mosfet",
+  "datasheet": null,
+  "description": "Logic-level P-channel MOSFET, -30 V, -4 A; high-side switching",
+  "id": "ao3401a",
+  "kind": "PMOS",
+  "name": "AO3401A",
+  "package": "SOT-23",
+  "ratings": {
+   "id_max": {
+    "unit": "A",
+    "value": 4.0
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 1.4
+   },
+   "vds_max": {
+    "unit": "V",
+    "value": 30.0
+   },
+   "vgs_max": {
+    "unit": "V",
+    "value": 12.0
+   }
+  },
+  "terminals": [
+   "drain",
+   "gate",
+   "source"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "mosfet",
+  "datasheet": null,
+  "description": "Small-signal N-channel MOSFET, 60 V, 500 mA",
+  "id": "bs170",
+  "kind": "NMOS",
+  "name": "BS170",
+  "package": "TO-92",
+  "ratings": {
+   "id_max": {
+    "unit": "A",
+    "value": 0.5
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 0.83
+   },
+   "vds_max": {
+    "unit": "V",
+    "value": 60.0
+   },
+   "vgs_max": {
+    "unit": "V",
+    "value": 20.0
+   }
+  },
+  "terminals": [
+   "drain",
+   "gate",
+   "source"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "mosfet",
+  "datasheet": null,
+  "description": "Logic-level N-channel MOSFET, 50 V; used in I2C level shifters",
+  "id": "bss138",
+  "kind": "NMOS",
+  "name": "BSS138",
+  "package": "SOT-23",
+  "ratings": {
+   "id_max": {
+    "unit": "A",
+    "value": 0.22
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 0.36
+   },
+   "vds_max": {
+    "unit": "V",
+    "value": 50.0
+   },
+   "vgs_max": {
+    "unit": "V",
+    "value": 20.0
+   }
+  },
+  "terminals": [
+   "drain",
+   "gate",
+   "source"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "mosfet",
+  "datasheet": null,
+  "description": "Logic-level N-channel power MOSFET, 55 V; drives relays, solenoids, motors",
+  "id": "irlz44n",
+  "kind": "NMOS",
+  "name": "IRLZ44N",
+  "package": "TO-220",
+  "ratings": {
+   "id_max": {
+    "unit": "A",
+    "value": 47.0
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 2.4
+   },
+   "vds_max": {
+    "unit": "V",
+    "value": 55.0
+   },
+   "vgs_max": {
+    "unit": "V",
+    "value": 16.0
+   }
+  },
+  "terminals": [
+   "drain",
+   "gate",
+   "source"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "schottky",
+  "datasheet": null,
+  "description": "1 A Schottky rectifier, 20 V, low forward drop",
+  "id": "1n5817",
+  "kind": "D",
+  "name": "1N5817",
+  "package": "DO-41",
+  "ratings": {
+   "if_max": {
+    "unit": "A",
+    "value": 1.0
+   },
+   "vr_max": {
+    "unit": "V",
+    "value": 20.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "schottky",
+  "datasheet": null,
+  "description": "1 A Schottky rectifier, 40 V; common flyback diode",
+  "id": "1n5819",
+  "kind": "D",
+  "name": "1N5819",
+  "package": "DO-41",
+  "ratings": {
+   "if_max": {
+    "unit": "A",
+    "value": 1.0
+   },
+   "vr_max": {
+    "unit": "V",
+    "value": 40.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "zener",
+  "datasheet": null,
+  "description": "3.3 V 1 W Zener diode",
+  "id": "1n4728a",
+  "kind": "D",
+  "name": "1N4728A",
+  "package": "DO-41",
+  "ratings": {
+   "iz_max": {
+    "unit": "A",
+    "value": 0.276
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 1.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "zener",
+  "datasheet": null,
+  "description": "5.1 V 1 W Zener diode",
+  "id": "1n4733a",
+  "kind": "D",
+  "name": "1N4733A",
+  "package": "DO-41",
+  "ratings": {
+   "iz_max": {
+    "unit": "A",
+    "value": 0.178
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 1.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "zener",
+  "datasheet": null,
+  "description": "12 V 1 W Zener diode",
+  "id": "1n4742a",
+  "kind": "D",
+  "name": "1N4742A",
+  "package": "DO-41",
+  "ratings": {
+   "iz_max": {
+    "unit": "A",
+    "value": 0.076
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 1.0
+   }
+  },
+  "terminals": [
+   "anode",
+   "cathode"
+  ],
+  "trust": "draft"
+ }
+]

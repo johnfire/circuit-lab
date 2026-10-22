@@ -1,4 +1,5 @@
 import type { ObservationReport, Pin, Probe, Schematic } from './schematic-types';
+import { voltageReferenceTerminal } from './part-library.ts';
 
 export interface Signal { key: string; label: string; unit: 'V' | 'A'; real: number[]; imaginary?: number[] }
 export interface ComplexSample { real: number; imaginary: number }
@@ -59,7 +60,7 @@ export function defaultProbes(schematic: Schematic): Probe[] {
   const active = schematic.parts.filter(part => part.kind !== 'GND');
   const voltageParts = [active[0], active.at(-1)].filter(part => part !== undefined);
   return [...voltageParts.map(part => ({ kind: 'differential' as const,
-    first: { part: part.id, terminal: 0 as const }, second: { part: part.id, terminal: 1 as const } })),
+    first: { part: part.id, terminal: 0 as const }, second: { part: part.id, terminal: voltageReferenceTerminal(part.kind) } })),
     ...(active[1] ? [{ kind: 'current' as const, part: active[1].id }] : [])];
 }
 

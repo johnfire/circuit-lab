@@ -8,6 +8,7 @@ from uuid import UUID
 
 from pydantic import Field, model_validator
 
+from backend.component_catalog import terminal_count
 from backend.model_primitives import Identifier, StrictModel
 from backend.schematic_ac_models import Sweep
 from backend.schematic_models import Part, Pin, Timing, Wire
@@ -47,7 +48,7 @@ class EditorCircuit(StrictModel):
         if len({part.id for part in self.parts}) != len(self.parts):
             raise ValueError("Part IDs must be unique")
         pins = {f"{part.id}:{terminal}" for part in self.parts
-                for terminal in range(1 if part.kind == "GND" else 2)}
+                for terminal in range(terminal_count(part.kind))}
         edges: set[frozenset[str]] = set()
         for wire in self.wires:
             edge = frozenset((f"{wire.a.part}:{wire.a.terminal}",
