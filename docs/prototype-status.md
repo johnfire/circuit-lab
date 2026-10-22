@@ -101,6 +101,8 @@ interaction, security boundaries and intentional first-slice limitations.
 See [observation and AC](plans/2026-10-04-circuit-observation-and-ac.md) for the
 approved design, implementation, limits and local verification evidence.
 See [MCP circuit collaboration](plans/2026-10-04-mcp-circuit-collaboration.md) for
-the proposed shared-project, explicitly shared workspace and direct-AI-edit/undo
-architecture. This MCP interface is not implemented yet; client/dependency
-choices remain open.
+the shared-project, explicitly shared workspace and direct-AI-edit/undo
+architecture. It is implemented and deployed but disabled pending activation gates;
+see [MCP implementation status](mcp-implementation-status.md). On 2026-10-22 Chris
+adopted MCP as the AI/chat interface (see the revised
+[product design](plans/2026-09-23-circuit-lab-design.md) §0).

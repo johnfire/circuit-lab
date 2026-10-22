@@ -1,14 +1,43 @@
 # circuit-lab — Product Design
 
-- **Date:** 2026-09-23
-- **Status:** Agreed in brainstorming (Chris + Claude); nothing built yet beyond the existing harness.
-- **Starting point:** `harness/run_circuit.py` (ngspice driver) + 9 example circuits. See `README.md` / `HOW-TO.md`.
+- **Date:** 2026-09-23 · **Revised:** 2026-10-22
+- **Status:** Agreed in brainstorming (Chris + Claude) on 2026-09-23. Revised 2026-10-22 to adopt the
+  **MCP direction** that the 2026-10-03/04 build took (see §0). Live at
+  `circuit-lab.christopherrehm.de`.
+- **Current state of the build:** [`docs/prototype-status.md`](../prototype-status.md) and
+  [`docs/mcp-implementation-status.md`](../mcp-implementation-status.md).
+
+## 0. Revision 2026-10-22 — the MCP direction
+
+The build diverged from the original plan in two ways. Chris reviewed both and accepted them:
+
+1. **The AI lives outside the app and drives it through MCP.** We dropped the in-app chat agent with
+   its own LLM provider (old D2/D5 and §4 "core loop"). Instead, any MCP-capable AI client (Claude
+   Desktop/Code, Codex, …) connects to the authenticated `/mcp` endpoint and operates the software
+   with the same structured, revisioned, undoable edits and real ngspice runs as the browser. **The
+   user's AI client is the chat.**
+2. **The schematic editor came first.** It's a second way to edit the same structured model (D3),
+   so it was cheap to add early and the human and the AI share one circuit.
+
+What this changes:
+
+- **The verification loop is unchanged; who runs it changes.** The external AI edits the model,
+  simulates, reads measurements and checks, and fixes before reporting. The MCP guide tells it never
+  to claim a result it hasn't simulated.
+- **The model is pluggable for free.** Whatever AI the user connects is the model. The model-router
+  research uses the same benchmarks over MCP (§9 "Agent evals").
+- **A trade-off we accept.** Users need an MCP-capable AI client. That suits the rusty EE (D1); for
+  beginners, a later in-app chat can be built *as an MCP client of this same server*, not a second
+  AI integration.
+- **The parts library is now the next major piece.** Without it, MCP can only build ideal R/C/L
+  circuits, and none of the benchmark circuits (§8) can be built.
 
 ## 1. What we're building
 
-A **verification-first circuit design assistant**. You describe what you want in chat; an AI proposes
-a circuit, **simulates and checks it before claiming it works**, and shows you the schematic,
-waveforms, a verification report, and a parts list.
+A **verification-first circuit design assistant**. You describe what you want to your AI client; it
+operates Circuit Lab over MCP, proposes a circuit, **simulates and checks it before claiming it
+works**, and you see the schematic, waveforms, a verification report, and a parts list. You can also
+edit the same circuit directly in the browser.
 
 The differentiator is verification, not "AI draws a circuit." A general chatbot will hand you a circuit
 that fries your Pi; this tool must never present an unverified design as working.
@@ -32,27 +61,29 @@ that fries your Pi; this tool must never present an unverified design as working
 | # | Decision | Why |
 |---|---|---|
 | D1 | Primary user = rusty EE; one explain-level dial for everyone | Bridges hobbyist and pro; dogfoodable; one product, not three |
-| D2 | Chat-first in phase 1; schematic-first later | Fastest value for the rusty EE; an editor is a huge build |
-| D3 | The circuit lives in one **structured model**; chat, netlist, and schematic all derive from it | Adding a schematic editor later is a second way to edit the same model, not a rewrite |
+| D2 | ~~Chat-first in phase 1; schematic-first later~~ **Revised:** AI chat happens in the user's own MCP client; the browser schematic editor shipped first | See §0 |
+| D3 | The circuit lives in one **structured model**; MCP edits, netlist, and schematic all derive from it | The browser editor and the AI edit the same revisioned circuit |
 | D4 | Hosted on goserver, single-user at first, via CI/CD | Matches the CI-is-the-gate workflow; forces the sandbox early; multi-user deferred |
-| D5 | Pluggable LLM provider interface, starting on Claude | Feeds the model-router research; the simulator catches a weaker model's mistakes |
+| D5 | ~~Pluggable LLM provider interface, starting on Claude~~ **Revised:** no LLM inside the app; any MCP client can drive it | Pluggability for free; no API cost in the app; see §0 |
 | D6 | Curated parts library; generic parts only as a clearly labelled fallback | "Verified" is only as good as the models behind it |
-| D7 | Only a human can mark a part `verified` | Tests prove model ≡ YAML; only a human reading the datasheet catches a misread datasheet |
+| D7 | Only a human can mark a part `verified` | Tests prove model ≡ part file; only a human reading the datasheet catches a misread datasheet |
+| D9 | Parts are `part.json` with **structured model parameters**, not YAML + free-text `model.lib` | No new dependency; the browser imports it directly; our code generates every `.model` line, so no file-supplied SPICE text ever reaches ngspice |
 | D8 | Backend Python (FastAPI); frontend React + TypeScript | Harness is already Python; React has the best diagram/canvas ecosystem |
 
 ## 4. Architecture
 
-### Core loop
+### Core loop (revised 2026-10-22: the AI is an external MCP client)
 
-1. User describes the goal in chat.
-2. The **design agent** (LLM behind the provider interface) never writes SPICE. It calls tools that
-   edit the circuit model: `add_part`, `connect`, `set_value`, `add_check`, `simulate`.
-3. Our code validates the model, generates the netlist, runs it in the simulation worker, and
-   evaluates the checks.
-4. Results go back to the agent, which fixes and re-simulates, up to a fixed attempt limit, **before**
-   showing the user anything.
-5. The user gets the design plus its verification report, or an honest "couldn't make this work,
-   here's why."
+1. The user describes the goal to their own AI client and shares a circuit (project or live
+   workspace) with it from the browser. The grant is bounded, it expires, and it can be revoked.
+2. The AI never writes SPICE. It calls MCP tools that edit the structured model:
+   `apply_circuit_edits` (`put_part`, `connect`, `disconnect`, `set_timing`, `set_sweep`, …),
+   `validate_circuit`, `list_components` / `list_library_parts`.
+3. Our code validates the model, generates the netlist, runs it in the simulation worker
+   (`simulate_circuit`), and evaluates checks (`measure_signals`, `evaluate_checks`, part ratings).
+4. The AI fixes and re-simulates **before** reporting. Every edit is a revision with undo; the human
+   sees the same circuit change on the grid.
+5. The user gets the design plus its evidence, or an honest "couldn't make this work, here's why."
 
 ### Two kinds of checks
 
@@ -65,11 +96,12 @@ that fries your Pi; this tool must never present an unverified design as working
 
 | Component | Role |
 |---|---|
-| Frontend | React + TS: chat and workspace |
-| API | FastAPI: login, designs, chat sessions, design agent |
+| Frontend | React + TS: schematic editor, observation/scope, AC plots, sharing |
+| API | FastAPI: REST for the browser + authenticated `/mcp` for AI clients, sharing one service layer |
+| Identity | Self-hosted Keycloak (separate store): accounts, OAuth for MCP clients |
 | Simulation worker | ngspice in a locked-down container: no network, CPU and time limits, read-only FS |
-| Database | Postgres: designs, versions, chat history, audit log |
-| Parts library | Git folder in the repo, loaded at startup |
+| Database | Postgres (application-only): projects, immutable revisions, runs, audit log |
+| Parts library | `circuits/parts/<category>/<id>/part.json` in the repo, loaded at startup |
 
 ### Security
 
@@ -81,75 +113,85 @@ that fries your Pi; this tool must never present an unverified design as working
 ### Failure isolation
 
 - ngspice hang or crash → only that job fails; the agent sees the error.
-- LLM provider down → designs remain viewable, editable, and re-simulatable; only chat pauses.
+- AI client disconnected or MCP disabled → the browser editor and simulation keep working.
 
 ## 5. Parts library
 
-One part = one folder, e.g. `parts/mosfet/bss138/`:
+One part = one file, `circuits/parts/<category>/<id>/part.json` (D9), containing:
 
-- **`part.yaml`**: name, category, package, pinout, datasheet URL, key specs, and absolute maximum
-  ratings. **Every spec cites its datasheet page**, e.g.
-  `vgs_th: {min: 0.8, max: 1.5, unit: V, source: "datasheet p.2"}`.
-- **`model.lib`**: the SPICE model, adapted for ngspice if needed.
-- **Characterization tests, declared as data in `part.yaml`**, e.g. "at Vgs = 3.3 V, Vds = 0.1 V,
-  Rds(on) ≤ 3.5 Ω." A generic runner turns each into a small simulation. Adding a part never
+- **Identity**: name, kind (diode, LED, Zener, NMOS/PMOS, NPN/PNP), package, description, and the
+  datasheet URL.
+- **Model**: a model type (`D`, `NPN`, `PNP`, `VDMOS`) plus **named numeric parameters**. Our code
+  writes the `.model` line, so the file holds no SPICE text.
+- **Ratings**: absolute maximums (e.g. `vds_max`, `id_max`, `pd_max`), each with a unit and a
+  `source` saying where the number came from.
+- **Characterization tests, as data**: e.g. `{"test": "mosfet_rds_on", "vgs": 4.5, "id": 0.075,
+  "max": 5.3}`. A generic runner turns each into a small real-ngspice simulation. Adding a part never
   requires writing Python.
+- **Trust**: `draft` or `verified`. A part can only be marked `verified` when it has a datasheet
+  URL, every rating cites a datasheet page, and a named human reviewer and date are recorded. The
+  loader enforces this (D7).
 
 **Adding a part:**
 
-1. `parts new mosfet/irlz44n` scaffolds the folder.
-2. Fill it in by hand, or drop in the datasheet PDF and let the AI draft `part.yaml` and the tests
-   with page citations (phase 2).
-3. `parts verify irlz44n` runs the tests.
-4. A human reviews the cited values and marks it `verified`.
+1. `python -m backend.parts_cli new mosfet/irlz44n` scaffolds the file.
+2. Fill it in by hand, or have an AI draft it from the datasheet with page citations.
+3. `python -m backend.parts_cli verify irlz44n` runs its characterization tests against real ngspice.
+4. A human checks the cited values against the datasheet and records the review → `verified`.
 
-**Trust levels:** `draft` or `verified`. The design agent uses only `verified` parts by default. When a
-needed part is missing, it falls back to a generic model, labels the design "verified against a generic
-part," and lists the specs a real part must meet.
+**In circuits:** library parts are placed like any other part. Every transient run automatically
+checks each library part against its ratings (peak voltage, current, power) and reports pass/fail.
+The result always states each part's trust level: draft parts are usable, but never reported as
+datasheet-verified.
 
-## 6. User interface (phase 1)
+**Fallback:** when no suitable part exists, the AI uses ideal parts, says so, and lists the specs a
+real part must meet.
 
-- **Left: chat.** Describe, ask, tweak ("make it work at 5 V too", "why the 10k?").
-- **Right: workspace tabs**, all derived from the model:
-  1. **Schematic**: generated. The agent places parts on a grid and positions are stored in the
-     model. Phase-1 schematics will be correct but plain; auto-layout is a known hard problem.
-  2. **Simulation**: interactive waveforms with zoom and measurement cursors.
-  3. **Verification report**: each check with pass/fail and the reason.
-  4. **Parts list (BOM)**: links to library entries and shows each part's trust level.
-- **Verification badge**, always visible: "Verified: 6/6 checks" / "Unverified: uses generic part."
-- **Explain-level dial**: terse ↔ detailed; detailed links concepts to Flashkarte (phase 2).
+## 6. User interface
 
-## 7. Roadmap
+- **The chat is the user's AI client** (MCP). The browser is the shared workspace that the human and
+  the AI both edit.
+- **Browser workspace** (built), all derived from the model:
+  1. **Schematic editor**: place, wire, move, rotate; standard or custom values.
+  2. **Observation**: live node voltages and current arrows on the grid, probes, scope, playback.
+  3. **AC analysis**: gain/phase plots, frequency cursor, phasors.
+  4. **Projects and sharing**: save, revisions, undo, share with an AI client, revoke.
+- **Still to come:** a library parts shelf with trust badges, a ratings/verification panel per run,
+  a BOM view, and the explain-level dial with Flashkarte links.
 
-### Phase 0 — Skeleton, live
+## 7. Roadmap (status as of 2026-10-22)
 
-- Restructure the repo; the harness becomes part of the backend.
-- docker-compose; GitHub Actions CI (tests, lint, dependency vulnerability scan) deploying to
-  goserver behind login, at a subdomain of `christopherrehm.de`.
-- The existing 9 circuits become the first regression tests.
-- **Done when:** a hello page is live at the subdomain, deployed by CI.
+### Phase 0 — Skeleton, live — **done**
 
-### Phase 1 — Core loop (MVP)
+- CI (lint, types, tests, dependency audit) deploying to goserver at
+  `circuit-lab.christopherrehm.de`; the 9 example circuits are regression tests.
 
-- Circuit model and netlist generator; sandboxed simulation worker.
-- Parts library format plus 10–15 starter parts, human-verified.
-- Design agent on Claude with its tools.
-- UI: chat, simulation, verification report, BOM, plain schematic.
-- **Done when:** all three benchmark circuits (below) are designed end to end on the live site, and
-  verified.
+### Phase 1 — Core loop (MVP) — **in progress**
+
+- ✅ Circuit model, netlist generator, sandboxed simulation worker (transient and AC).
+- ✅ Schematic editor and observation UI (built ahead of the original plan).
+- ✅ MCP server with revisioned edits, runs, measurements, and undo. Deployed but **switched off**
+  pending encrypted off-host backups and a real AI-client sign-in test (see
+  `docs/mcp-implementation-status.md`).
+- ⬜ **Parts library**: format, loader, characterization runner, starter parts, semiconductor
+  support in the model, editor, and MCP, plus rating checks on every run. ← **next**
+- ⬜ Human review of starter parts → `verified`.
+- **Done when:** all three benchmark circuits (§8) are designed end to end on the live site **by an
+  AI client over MCP**, and verified.
 
 ### Phase 2 — Make it good
 
-- Datasheet-PDF → draft-part flow; grow the library to 30–50 parts.
-- Better schematic rendering; explain-level dial with Flashkarte links; design history and versions.
+- Grow the library to 30–50 parts, including op-amps (these need subcircuit model support).
+- Datasheet-PDF → draft-part flow; BOM view; explain-level dial with Flashkarte links.
 
-### Phase 3 — Schematic-first
+### Phase 3 — Beyond the schematic
 
-- Schematic editor over the same model; breadboard/wiring view.
+- Breadboard/wiring view; better auto-layout for AI-created circuits.
 
 ### Phase 4 — Open to others
 
-- Accounts, GDPR compliance, rate limits, per-user LLM cost caps.
+- Public accounts already exist (Keycloak); still needed: GDPR review, rate limits and quotas at
+  scale, anti-abuse, legal pages, and possibly an in-app chat built as an MCP client.
 
 ### Later (pro EE)
 
@@ -173,8 +215,8 @@ Replace these with real projects Chris wants to build when they come up.
 |---|---|---|
 | Unit | Model validation, netlist generation, result parsing, check evaluation | Every push |
 | Integration | Real ngspice in the sandbox: the 9 example circuits and every part's characterization tests | Every push |
-| End-to-end | Playwright through a canned design session using a **recorded** LLM response (deterministic, free) | Every push |
-| Agent evals | Real LLM on the benchmark circuits, scored on convergence, checks passed, retries, and cost | On demand / nightly |
+| End-to-end | Playwright through the browser editor; scripted MCP client sessions against a disposable stack | Every push |
+| Agent evals | A real AI client over MCP on the benchmark circuits, scored on convergence, checks passed, retries, and cost | On demand / nightly |
 
 Agent evals are also the data source for the model-router research: the same benchmarks run
 against different models.
@@ -185,7 +227,7 @@ against different models.
    an unverified design as working.
 2. **Simulation timeout or crash** → that job fails; the agent sees the error and can adjust.
 3. **Invalid model edit** → rejected by the model validator with a clear error, before simulation.
-4. **LLM provider down** → designs stay viewable, editable, and re-simulatable.
+4. **AI client unavailable** → designs stay viewable, editable, and re-simulatable in the browser.
 5. **Every AI action is logged with a correlation ID**, so any design's history can be traced.
 
 ## 11. Known unknowns
@@ -196,4 +238,8 @@ against different models.
   open.
 - **Sequential digital logic** (latches, flip-flops) does not settle in the current ngspice/XSPICE
   setup (see `HOW-TO.md`). Out of scope until solved.
-- **LLM cost per design session**: unmeasured; the agent evals will measure it before phase 4.
+- **LLM cost per design session**: now paid by the user's own AI client, not the app; still worth
+  measuring in agent evals.
+- **Draft model accuracy**: starter-part model parameters and ratings were drafted without a datasheet
+  check. Characterization tests prove each model meets its *stated* specs, not that the specs are
+  right. Human review against the datasheet (D7) is what closes that gap.
