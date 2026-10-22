@@ -1,0 +1,55 @@
+{
+  "id": "1n4148",
+  "name": "1N4148",
+  "kind": "D",
+  "category": "diode",
+  "description": "Fast small-signal switching diode",
+  "package": "DO-35",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "IS": 2.52e-09,
+      "RS": 0.568,
+      "N": 1.752,
+      "CJO": 4e-12,
+      "M": 0.4,
+      "TT": 2e-08,
+      "BV": 100,
+      "IBV": 0.0001
+    }
+  },
+  "ratings": {
+    "vr_max": {
+      "value": 100,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "if_max": {
+      "value": 0.2,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 0.5,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "diode_forward_voltage",
+      "current": 0.01,
+      "max": 1.0,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+  }
+}

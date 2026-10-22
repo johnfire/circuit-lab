@@ -1,0 +1,52 @@
+{
+  "id": "1n4001",
+  "name": "1N4001",
+  "kind": "D",
+  "category": "diode",
+  "description": "1 A general-purpose rectifier, 50 V",
+  "package": "DO-41",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "IS": 1.411e-08,
+      "N": 1.984,
+      "RS": 0.03389,
+      "IKF": 94.81,
+      "CJO": 2.589e-11,
+      "M": 0.44,
+      "VJ": 0.3245,
+      "TT": 5.7e-06,
+      "BV": 75,
+      "IBV": 1e-05
+    }
+  },
+  "ratings": {
+    "vr_max": {
+      "value": 50,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "if_max": {
+      "value": 1,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "diode_forward_voltage",
+      "current": 1,
+      "max": 1.1,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+  }
+}

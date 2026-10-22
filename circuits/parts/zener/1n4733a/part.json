@@ -1,0 +1,48 @@
+{
+  "id": "1n4733a",
+  "name": "1N4733A",
+  "kind": "D",
+  "category": "zener",
+  "description": "5.1 V 1 W Zener diode",
+  "package": "DO-41",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "IS": 1e-12,
+      "N": 1.2,
+      "RS": 1,
+      "BV": 5.1,
+      "IBV": 0.049
+    }
+  },
+  "ratings": {
+    "iz_max": {
+      "value": 0.178,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 1,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "zener_voltage",
+      "current": 0.049,
+      "min": 4.845,
+      "max": 5.355,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+  }
+}

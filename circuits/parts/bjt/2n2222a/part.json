@@ -1,0 +1,81 @@
+{
+  "id": "2n2222a",
+  "name": "2N2222A",
+  "kind": "NPN",
+  "category": "bjt",
+  "description": "General-purpose NPN transistor, up to ~600 mA",
+  "package": "TO-92 / TO-18",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "IS": 1.434e-14,
+      "XTI": 3,
+      "EG": 1.11,
+      "VAF": 74.03,
+      "BF": 255.9,
+      "NE": 1.307,
+      "ISE": 1.434e-14,
+      "IKF": 0.2847,
+      "XTB": 1.5,
+      "BR": 6.092,
+      "NC": 2,
+      "RC": 1,
+      "CJC": 7.306e-12,
+      "MJC": 0.3416,
+      "VJC": 0.75,
+      "FC": 0.5,
+      "CJE": 2.201e-11,
+      "MJE": 0.377,
+      "VJE": 0.75,
+      "TR": 4.691e-08,
+      "TF": 4.111e-10,
+      "ITF": 0.6,
+      "VTF": 1.7,
+      "XTF": 3,
+      "RB": 10
+    }
+  },
+  "ratings": {
+    "vceo_max": {
+      "value": 40,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "ic_max": {
+      "value": 0.6,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 0.625,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "bjt_current_gain",
+      "collector_voltage": 10,
+      "collector_current": 0.15,
+      "min": 100,
+      "max": 300,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "bjt_saturation_voltage",
+      "collector_current": 0.15,
+      "base_current": 0.015,
+      "max": 0.3,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+  }
+}

@@ -9,6 +9,7 @@ from uuid import UUID, uuid4
 import asyncpg
 from pydantic import ValidationError
 
+from backend.model_primitives import StrictModel
 from backend.project_access import audit_action, authorize
 from backend.project_database import ProjectDatabase, decode_record, encode_json
 from backend.project_documents import get_document, remember, replay, retry_hash
@@ -16,7 +17,7 @@ from backend.project_measurements import Report
 from backend.project_models import DocumentContents, Principal, ProjectFailure
 from backend.schematic_ac_gateway import launch_ac
 from backend.schematic_ac_models import ACRequest, ACResponse
-from backend.schematic_models import SchematicRequest, SchematicResponse, StrictModel
+from backend.schematic_models import SchematicRequest, SchematicResponse
 from backend.simulation_engine import SimulationFailure
 from backend.worker_gateway import launch_schematic
 

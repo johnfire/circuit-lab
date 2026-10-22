@@ -1,0 +1,48 @@
+{
+  "id": "1n4728a",
+  "name": "1N4728A",
+  "kind": "D",
+  "category": "zener",
+  "description": "3.3 V 1 W Zener diode",
+  "package": "DO-41",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "IS": 1e-12,
+      "N": 1.2,
+      "RS": 1,
+      "BV": 3.3,
+      "IBV": 0.076
+    }
+  },
+  "ratings": {
+    "iz_max": {
+      "value": 0.276,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 1,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "zener_voltage",
+      "current": 0.076,
+      "min": 3.135,
+      "max": 3.465,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+  }
+}

@@ -8,8 +8,9 @@ from uuid import UUID
 
 from pydantic import Field, model_validator
 
+from backend.model_primitives import Identifier, StrictModel
 from backend.schematic_ac_models import Sweep
-from backend.schematic_models import Identifier, Part, Pin, StrictModel, Timing, Wire
+from backend.schematic_models import Part, Pin, Timing, Wire
 
 
 @dataclass(frozen=True)

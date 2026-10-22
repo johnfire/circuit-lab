@@ -1,20 +1,12 @@
 """Bounded, non-executable analog graph and synchronized playback contracts."""
 
 import math
-from typing import Annotated, Literal, Self
+from typing import Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import Field, model_validator
 
 from backend.component_catalog import COMPONENTS
-
-Finite = Annotated[float, Field(strict=True, allow_inf_nan=False)]
-Identifier = Annotated[str, Field(pattern=r"^[a-zA-Z][a-zA-Z0-9_]{0,15}$")]
-
-
-class StrictModel(BaseModel):
-    """Reject unknown fields at every graph boundary."""
-
-    model_config = ConfigDict(extra="forbid")
+from backend.model_primitives import Finite, Identifier, StrictModel
 
 
 class PulseSettings(StrictModel):

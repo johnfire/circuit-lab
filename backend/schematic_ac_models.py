@@ -5,7 +5,8 @@ from typing import Literal, Self
 
 from pydantic import Field, model_validator
 
-from backend.schematic_models import Finite, Identifier, SchematicRequest, StrictModel
+from backend.model_primitives import Finite, Identifier, StrictModel
+from backend.schematic_models import SchematicRequest
 
 
 class Sweep(StrictModel):

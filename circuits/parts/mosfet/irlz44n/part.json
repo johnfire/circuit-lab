@@ -1,0 +1,71 @@
+{
+  "id": "irlz44n",
+  "name": "IRLZ44N",
+  "kind": "NMOS",
+  "category": "mosfet",
+  "description": "Logic-level N-channel power MOSFET, 55 V; drives relays, solenoids, motors",
+  "package": "TO-220",
+  "datasheet": {
+    "manufacturer": "Infineon (International Rectifier)",
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "VTO": 1.5,
+      "KP": 50,
+      "RD": 0.008,
+      "RS": 0.004,
+      "RG": 3,
+      "LAMBDA": 0.01,
+      "CGDMAX": 1.5e-09,
+      "CGDMIN": 1e-10,
+      "CGS": 1.5e-09,
+      "CJO": 1e-09,
+      "IS": 1e-12
+    }
+  },
+  "ratings": {
+    "vds_max": {
+      "value": 55,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "vgs_max": {
+      "value": 16,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "id_max": {
+      "value": 47,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (at 25 \u00b0C case; far lower without a heatsink)"
+    },
+    "pd_max": {
+      "value": 2.4,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (free air, no heatsink: (175-25) \u00b0C / 62 \u00b0C/W)"
+    }
+  },
+  "characterization": [
+    {
+      "test": "mosfet_threshold",
+      "drain_current": 0.00025,
+      "min": 1.0,
+      "max": 2.0,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "mosfet_on_resistance",
+      "gate_voltage": 5,
+      "drain_current": 25,
+      "max": 0.022,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying. Power rating assumes no heatsink; with a heatsink it is much higher."
+  }
+}

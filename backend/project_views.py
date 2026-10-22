@@ -4,11 +4,12 @@ from uuid import UUID, uuid4
 
 from pydantic import Field
 
+from backend.model_primitives import Finite, StrictModel
 from backend.project_access import audit_action, authorize
 from backend.project_database import ProjectDatabase, decode_record
 from backend.project_documents import read_snapshot
 from backend.project_models import DocumentContents, Principal, ProjectFailure
-from backend.schematic_models import Finite, Pin, StrictModel
+from backend.schematic_models import Pin
 
 
 class ObservationCommand(StrictModel):

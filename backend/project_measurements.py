@@ -5,9 +5,10 @@ from typing import Literal, Self
 
 from pydantic import Field, model_validator
 
+from backend.model_primitives import Finite, StrictModel
 from backend.project_models import ProjectFailure
 from backend.schematic_ac_models import ACResponse
-from backend.schematic_models import Finite, Pin, SchematicResponse, StrictModel
+from backend.schematic_models import Pin, SchematicResponse
 
 Report = SchematicResponse | ACResponse
 

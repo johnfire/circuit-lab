@@ -1,0 +1,81 @@
+{
+  "id": "2n3904",
+  "name": "2N3904",
+  "kind": "NPN",
+  "category": "bjt",
+  "description": "General-purpose small-signal NPN transistor",
+  "package": "TO-92",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "IS": 6.734e-15,
+      "XTI": 3,
+      "EG": 1.11,
+      "VAF": 74.03,
+      "BF": 416.4,
+      "NE": 1.259,
+      "ISE": 6.734e-15,
+      "IKF": 0.06678,
+      "XTB": 1.5,
+      "BR": 0.7371,
+      "NC": 2,
+      "RC": 1,
+      "CJC": 3.638e-12,
+      "MJC": 0.3085,
+      "VJC": 0.75,
+      "FC": 0.5,
+      "CJE": 4.493e-12,
+      "MJE": 0.2593,
+      "VJE": 0.75,
+      "TR": 2.395e-07,
+      "TF": 3.012e-10,
+      "ITF": 0.4,
+      "VTF": 4,
+      "XTF": 2,
+      "RB": 10
+    }
+  },
+  "ratings": {
+    "vceo_max": {
+      "value": 40,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "ic_max": {
+      "value": 0.2,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 0.625,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "bjt_current_gain",
+      "collector_voltage": 1,
+      "collector_current": 0.01,
+      "min": 100,
+      "max": 300,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "bjt_saturation_voltage",
+      "collector_current": 0.01,
+      "base_current": 0.001,
+      "max": 0.2,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+  }
+}

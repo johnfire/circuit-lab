@@ -1,0 +1,71 @@
+{
+  "id": "2n7000",
+  "name": "2N7000",
+  "kind": "NMOS",
+  "category": "mosfet",
+  "description": "Small-signal N-channel MOSFET, 60 V",
+  "package": "TO-92",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "VTO": 1.9,
+      "KP": 0.2,
+      "RD": 0.6,
+      "RS": 0.4,
+      "RG": 3,
+      "LAMBDA": 0.01,
+      "CGDMAX": 5e-11,
+      "CGDMIN": 5e-12,
+      "CGS": 4e-11,
+      "CJO": 3e-11,
+      "IS": 1e-15
+    }
+  },
+  "ratings": {
+    "vds_max": {
+      "value": 60,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "vgs_max": {
+      "value": 20,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "id_max": {
+      "value": 0.2,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 0.4,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "mosfet_threshold",
+      "drain_current": 0.001,
+      "min": 0.8,
+      "max": 3.0,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "mosfet_on_resistance",
+      "gate_voltage": 4.5,
+      "drain_current": 0.075,
+      "max": 5.3,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying. Not reliably switched by 3.3 V GPIO: the threshold can reach 3 V."
+  }
+}

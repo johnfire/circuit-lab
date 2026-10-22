@@ -1,0 +1,74 @@
+{
+  "id": "bc547b",
+  "name": "BC547B",
+  "kind": "NPN",
+  "category": "bjt",
+  "description": "Small-signal NPN transistor, gain group B",
+  "package": "TO-92",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "IS": 2.39e-14,
+      "NF": 1.008,
+      "ISE": 3.545e-15,
+      "NE": 1.541,
+      "BF": 294.3,
+      "IKF": 0.1357,
+      "VAF": 63.2,
+      "NR": 1.004,
+      "ISC": 6.272e-14,
+      "NC": 1.243,
+      "BR": 7.946,
+      "IKR": 0.1144,
+      "VAR": 25.9,
+      "RB": 1,
+      "RE": 0.4683,
+      "RC": 0.85,
+      "EG": 1.11,
+      "XTI": 3,
+      "CJE": 1.358e-11,
+      "VJE": 0.65,
+      "MJE": 0.3279,
+      "TF": 4.391e-10,
+      "CJC": 3.728e-12,
+      "VJC": 0.3997,
+      "MJC": 0.2955
+    }
+  },
+  "ratings": {
+    "vceo_max": {
+      "value": 45,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "ic_max": {
+      "value": 0.1,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 0.5,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "bjt_current_gain",
+      "collector_voltage": 5,
+      "collector_current": 0.002,
+      "min": 200,
+      "max": 450,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+  }
+}

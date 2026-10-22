@@ -1,0 +1,46 @@
+{
+  "id": "led_yellow_5mm",
+  "name": "LED yellow 5 mm",
+  "kind": "D",
+  "category": "led",
+  "description": "Generic 5 mm yellow indicator LED",
+  "package": "5 mm THT",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "IS": 1.2e-18,
+      "N": 2,
+      "RS": 5
+    }
+  },
+  "ratings": {
+    "vr_max": {
+      "value": 5,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "if_max": {
+      "value": 0.03,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "diode_forward_voltage",
+      "current": 0.02,
+      "max": 2.5,
+      "min": 1.9,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying. Generic part: real LEDs vary by manufacturer and colour chemistry."
+  }
+}

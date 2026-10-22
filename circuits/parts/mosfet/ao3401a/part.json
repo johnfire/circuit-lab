@@ -1,0 +1,71 @@
+{
+  "id": "ao3401a",
+  "name": "AO3401A",
+  "kind": "PMOS",
+  "category": "mosfet",
+  "description": "Logic-level P-channel MOSFET, -30 V, -4 A; high-side switching",
+  "package": "SOT-23",
+  "datasheet": {
+    "manufacturer": "Alpha & Omega Semiconductor",
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "VTO": -0.9,
+      "KP": 20,
+      "RD": 0.015,
+      "RS": 0.01,
+      "RG": 2,
+      "LAMBDA": 0.01,
+      "CGDMAX": 3e-10,
+      "CGDMIN": 5e-11,
+      "CGS": 5e-10,
+      "CJO": 2e-10,
+      "IS": 1e-12
+    }
+  },
+  "ratings": {
+    "vds_max": {
+      "value": 30,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "vgs_max": {
+      "value": 12,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "id_max": {
+      "value": 4,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 1.4,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "mosfet_threshold",
+      "drain_current": 0.00025,
+      "min": 0.5,
+      "max": 1.3,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "mosfet_on_resistance",
+      "gate_voltage": 4.5,
+      "drain_current": 4,
+      "max": 0.06,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying. Ratings are magnitudes; P-channel voltages and currents are negative."
+  }
+}

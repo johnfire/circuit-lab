@@ -1,0 +1,51 @@
+{
+  "id": "1n5817",
+  "name": "1N5817",
+  "kind": "D",
+  "category": "schottky",
+  "description": "1 A Schottky rectifier, 20 V, low forward drop",
+  "package": "DO-41",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "IS": 3.17e-05,
+      "RS": 0.051,
+      "N": 1.373,
+      "M": 0.35,
+      "EG": 0.69,
+      "XTI": 2,
+      "CJO": 1.9e-10,
+      "BV": 20,
+      "IBV": 0.001
+    }
+  },
+  "ratings": {
+    "vr_max": {
+      "value": 20,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "if_max": {
+      "value": 1,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "diode_forward_voltage",
+      "current": 1,
+      "max": 0.45,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+  }
+}

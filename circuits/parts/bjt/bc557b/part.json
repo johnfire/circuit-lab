@@ -1,0 +1,74 @@
+{
+  "id": "bc557b",
+  "name": "BC557B",
+  "kind": "PNP",
+  "category": "bjt",
+  "description": "Small-signal PNP transistor, gain group B",
+  "package": "TO-92",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "IS": 3.83e-14,
+      "NF": 1.008,
+      "ISE": 1.22e-14,
+      "NE": 1.528,
+      "BF": 344.4,
+      "IKF": 0.08039,
+      "VAF": 21.11,
+      "NR": 1.005,
+      "ISC": 2.85e-13,
+      "NC": 1.28,
+      "BR": 14.84,
+      "IKR": 0.047,
+      "VAR": 32.02,
+      "RB": 1,
+      "RE": 0.6202,
+      "RC": 0.5713,
+      "EG": 1.11,
+      "XTI": 3,
+      "CJE": 1.23e-11,
+      "VJE": 0.6106,
+      "MJE": 0.378,
+      "TF": 5.6e-10,
+      "CJC": 6.33e-12,
+      "VJC": 0.4,
+      "MJC": 0.3
+    }
+  },
+  "ratings": {
+    "vceo_max": {
+      "value": 45,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "ic_max": {
+      "value": 0.1,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 0.5,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "bjt_current_gain",
+      "collector_voltage": 5,
+      "collector_current": 0.002,
+      "min": 220,
+      "max": 475,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+  }
+}
