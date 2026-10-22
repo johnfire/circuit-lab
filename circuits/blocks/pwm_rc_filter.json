@@ -47,7 +47,8 @@
         "value": 1e-06,
         "x": 15,
         "y": 11,
-        "rotation": 90
+        "rotation": 90,
+        "voltage_rating": 50
       },
       {
         "id": "G1",

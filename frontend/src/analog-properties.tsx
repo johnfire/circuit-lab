@@ -4,6 +4,7 @@ import type { DeviceKind, PinMode } from './schematic-types';
 import { BOARDS, boardOf, boardPinOf, MODE_NAMES, pinLabel, placeablePins } from './board-library';
 import type { Board, BoardPin } from './board-library';
 import { footprintLabel, footprintOptions } from './footprint-options';
+import type { FootprintOption } from './footprint-options';
 import type { Part, Pulse, Sine } from './schematic-types';
 import type { EditorState } from './use-schematic-editor';
 
@@ -83,7 +84,19 @@ function FootprintControls({ part, onUpdate }: { part: Part; onUpdate: (part: Pa
   const chosen = options.find(option => option.id === part.footprint) ?? options[0];
   return <><label>PCB footprint<select value={chosen.id} onChange={event => onUpdate({ ...part, footprint: event.target.value })}>
     {options.map(option => <option key={option.id} value={option.id}>{footprintLabel(option)}</option>)}</select></label>
-    {chosen.note && <p className="muted">{chosen.note}</p>}</>;
+    {chosen.note && <p className="muted">{chosen.note}</p>}
+    <PassiveRatingControls part={part} option={chosen} onUpdate={onUpdate} /></>;
+}
+
+function PassiveRatingControls({ part, option, onUpdate }: { part: Part; option: FootprintOption; onUpdate: (part: Part) => void }) {
+  const ratings = option.ratings ?? {};
+  if (part.kind === 'R') return <p className="muted">Checked against this package: {engineering(ratings.power_max?.value ?? 0, 'W')} and{' '}
+    {engineering(ratings.voltage_max?.value ?? 0, 'V')} max ({ratings.power_max?.source ?? 'no source'}).</p>;
+  if (part.kind !== 'C') return null;
+  return <><label>Voltage rating (V)<input type="number" min="1" max="1000" step="any" placeholder="not set: simulate for a suggestion"
+    value={part.voltage_rating ?? ''} onChange={event => onUpdate({ ...part, voltage_rating: event.target.value === '' ? null : Number(event.target.value) })} /></label>
+    <p className="muted">{part.voltage_rating ? 'Every run checks the voltage across it against this rating.' : 'Not checked until you set it; the BOM needs it too.'}
+      {option.dielectric === 'electrolytic' && ' Electrolytic: terminal 0 is +, and any reverse voltage fails the check.'}</p></>;
 }
 
 function PositionControls({ part, editor }: { part: Part; editor: EditorState }) {

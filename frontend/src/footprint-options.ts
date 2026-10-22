@@ -2,7 +2,11 @@ import genericFootprints from '../../circuits/footprints.json' with { type: 'jso
 import { libraryPart } from './part-library.ts';
 import type { Part } from './schematic-types';
 
-export interface FootprintOption { id: string; mount: 'tht' | 'smd'; kicad: string; note: string; lcsc?: string | null }
+export interface PackageRating { value: number; unit: 'V' | 'A' | 'W'; source: string }
+export interface FootprintOption {
+  id: string; mount: 'tht' | 'smd'; kicad: string; note: string; lcsc?: string | null;
+  ratings?: Record<string, PackageRating>; dielectric?: 'ceramic' | 'electrolytic';
+}
 
 const GENERIC = genericFootprints as unknown as Record<string, FootprintOption[]>;
 
@@ -14,4 +18,11 @@ export function footprintOptions(part: Part): FootprintOption[] {
 /** "TO-220-3_Vertical (through-hole)": the KiCad footprint name without its library. */
 export function footprintLabel(option: FootprintOption): string {
   return option.kicad.split(':')[1] + (option.mount === 'tht' ? ' (through-hole)' : ' (SMD)');
+}
+
+/** The package behind a resistor or capacitor rating check ("r_axial" → the axial resistor option). */
+export function passivePackage(device: string): FootprintOption | undefined {
+  const [prefix, ...rest] = device.split('_');
+  const kind = prefix.toUpperCase();
+  return kind === 'R' || kind === 'C' ? GENERIC[kind]?.find(option => option.id === rest.join('_')) : undefined;
 }

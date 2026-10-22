@@ -13,10 +13,12 @@ from dataclasses import dataclass, field
 
 from backend.block_library import free_identifier
 from backend.board_library import BOARDS
+from backend.engineering_notation import engineering_value
 from backend.footprint_catalog import FootprintOption, chosen_footprint
 from backend.part_library import LIBRARY
 from backend.schematic_models import Part, SchematicRequest
 from backend.schematic_topology import assign_nodes
+from backend.support_checks import support_findings
 
 HEADER_1X2 = "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
 HEADER_1X1 = "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -45,14 +47,6 @@ class KicadExport:
     warnings: list[str]
 
 
-def engineering_value(value: float, unit: str) -> str:
-    """330, 10k, 4.7u: the compact form PCB values are written in."""
-    for scale, prefix in ((1e6, "M"), (1e3, "k"), (1, ""), (1e-3, "m"), (1e-6, "u"), (1e-9, "n"), (1e-12, "p")):
-        if abs(value) >= scale:
-            return f"{value / scale:.3g}{prefix}{unit}"
-    return f"{value:.3g}{unit}"
-
-
 def quote(text: str) -> str:
     """An S-expression string literal."""
     return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
@@ -64,6 +58,8 @@ def part_component(part: Part, nodes: dict[str, str], option: FootprintOption) -
         value = LIBRARY[part.device].name
     else:
         value = engineering_value(part.value, {"R": "", "C": "F", "L": "H"}[part.kind])
+        if part.voltage_rating is not None:
+            value += f" {part.voltage_rating:g}V"
     pads = [(pad, nodes[f"{part.id}:{terminal}"]) for terminal, terminal_pads in option.pads.items()
             for pad in terminal_pads]
     return Component(part.id, value, option.kicad, option.lcsc, pads)
@@ -168,7 +164,12 @@ def bom_csv(components: list[Component]) -> str:
 def export_kicad(circuit: SchematicRequest) -> KicadExport:
     """Validate the wiring, then build the netlist, BOM and the honest list of what's left to do."""
     nodes = assign_nodes(circuit)
-    components, warnings = components_for(circuit, nodes)
+    components, part_notes = components_for(circuit, nodes)
+    unrated = sorted(part.id for part in circuit.parts if part.kind == "C" and part.voltage_rating is None)
+    warnings = [*support_findings(circuit, nodes), *part_notes]
+    if unrated:
+        warnings.append(f"No voltage rating on {', '.join(unrated)}: the BOM cannot say which capacitor to buy. "
+                        "Simulate to get a suggested rating.")
     missing = sorted(component.ref for component in components if not component.lcsc)
     drafts = sorted({part.device for part in circuit.parts if part.device and LIBRARY[part.device].trust.level == "draft"})
     if missing:

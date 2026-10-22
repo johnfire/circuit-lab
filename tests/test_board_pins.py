@@ -91,7 +91,7 @@ def test_supply_pin_budget_and_fixed_i2c_pull_up() -> None:
         report = simulate_schematic(circuit([board_pin("supply", "1"),
             {"id": "RL", "kind": "R", "value": load, "x": 12, "y": 10, "rotation": 90}, GROUND],
             [("P1", 0, "RL", 0), ("RL", 1, "G1", 0)], stop=0.001, step=1e-5), "rail")
-        [budget] = report.ratings
+        [budget] = [check for check in report.ratings if check.part == "P1"]
         assert budget.rating == "supply_current_max" and budget.passed is passes
         assert budget.measured == pytest.approx(3.3 / load, rel=0.01)
     pulled = simulate_schematic(circuit([board_pin("input", "3"),

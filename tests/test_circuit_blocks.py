@@ -38,7 +38,11 @@ def test_merge_renames_clashing_ids_offsets_parts_and_keeps_wiring() -> None:
     assert {"a": {"part": "P2", "terminal": 0}, "b": {"part": "R2", "terminal": 0}} in merged_wires
     merged = SchematicRequest.model_validate({"parts": merged_parts, "wires": merged_wires,
                                              "timing": {"stop": 0.001, "step": 1e-5}})
-    assert len(simulate_schematic(merged, "merged").ratings) == 10
+    ratings = simulate_schematic(merged, "merged").ratings
+    resistors = [part["id"] for part in merged_parts if part["kind"] == "R"]
+    assert len([check for check in ratings if check.part not in resistors]) == 10
+    assert sorted((check.part, check.rating) for check in ratings if check.part in resistors) == sorted(
+        (resistor, rating) for resistor in resistors for rating in ("power_max", "voltage_max"))
 
 
 def test_merge_refuses_blocks_that_do_not_fit() -> None:

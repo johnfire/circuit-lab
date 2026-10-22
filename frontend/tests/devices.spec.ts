@@ -37,12 +37,12 @@ test('relay driver: library parts pass their ratings with a flyback diode and fa
   await page.goto('/?mode=build');
   await importAndSimulate(page, true);
   const ratings = page.getByRole('region', { name: /Part ratings/ });
-  await expect(ratings).toContainText('All 7 within limits');
+  await expect(ratings).toContainText('All 13 within limits');
   await expect(ratings).toContainText('Draft part: limit unconfirmed');
   await expect(page.getByRole('row', { name: /^Q1 D .* G .* S 0 V/ })).toBeVisible();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await importAndSimulate(page, false);
-  await expect(ratings).toContainText('1 of 4 exceeded');
+  await expect(ratings).toContainText('1 of 10 exceeded');
   await expect(ratings.locator('.check.fail')).toContainText('Drain–source voltage');
   await expect(ratings.locator('.check.fail')).toContainText('EXCEEDS LIMIT');
 });
@@ -75,8 +75,9 @@ test('a 7805 dropping 12 V at 0.5 A fails its power rating in the browser', asyn
   await expect(page.getByRole('button', { name: 'U1 terminal ground_or_adjust', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Simulate circuit' }).click();
   const ratings = page.getByRole('region', { name: /Part ratings/ });
-  await expect(ratings).toContainText('1 of 3 exceeded', { timeout: 15000 });
-  await expect(ratings.locator('.check.fail')).toContainText('Power dissipation');
+  await expect(ratings).toContainText('2 of 5 exceeded', { timeout: 15000 });
+  await expect(ratings.locator('.check.fail', { hasText: 'U1 · LM7805 · Power dissipation' })).toBeVisible();
+  await expect(ratings.locator('.check.fail', { hasText: 'RL · Resistor, 1/4 W through-hole · Power' })).toBeVisible();
   await expect(page.getByRole('row', { name: /^U1 OUT 5 V IN 12 V G\/A 0 V/ })).toBeVisible();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
@@ -128,7 +129,7 @@ test('circuit library: insert a block beside the circuit, or open one and simula
   await page.getByRole('button', { name: 'Open Relay or solenoid driver', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Select Q1 IRLZ44N', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Simulate circuit' }).click();
-  await expect(page.getByRole('region', { name: /Part ratings/ })).toContainText('All 9 within limits', { timeout: 15000 });
+  await expect(page.getByRole('region', { name: /Part ratings/ })).toContainText('All 15 within limits', { timeout: 15000 });
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 

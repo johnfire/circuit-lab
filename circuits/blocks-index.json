@@ -17,6 +17,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 4,
      "y": 6
     },
@@ -30,6 +31,7 @@
      "rotation": 0,
      "sine": null,
      "value": 330.0,
+     "voltage_rating": null,
      "x": 10,
      "y": 6
     },
@@ -43,6 +45,7 @@
      "rotation": 90,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 16,
      "y": 9
     },
@@ -56,6 +59,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 16,
      "y": 14
     }
@@ -125,6 +129,7 @@
      "rotation": 90,
      "sine": null,
      "value": 5.0,
+     "voltage_rating": null,
      "x": 4,
      "y": 8
     },
@@ -138,6 +143,7 @@
      "rotation": 0,
      "sine": null,
      "value": 10000.0,
+     "voltage_rating": null,
      "x": 10,
      "y": 6
     },
@@ -151,6 +157,7 @@
      "rotation": 90,
      "sine": null,
      "value": 20000.0,
+     "voltage_rating": null,
      "x": 14,
      "y": 10
     },
@@ -168,6 +175,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 20,
      "y": 6
     },
@@ -181,6 +189,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 10,
      "y": 15
     }
@@ -278,6 +287,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 4,
      "y": 10
     },
@@ -295,6 +305,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 10,
      "y": 3
     },
@@ -308,6 +319,7 @@
      "rotation": 90,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 13,
      "y": 10
     },
@@ -321,6 +333,7 @@
      "rotation": 90,
      "sine": null,
      "value": 10000.0,
+     "voltage_rating": null,
      "x": 20,
      "y": 6
     },
@@ -334,6 +347,7 @@
      "rotation": 90,
      "sine": null,
      "value": 5.0,
+     "voltage_rating": null,
      "x": 24,
      "y": 4
     },
@@ -347,6 +361,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 24,
      "y": 12
     }
@@ -443,6 +458,7 @@
      "rotation": 90,
      "sine": null,
      "value": 12.0,
+     "voltage_rating": null,
      "x": 4,
      "y": 8
     },
@@ -456,6 +472,7 @@
      "rotation": 90,
      "sine": null,
      "value": 3.3e-07,
+     "voltage_rating": 50.0,
      "x": 9,
      "y": 11
     },
@@ -469,6 +486,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 14,
      "y": 8
     },
@@ -482,19 +500,21 @@
      "rotation": 90,
      "sine": null,
      "value": 1e-07,
+     "voltage_rating": 50.0,
      "x": 19,
      "y": 11
     },
     {
      "board_pin": null,
      "device": null,
-     "footprint": null,
+     "footprint": "axial_1w",
      "id": "RL",
      "kind": "R",
      "pulse": null,
      "rotation": 90,
      "sine": null,
      "value": 50.0,
+     "voltage_rating": null,
      "x": 24,
      "y": 11
     },
@@ -508,6 +528,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 14,
      "y": 16
     }
@@ -621,7 +642,7 @@
   ],
   "id": "lm7805_5v_supply",
   "name": "12 V to 5 V supply (7805)",
-  "notes": "A linear regulator burns (12 − 5) V × current as heat: 0.7 W here, but 0.5 A would exceed its 2 W free-air limit."
+  "notes": "A linear regulator burns (12 − 5) V × current as heat: 0.7 W here, but 0.5 A would exceed its free-air limit. RL stands in for the circuit being powered; on a real board it needs 1 W."
  },
  {
   "category": "power",
@@ -637,19 +658,21 @@
      "rotation": 90,
      "sine": null,
      "value": 5.0,
+     "voltage_rating": null,
      "x": 4,
      "y": 8
     },
     {
      "board_pin": null,
      "device": null,
-     "footprint": null,
+     "footprint": "radial",
      "id": "C1",
      "kind": "C",
      "pulse": null,
      "rotation": 90,
      "sine": null,
      "value": 1e-05,
+     "voltage_rating": 10.0,
      "x": 9,
      "y": 11
     },
@@ -663,32 +686,35 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 14,
      "y": 8
     },
     {
      "board_pin": null,
      "device": null,
-     "footprint": null,
+     "footprint": "radial",
      "id": "C2",
      "kind": "C",
      "pulse": null,
      "rotation": 90,
      "sine": null,
      "value": 1e-05,
+     "voltage_rating": 10.0,
      "x": 19,
      "y": 11
     },
     {
      "board_pin": null,
      "device": null,
-     "footprint": null,
+     "footprint": "axial_half",
      "id": "RL",
      "kind": "R",
      "pulse": null,
      "rotation": 90,
      "sine": null,
      "value": 33.0,
+     "voltage_rating": null,
      "x": 24,
      "y": 11
     },
@@ -702,6 +728,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 14,
      "y": 16
     }
@@ -815,7 +842,7 @@
   ],
   "id": "lm1117_3v3_supply",
   "name": "5 V to 3.3 V supply (LM1117)",
-  "notes": "Dissipation is (5 − 3.3) V × load current; at 100 mA that's 0.17 W, well within its SOT-223 limit."
+  "notes": "Dissipation is (5 − 3.3) V × load current: 0.17 W at 100 mA. C2 must be electrolytic or tantalum: the LM1117 needs 0.3–22 Ω output ESR to stay stable, too high for a ceramic (datasheet p.15). RL stands in for the circuit being powered."
  },
  {
   "category": "signal",
@@ -831,6 +858,7 @@
      "rotation": 90,
      "sine": null,
      "value": 3.3,
+     "voltage_rating": null,
      "x": 26,
      "y": 4
     },
@@ -844,6 +872,7 @@
      "rotation": 90,
      "sine": null,
      "value": 0.8,
+     "voltage_rating": null,
      "x": 4,
      "y": 11
     },
@@ -857,6 +886,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 14,
      "y": 9
     },
@@ -870,6 +900,7 @@
      "rotation": 0,
      "sine": null,
      "value": 10000.0,
+     "voltage_rating": null,
      "x": 19,
      "y": 14
     },
@@ -883,6 +914,7 @@
      "rotation": 90,
      "sine": null,
      "value": 10000.0,
+     "voltage_rating": null,
      "x": 9,
      "y": 16
     },
@@ -896,6 +928,7 @@
      "rotation": 90,
      "sine": null,
      "value": 10000.0,
+     "voltage_rating": null,
      "x": 24,
      "y": 12
     },
@@ -909,8 +942,23 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 14,
      "y": 20
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "footprint": null,
+     "id": "CB",
+     "kind": "C",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 1e-07,
+     "voltage_rating": 50.0,
+     "x": 30,
+     "y": 8
     }
    ],
    "timing": {
@@ -1021,6 +1069,26 @@
     {
      "a": {
       "part": "VIN",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 0
+     },
+     "b": {
+      "part": "CB",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "CB",
       "terminal": 1
      },
      "b": {
@@ -1042,7 +1110,7 @@
   ],
   "id": "opamp_noninverting_gain",
   "name": "Op-amp amplifier, gain of 2",
-  "notes": "Keep the output below the supply: input × gain must stay under about 3.25 V here."
+  "notes": "Keep the output below the supply: input × gain must stay under about 3.25 V here. CB is the supply bypass the datasheet asks for: place it within 2 mm of pin 8 (datasheet p.14)."
  },
  {
   "category": "signal",
@@ -1058,6 +1126,7 @@
      "rotation": 90,
      "sine": null,
      "value": 3.3,
+     "voltage_rating": null,
      "x": 4,
      "y": 6
     },
@@ -1071,6 +1140,7 @@
      "rotation": 0,
      "sine": null,
      "value": 10000.0,
+     "voltage_rating": null,
      "x": 10,
      "y": 4
     },
@@ -1084,6 +1154,7 @@
      "rotation": 90,
      "sine": null,
      "value": 10000.0,
+     "voltage_rating": null,
      "x": 12,
      "y": 9
     },
@@ -1097,6 +1168,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 19,
      "y": 10
     },
@@ -1110,6 +1182,7 @@
      "rotation": 90,
      "sine": null,
      "value": 1000.0,
+     "voltage_rating": null,
      "x": 25,
      "y": 13
     },
@@ -1123,8 +1196,23 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 14,
      "y": 18
+    },
+    {
+     "board_pin": null,
+     "device": null,
+     "footprint": null,
+     "id": "CB",
+     "kind": "C",
+     "pulse": null,
+     "rotation": 90,
+     "sine": null,
+     "value": 1e-07,
+     "voltage_rating": 50.0,
+     "x": 7,
+     "y": 12
     }
    ],
    "timing": {
@@ -1231,6 +1319,26 @@
       "part": "G1",
       "terminal": 0
      }
+    },
+    {
+     "a": {
+      "part": "VS",
+      "terminal": 0
+     },
+     "b": {
+      "part": "CB",
+      "terminal": 0
+     }
+    },
+    {
+     "a": {
+      "part": "CB",
+      "terminal": 1
+     },
+     "b": {
+      "part": "G1",
+      "terminal": 0
+     }
     }
    ]
   },
@@ -1246,7 +1354,7 @@
   ],
   "id": "opamp_buffer_3v3",
   "name": "Op-amp voltage follower (3.3 V)",
-  "notes": "Swap the divider for your sensor; the follower's output tracks its input with almost no load on it."
+  "notes": "Swap the divider for your sensor; the follower's output tracks its input with almost no load on it. CB is the supply bypass the datasheet asks for: place it within 2 mm of pin 8 (datasheet p.14)."
  },
  {
   "category": "signal",
@@ -1270,6 +1378,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 4,
      "y": 8
     },
@@ -1283,6 +1392,7 @@
      "rotation": 0,
      "sine": null,
      "value": 10000.0,
+     "voltage_rating": null,
      "x": 10,
      "y": 8
     },
@@ -1296,6 +1406,7 @@
      "rotation": 90,
      "sine": null,
      "value": 1e-06,
+     "voltage_rating": 50.0,
      "x": 15,
      "y": 11
     },
@@ -1309,6 +1420,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 15,
      "y": 16
     }
@@ -1382,6 +1494,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 4,
      "y": 10
     },
@@ -1395,6 +1508,7 @@
      "rotation": 0,
      "sine": null,
      "value": 10000.0,
+     "voltage_rating": null,
      "x": 9,
      "y": 10
     },
@@ -1408,6 +1522,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 15,
      "y": 10
     },
@@ -1421,6 +1536,7 @@
      "rotation": 90,
      "sine": null,
      "value": 200.0,
+     "voltage_rating": null,
      "x": 16,
      "y": 4
     },
@@ -1434,6 +1550,7 @@
      "rotation": 90,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 21,
      "y": 6
     },
@@ -1447,6 +1564,7 @@
      "rotation": 90,
      "sine": null,
      "value": 5.0,
+     "voltage_rating": null,
      "x": 26,
      "y": 8
     },
@@ -1460,6 +1578,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 16,
      "y": 16
     }
@@ -1584,6 +1703,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 4,
      "y": 12
     },
@@ -1597,6 +1717,7 @@
      "rotation": 0,
      "sine": null,
      "value": 100.0,
+     "voltage_rating": null,
      "x": 9,
      "y": 12
     },
@@ -1610,6 +1731,7 @@
      "rotation": 90,
      "sine": null,
      "value": 100000.0,
+     "voltage_rating": null,
      "x": 12,
      "y": 16
     },
@@ -1623,6 +1745,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 16,
      "y": 12
     },
@@ -1636,6 +1759,7 @@
      "rotation": 90,
      "sine": null,
      "value": 400.0,
+     "voltage_rating": null,
      "x": 17,
      "y": 4
     },
@@ -1649,6 +1773,7 @@
      "rotation": 90,
      "sine": null,
      "value": 0.1,
+     "voltage_rating": null,
      "x": 17,
      "y": 8
     },
@@ -1662,6 +1787,7 @@
      "rotation": 270,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 22,
      "y": 6
     },
@@ -1675,6 +1801,7 @@
      "rotation": 90,
      "sine": null,
      "value": 12.0,
+     "voltage_rating": null,
      "x": 27,
      "y": 8
     },
@@ -1688,6 +1815,7 @@
      "rotation": 0,
      "sine": null,
      "value": 0.0,
+     "voltage_rating": null,
      "x": 16,
      "y": 19
     }

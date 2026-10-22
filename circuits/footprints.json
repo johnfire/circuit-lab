@@ -1,13 +1,15 @@
 {
   "R": [
-    {"id": "axial", "mount": "tht", "kicad": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal", "note": "1/4 W through-hole"},
-    {"id": "r0805", "mount": "smd", "kicad": "Resistor_SMD:R_0805_2012Metric", "note": "1/8 W surface-mount"}
+    {"id": "axial", "mount": "tht", "kicad": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal", "note": "1/4 W through-hole", "ratings": {"power_max": {"value": 0.25, "unit": "W", "source": "Yageo CFR datasheet (2023-09-27) p.3, CFR-25 at 70 °C ambient"}, "voltage_max": {"value": 250, "unit": "V", "source": "Yageo CFR datasheet (2023-09-27) p.3, CFR-25 at 70 °C ambient"}}},
+    {"id": "axial_half", "mount": "tht", "kicad": "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal", "note": "1/2 W through-hole", "ratings": {"power_max": {"value": 0.5, "unit": "W", "source": "Yageo CFR datasheet (2023-09-27) p.3, CFR-50 at 70 °C ambient"}, "voltage_max": {"value": 350, "unit": "V", "source": "Yageo CFR datasheet (2023-09-27) p.3, CFR-50 at 70 °C ambient"}}},
+    {"id": "axial_1w", "mount": "tht", "kicad": "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P15.24mm_Horizontal", "note": "1 W through-hole", "ratings": {"power_max": {"value": 1.0, "unit": "W", "source": "Yageo CFR datasheet (2023-09-27) p.3, CFR-100 at 70 °C ambient"}, "voltage_max": {"value": 500, "unit": "V", "source": "Yageo CFR datasheet (2023-09-27) p.3, CFR-100 at 70 °C ambient"}}},
+    {"id": "r0805", "mount": "smd", "kicad": "Resistor_SMD:R_0805_2012Metric", "note": "1/8 W surface-mount", "ratings": {"power_max": {"value": 0.125, "unit": "W", "source": "Yageo RC_L datasheet p.5, RC0805 1/8 W at 70 °C ambient"}, "voltage_max": {"value": 150, "unit": "V", "source": "Yageo RC_L datasheet p.5, RC0805 1/8 W at 70 °C ambient"}}}
   ],
   "C": [
-    {"id": "disc", "mount": "tht", "kicad": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "note": "Ceramic, up to about 1 µF"},
-    {"id": "radial", "mount": "tht", "kicad": "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", "note": "Electrolytic: polarised, terminal 0 is +"},
-    {"id": "c0805", "mount": "smd", "kicad": "Capacitor_SMD:C_0805_2012Metric", "note": "Ceramic surface-mount"},
-    {"id": "c1206", "mount": "smd", "kicad": "Capacitor_SMD:C_1206_3216Metric", "note": "Ceramic surface-mount, larger values"}
+    {"id": "disc", "mount": "tht", "kicad": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "note": "Ceramic, up to about 1 µF", "dielectric": "ceramic"},
+    {"id": "radial", "mount": "tht", "kicad": "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", "note": "Electrolytic: polarised, terminal 0 is +", "dielectric": "electrolytic", "ratings": {"reverse_voltage_max": {"value": 0.5, "unit": "V", "source": "Nichicon application guidelines: do not apply reverse voltage; 0.5 V is Circuit Lab's margin for solver noise"}}},
+    {"id": "c0805", "mount": "smd", "kicad": "Capacitor_SMD:C_0805_2012Metric", "note": "Ceramic surface-mount", "dielectric": "ceramic"},
+    {"id": "c1206", "mount": "smd", "kicad": "Capacitor_SMD:C_1206_3216Metric", "note": "Ceramic surface-mount, larger values", "dielectric": "ceramic"}
   ],
   "L": [
     {"id": "axial", "mount": "tht", "kicad": "Inductor_THT:L_Axial_L5.3mm_D2.2mm_P10.16mm_Horizontal_Vishay_IM-1", "note": "Small signal inductor; a relay or solenoid coil is off-board"},

@@ -60,6 +60,14 @@ class Part(StrictModel):
     device: PartId | None = None
     board_pin: BoardPinSettings | None = None
     footprint: str | None = Field(default=None, pattern=r"^[a-z0-9_]{1,16}$")
+    voltage_rating: Finite | None = Field(default=None, gt=0, le=1000)
+
+    @model_validator(mode="after")
+    def validate_voltage_rating(self) -> Self:
+        """Only a capacitor carries a chosen voltage rating; a resistor's limits come from its package."""
+        if self.voltage_rating is not None and self.kind != "C":
+            raise ValueError("Set voltage_rating on capacitors only")
+        return self
 
     @model_validator(mode="after")
     def validate_device(self) -> Self:

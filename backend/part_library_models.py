@@ -57,6 +57,21 @@ class Rating(StrictModel):
     source: Citation
 
 
+class SupportRule(StrictModel):
+    """A capacitor the datasheet asks for around this part, checked against the wiring.
+
+    `between` names two of the part's terminals, or one terminal and "GND" (circuit ground).
+    `ceramic` is False when the datasheet's ESR window rules out low-ESR ceramics.
+    """
+
+    between: tuple[str, str]
+    capacitance_min: Finite = Field(gt=0, le=0.1)
+    level: Literal["required", "recommended"]
+    ceramic: bool = True
+    purpose: str = Field(min_length=3, max_length=200)
+    source: Citation
+
+
 class SpecBounds(StrictModel):
     """A measured quantity must fall inside at least one stated bound."""
 
@@ -225,6 +240,7 @@ class LibraryPart(StrictModel):
     ratings: dict[str, Rating]
     characterization: list[Characterization] = Field(min_length=1, max_length=8)
     footprints: list[Footprint] = Field(min_length=1, max_length=6)
+    support: list[SupportRule] = Field(default_factory=list, max_length=6)
     trust: Trust
 
     @model_validator(mode="after")
@@ -235,6 +251,7 @@ class LibraryPart(StrictModel):
         validate_rating_names(self)
         validate_template_parameters(self)
         validate_footprints(self)
+        validate_support(self)
         for test in self.characterization:
             if self.kind not in TEST_KINDS[test.test]:
                 raise ValueError(f"{test.test} does not apply to kind {self.kind}")
@@ -271,6 +288,16 @@ def validate_footprints(part: LibraryPart) -> None:
             raise ValueError(f"Footprint {footprint.id} must map exactly: {', '.join(TERMINAL_NAMES[part.kind])}")
 
 
+def validate_support(part: LibraryPart) -> None:
+    """Support rules join two different terminals of this part, or a terminal and ground."""
+    terminals = set(TERMINAL_NAMES[part.kind])
+    for rule in part.support:
+        first, second = rule.between
+        if first not in terminals or second not in terminals | {"GND"} or first == second:
+            raise ValueError(f"Support rule must join one of {', '.join(TERMINAL_NAMES[part.kind])} "
+                             "to another terminal or GND")
+
+
 def validate_template_parameters(part: LibraryPart) -> None:
     """Subcircuit templates need exactly their named parameters, with sane values."""
     required = TEMPLATE_PARAMETERS.get(part.kind)
@@ -292,6 +319,7 @@ def validate_verified(part: LibraryPart) -> None:
     if not part.datasheet.url:
         raise ValueError("A verified part must link its datasheet")
     citations = ([rating.source for rating in part.ratings.values()]
-                 + [test.source for test in part.characterization])
+                 + [test.source for test in part.characterization]
+                 + [rule.source for rule in part.support])
     if not all(re.search(DATASHEET_PAGE, citation) for citation in citations):
-        raise ValueError("Every rating and test of a verified part must cite a datasheet page")
+        raise ValueError("Every rating, test and support rule of a verified part must cite a datasheet page")

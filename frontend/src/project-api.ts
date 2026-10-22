@@ -16,7 +16,8 @@ export function contentsFingerprint(contents: CircuitContents): string {
     : typeof value === 'object' && value !== null ? Object.fromEntries(Object.entries(value).sort(([first], [second]) => first.localeCompare(second))
       .map(([key, nested]) => [key, normalize(nested)])) : value;
   const circuit = { ...contents.circuit, parts: contents.circuit.parts.map(part => ({ ...part,
-    pulse: part.pulse ?? null, sine: part.sine ?? null, device: part.device ?? null, board_pin: part.board_pin ?? null, footprint: part.footprint ?? null })) };
+    pulse: part.pulse ?? null, sine: part.sine ?? null, device: part.device ?? null, board_pin: part.board_pin ?? null, footprint: part.footprint ?? null,
+    voltage_rating: part.voltage_rating ?? null })) };
   return JSON.stringify(normalize({ ...contents, circuit }));
 }
 

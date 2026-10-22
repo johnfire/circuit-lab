@@ -43,6 +43,30 @@
       "source": "datasheet p.3"
     }
   ],
+  "support": [
+    {
+      "between": [
+        "output",
+        "ground_or_adjust"
+      ],
+      "capacitance_min": 1e-06,
+      "level": "required",
+      "ceramic": true,
+      "purpose": "for small-signal stability; ESR 0–2 Ω, so ceramic is fine",
+      "source": "datasheet p.13"
+    },
+    {
+      "between": [
+        "input",
+        "ground_or_adjust"
+      ],
+      "capacitance_min": 1e-06,
+      "level": "required",
+      "ceramic": true,
+      "purpose": "a low source impedance at the input keeps the LDO stable",
+      "source": "datasheet p.13"
+    }
+  ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,

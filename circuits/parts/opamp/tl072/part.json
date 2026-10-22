@@ -58,6 +58,30 @@
       "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
     }
   ],
+  "support": [
+    {
+      "between": [
+        "v_plus",
+        "GND"
+      ],
+      "capacitance_min": 1e-07,
+      "level": "recommended",
+      "ceramic": true,
+      "purpose": "a low-ESR ceramic bypass right at the supply pin keeps supply noise out",
+      "source": "datasheet p.32"
+    },
+    {
+      "between": [
+        "v_minus",
+        "GND"
+      ],
+      "capacitance_min": 1e-07,
+      "level": "recommended",
+      "ceramic": true,
+      "purpose": "a low-ESR ceramic bypass right at the supply pin keeps supply noise out (dual supply: each rail)",
+      "source": "datasheet p.32"
+    }
+  ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,

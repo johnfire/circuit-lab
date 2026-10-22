@@ -45,6 +45,30 @@
       "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
     }
   ],
+  "support": [
+    {
+      "between": [
+        "input",
+        "GND"
+      ],
+      "capacitance_min": 1e-07,
+      "level": "required",
+      "ceramic": true,
+      "purpose": "an input bypass for stability when the regulator is more than about 15 cm from the supply's filter capacitors, which is always true when the supply arrives through a connector",
+      "source": "datasheet p.23"
+    },
+    {
+      "between": [
+        "output",
+        "GND"
+      ],
+      "capacitance_min": 1e-06,
+      "level": "recommended",
+      "ceramic": true,
+      "purpose": "improves transient response; not needed for stability",
+      "source": "datasheet p.15"
+    }
+  ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,

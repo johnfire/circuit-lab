@@ -28,7 +28,9 @@ def regulator_circuit(device: str, input_voltage: float, load_ohms: float):
 def test_7805_regulates_and_its_power_check_catches_a_hot_linear_drop() -> None:
     light = simulate_schematic(regulator_circuit("lm7805", 12, 50), "reg-light")
     assert final_voltage(light, "U1:0") == pytest.approx(5.0, abs=0.01)
-    assert all(check.passed for check in light.ratings)
+    assert all(check.passed for check in light.ratings if check.part == "U1")
+    load_power = ratings_by_name(light)[("RL", "power_max")]
+    assert load_power == pytest.approx(5.0 ** 2 / 50, rel=0.01), "the 1/4 W default load resistor is overloaded too"
     heavy = simulate_schematic(regulator_circuit("lm7805", 12, 10), "reg-heavy")
     stress = ratings_by_name(heavy)
     assert stress[("U1", "iout_max")] == pytest.approx(0.5, rel=0.01)

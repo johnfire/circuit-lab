@@ -10,11 +10,13 @@ from typing import Literal
 
 from backend.part_library import LIBRARY
 from backend.part_library_models import Rating
+from backend.passive_ratings import CHOSEN_ON_PART, passive_limits, positive
 from backend.schematic_models import Part, RatingCheck, SchematicRequest
 from backend.schematic_pins import pin_of
 from backend.simulation_engine import SimulationFailure
 
 PRINTED_RATING = re.compile(r"^(?P<name>rating\d+)\s*=\s*(?P<value>[-+0-9.eE]+)\s*$", re.MULTILINE)
+AVERAGED_RATINGS = frozenset({"pd_max", "power_max"})
 
 
 @dataclass(frozen=True)
@@ -29,11 +31,6 @@ class RatingProbe:
     trust: Literal["draft", "verified"]
     statistic: Literal["peak", "average"]
     expression: str
-
-
-def positive(expression: str) -> str:
-    """Elementwise max(x, 0), written with operators ngspice vectors support."""
-    return f"(({expression})+abs({expression}))/2"
 
 
 def stress_expressions(kind: str, v: list[str], current: str) -> dict[str, str]:
@@ -78,7 +75,7 @@ def part_limits(part: Part, index: int, nodes: dict[str, str]
     if part.kind == "PIN":
         return pin_stress(part, voltages[0], current)
     if part.device is None:
-        return None
+        return passive_limits(part, voltages, current)
     library_part = LIBRARY[part.device]
     expressions = stress_expressions(part.kind, voltages, current)
     return library_part.id, library_part.trust.level, {
@@ -86,7 +83,7 @@ def part_limits(part: Part, index: int, nodes: dict[str, str]
 
 
 def rating_probes(submitted: SchematicRequest, nodes: dict[str, str]) -> list[RatingProbe]:
-    """Every rating of every library device and board pin, in a stable order."""
+    """Every rating of every library device, board pin, resistor and capacitor, in a stable order."""
     probes: list[RatingProbe] = []
     for index, part in enumerate(submitted.parts):
         limits = part_limits(part, index, nodes)
@@ -96,8 +93,9 @@ def rating_probes(submitted: SchematicRequest, nodes: dict[str, str]) -> list[Ra
         for rating, (limit, expression) in sorted(ratings.items()):
             probes.append(RatingProbe(name=f"rating{len(probes)}", part=part, device=device,
                                       rating=rating, limit=limit,
-                                      trust="verified" if trust == "verified" else "draft",
-                                      statistic="average" if rating == "pd_max" else "peak",
+                                      trust="verified" if trust == "verified" or limit.source == CHOSEN_ON_PART
+                                      else "draft",
+                                      statistic="average" if rating in AVERAGED_RATINGS else "peak",
                                       expression=expression))
     return probes
 
@@ -130,11 +128,11 @@ def rating_warnings(submitted: SchematicRequest) -> list[str]:
     devices = sorted({part.device for part in submitted.parts if part.device is not None})
     boards = sorted({pin_of(part)[0].id: pin_of(part)[0] for part in submitted.parts
                      if part.kind == "PIN"}.values(), key=lambda board: board.id)
-    if not devices and not boards:
-        return ["Ideal R/C/L and sources only; no component ratings or board pin protection checks."]
-    warnings = ["Library devices and board pins are checked against their absolute maximums: peak "
-                "voltage and current on the solver's own timepoints, and time-averaged power over "
-                "this run. R/C/L and sources stay ideal."]
+    warnings = ["Parts are checked against their absolute maximums: peak voltage and current on the "
+                "solver's own timepoints, and time-averaged power over this run. Resistors use their "
+                "package's typical power and working voltage; capacitors their chosen voltage rating, and "
+                "electrolytics must never see reverse voltage. Inductor current and saturation, and sources, "
+                "are not checked."]
     if devices:
         warnings.append("Device current is measured into terminal 0 (drain, collector or output); "
                         "BJT power omits the small base term. Op-amps and regulators are behavioral "

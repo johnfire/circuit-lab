@@ -194,6 +194,13 @@ real part must meet.
   SMD), R/C/L footprint choices, KiCad netlist + JLCPCB BOM from the browser and MCP
   (`export_kicad_files`). Footprint names were checked against KiCad's library. Pad maps are drafts and
   LCSC numbers are empty until Chris confirms them.
+- ✅ **Passive ratings and support rules** (2026-10-22): resistors are checked against their package's
+  power and working voltage (1/4, 1/2 and 1 W axial, 0805; Yageo CFR and RC_L datasheets);
+  capacitors against a `voltage_rating` chosen on the part (unrated ones get a suggested rating), and
+  electrolytics for reverse voltage. Regulators and op-amps carry datasheet-cited support rules
+  (input/output capacitors, ESR window, supply bypass) checked on the wiring and reported in
+  simulation, `validate_circuit` (`design_checks`) and the KiCad export. The rules caught the LM1117
+  block's ceramic output capacitor, which would oscillate on a real board.
 - ⬜ Human review of draft parts and boards against datasheets → `verified`.
 - ⬜ Benchmark 1 (GPIO → MOSFET → relay) simulates correctly in tests; it still needs an AI
   client over MCP to design it end to end once MCP is switched on. Benchmark 2's op-amp option

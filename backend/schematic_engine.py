@@ -12,11 +12,13 @@ from backend.part_ratings import (
     rating_warnings,
     read_ratings,
 )
+from backend.passive_ratings import capacitor_advice
 from backend.schematic_devices import device_lines, model_cards
 from backend.schematic_models import Part, SchematicRequest, SchematicResponse, Trace
 from backend.schematic_pins import pin_lines, pin_model_cards
 from backend.schematic_topology import assign_nodes
 from backend.simulation_engine import SimulationFailure
+from backend.support_checks import support_findings
 from harness.run_circuit import run_ngspice, simulation_error
 
 
@@ -100,6 +102,8 @@ def simulate_schematic(submitted: SchematicRequest, correlation_id: str) -> Sche
     return SchematicResponse(correlation_id=correlation_id, times=times, traces=traces,
                              pin_nodes=nodes, netlist=netlist,
                              ratings=ratings,
-                             warnings=[*rating_warnings(submitted),
+                             warnings=[*support_findings(submitted, nodes),
+                                       *capacitor_advice(list(submitted.parts), nodes, traces),
+                                       *rating_warnings(submitted),
                                        "Uniform frames are interpolated by ngspice; use a smaller interval for fast changes.",
                                        "Initial state is the DC operating point, not an uncharged capacitor."])

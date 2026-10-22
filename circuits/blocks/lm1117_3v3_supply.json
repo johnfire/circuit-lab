@@ -3,7 +3,7 @@
   "name": "5 V to 3.3 V supply (LM1117)",
   "category": "power",
   "description": "An LM1117-3.3 low-dropout regulator with 10 µF input and output capacitors, loaded with 100 mA.",
-  "notes": "Dissipation is (5 − 3.3) V × load current; at 100 mA that's 0.17 W, well within its SOT-223 limit.",
+  "notes": "Dissipation is (5 − 3.3) V × load current: 0.17 W at 100 mA. C2 must be electrolytic or tantalum: the LM1117 needs 0.3–22 Ω output ESR to stay stable, too high for a ceramic (datasheet p.15). RL stands in for the circuit being powered.",
   "expectations": [
     {
       "signal": "V:U1:0",
@@ -29,7 +29,9 @@
         "value": 1e-05,
         "x": 9,
         "y": 11,
-        "rotation": 90
+        "rotation": 90,
+        "footprint": "radial",
+        "voltage_rating": 10
       },
       {
         "id": "U1",
@@ -46,7 +48,9 @@
         "value": 1e-05,
         "x": 19,
         "y": 11,
-        "rotation": 90
+        "rotation": 90,
+        "footprint": "radial",
+        "voltage_rating": 10
       },
       {
         "id": "RL",
@@ -54,7 +58,8 @@
         "value": 33,
         "x": 24,
         "y": 11,
-        "rotation": 90
+        "rotation": 90,
+        "footprint": "axial_half"
       },
       {
         "id": "G1",

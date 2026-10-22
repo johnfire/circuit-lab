@@ -58,6 +58,30 @@
       "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
     }
   ],
+  "support": [
+    {
+      "between": [
+        "v_plus",
+        "GND"
+      ],
+      "capacitance_min": 1e-08,
+      "level": "recommended",
+      "ceramic": true,
+      "purpose": "a 0.01–0.1 µF bypass within 2 mm, plus a shared ≥ 1 µF bulk capacitor within 100 mm",
+      "source": "datasheet p.14"
+    },
+    {
+      "between": [
+        "v_minus",
+        "GND"
+      ],
+      "capacitance_min": 1e-08,
+      "level": "recommended",
+      "ceramic": true,
+      "purpose": "a 0.01–0.1 µF bypass within 2 mm, plus a shared ≥ 1 µF bulk capacitor within 100 mm (dual supply: each rail)",
+      "source": "datasheet p.14"
+    }
+  ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,

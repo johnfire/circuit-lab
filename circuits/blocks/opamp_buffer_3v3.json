@@ -3,7 +3,7 @@
   "name": "Op-amp voltage follower (3.3 V)",
   "category": "signal",
   "description": "An MCP6002 rail-to-rail op-amp on 3.3 V buffers a 1.65 V divider so a load can't pull it down.",
-  "notes": "Swap the divider for your sensor; the follower's output tracks its input with almost no load on it.",
+  "notes": "Swap the divider for your sensor; the follower's output tracks its input with almost no load on it. CB is the supply bypass the datasheet asks for: place it within 2 mm of pin 8 (datasheet p.14).",
   "expectations": [
     {
       "signal": "V:U1:0",
@@ -63,6 +63,15 @@
         "x": 14,
         "y": 18,
         "rotation": 0
+      },
+      {
+        "id": "CB",
+        "kind": "C",
+        "value": 1e-07,
+        "x": 7,
+        "y": 12,
+        "rotation": 90,
+        "voltage_rating": 50
       }
     ],
     "wires": [
@@ -159,6 +168,26 @@
       {
         "a": {
           "part": "VS",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "VS",
+          "terminal": 0
+        },
+        "b": {
+          "part": "CB",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "CB",
           "terminal": 1
         },
         "b": {

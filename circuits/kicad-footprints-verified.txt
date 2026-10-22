@@ -1,6 +1,8 @@
 # KiCad footprints confirmed to exist in gitlab.com/kicad/libraries/kicad-footprints (master), checked 2026-10-22.
 # Add a line only after checking https://gitlab.com/kicad/libraries/kicad-footprints/-/raw/master/<Lib>.pretty/<Name>.kicad_mod returns 200.
 Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal
+Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P15.24mm_Horizontal
 Resistor_SMD:R_0805_2012Metric
 Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
 Capacitor_THT:CP_Radial_D5.0mm_P2.00mm

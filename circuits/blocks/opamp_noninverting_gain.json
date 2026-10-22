@@ -3,7 +3,7 @@
   "name": "Op-amp amplifier, gain of 2",
   "category": "signal",
   "description": "A non-inverting MCP6002 stage on 3.3 V: gain = 1 + RF/RG = 2, so 0.8 V in gives 1.6 V out.",
-  "notes": "Keep the output below the supply: input × gain must stay under about 3.25 V here.",
+  "notes": "Keep the output below the supply: input × gain must stay under about 3.25 V here. CB is the supply bypass the datasheet asks for: place it within 2 mm of pin 8 (datasheet p.14).",
   "expectations": [
     {
       "signal": "V:U1:0",
@@ -71,6 +71,15 @@
         "x": 14,
         "y": 20,
         "rotation": 0
+      },
+      {
+        "id": "CB",
+        "kind": "C",
+        "value": 1e-07,
+        "x": 30,
+        "y": 8,
+        "rotation": 90,
+        "voltage_rating": 50
       }
     ],
     "wires": [
@@ -177,6 +186,26 @@
       {
         "a": {
           "part": "VIN",
+          "terminal": 1
+        },
+        "b": {
+          "part": "G1",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "VS",
+          "terminal": 0
+        },
+        "b": {
+          "part": "CB",
+          "terminal": 0
+        }
+      },
+      {
+        "a": {
+          "part": "CB",
           "terminal": 1
         },
         "b": {

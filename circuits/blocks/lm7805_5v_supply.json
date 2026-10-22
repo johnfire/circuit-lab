@@ -3,7 +3,7 @@
   "name": "12 V to 5 V supply (7805)",
   "category": "power",
   "description": "An LM7805 from 12 V with 330 nF input and 100 nF output capacitors, loaded with 100 mA.",
-  "notes": "A linear regulator burns (12 − 5) V × current as heat: 0.7 W here, but 0.5 A would exceed its 2 W free-air limit.",
+  "notes": "A linear regulator burns (12 − 5) V × current as heat: 0.7 W here, but 0.5 A would exceed its free-air limit. RL stands in for the circuit being powered; on a real board it needs 1 W.",
   "expectations": [
     {
       "signal": "V:U1:0",
@@ -29,7 +29,8 @@
         "value": 3.3e-07,
         "x": 9,
         "y": 11,
-        "rotation": 90
+        "rotation": 90,
+        "voltage_rating": 50
       },
       {
         "id": "U1",
@@ -46,7 +47,8 @@
         "value": 1e-07,
         "x": 19,
         "y": 11,
-        "rotation": 90
+        "rotation": 90,
+        "voltage_rating": 50
       },
       {
         "id": "RL",
@@ -54,7 +56,8 @@
         "value": 50,
         "x": 24,
         "y": 11,
-        "rotation": 90
+        "rotation": 90,
+        "footprint": "axial_1w"
       },
       {
         "id": "G1",

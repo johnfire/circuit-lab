@@ -58,6 +58,30 @@
       "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
     }
   ],
+  "support": [
+    {
+      "between": [
+        "v_plus",
+        "GND"
+      ],
+      "capacitance_min": 1e-07,
+      "level": "recommended",
+      "ceramic": true,
+      "purpose": "the datasheet asks for a low-ESR bypass without a value; 0.1 µF is the usual choice",
+      "source": "datasheet p.23"
+    },
+    {
+      "between": [
+        "v_minus",
+        "GND"
+      ],
+      "capacitance_min": 1e-07,
+      "level": "recommended",
+      "ceramic": true,
+      "purpose": "the datasheet asks for a low-ESR bypass without a value; 0.1 µF is the usual choice (dual supply: each rail)",
+      "source": "datasheet p.23"
+    }
+  ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,

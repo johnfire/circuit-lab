@@ -1,26 +1,36 @@
 """Physical package options for every placeable part, as KiCad footprints with pad maps."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Literal
 
-from pydantic import RootModel
+from pydantic import Field, RootModel
 
 from backend.model_primitives import StrictModel
 from backend.part_library import LIBRARY
-from backend.part_library_models import TERMINAL_NAMES, KicadFootprint
+from backend.part_library_models import TERMINAL_NAMES, KicadFootprint, Rating
 
 ROOT = Path(__file__).resolve().parent.parent / "circuits"
 GENERIC_PATH = ROOT / "footprints.json"
 VERIFIED_PATH = ROOT / "kicad-footprints-verified.txt"
 
 
+Dielectric = Literal["ceramic", "electrolytic"]
+
+
 class GenericFootprint(StrictModel):
-    """A package option for an ideal two-terminal part; terminal 0 is pad 1, terminal 1 is pad 2."""
+    """A package option for an ideal two-terminal part; terminal 0 is pad 1, terminal 1 is pad 2.
+
+    Ratings are the package's typical limits (resistor power and working voltage, electrolytic
+    reverse voltage); a capacitor's voltage rating belongs to the chosen part, not its package.
+    """
 
     id: str
     mount: str
     kicad: KicadFootprint
     note: str
+    ratings: dict[str, Rating] = Field(default_factory=dict)
+    dielectric: Dielectric | None = None
 
 
 class GenericCatalog(RootModel[dict[str, list[GenericFootprint]]]):
@@ -40,13 +50,15 @@ class FootprintOption:
     pads: dict[int, tuple[str, ...]]
     lcsc: str | None
     note: str
+    ratings: dict[str, Rating] = field(default_factory=dict)
+    dielectric: Dielectric | None = None
 
 
 def footprint_options(kind: str, device: str | None) -> list[FootprintOption]:
     """The package choices for a part; empty for ground, sources and board pins (off-board)."""
     if kind in GENERIC:
-        return [FootprintOption(option.id, option.mount, option.kicad, {0: ("1",), 1: ("2",)}, None, option.note)
-                for option in GENERIC[kind]]
+        return [FootprintOption(option.id, option.mount, option.kicad, {0: ("1",), 1: ("2",)}, None, option.note,
+                                option.ratings, option.dielectric) for option in GENERIC[kind]]
     if device is None or device not in LIBRARY:
         return []
     names = TERMINAL_NAMES[kind]

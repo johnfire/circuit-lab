@@ -5,6 +5,7 @@ from pydantic import ValidationError
 from backend.project_models import DocumentContents
 from backend.schematic_models import SchematicRequest
 from backend.schematic_topology import assign_nodes
+from backend.support_checks import support_findings
 
 
 def inspect_contents(contents: DocumentContents) -> dict[str, object]:
@@ -13,7 +14,8 @@ def inspect_contents(contents: DocumentContents) -> dict[str, object]:
         circuit = SchematicRequest.model_validate(contents.circuit.model_dump())
         nodes = assign_nodes(circuit)
         return {"construction_valid": True, "simulation_ready": True, "pin_nodes": nodes,
-                "diagnostics": [], "current_reference": "terminal 0 -> 1", "voltage_reference": "V0 - V1"}
+                "diagnostics": [], "design_checks": support_findings(circuit, nodes),
+                "current_reference": "terminal 0 -> 1", "voltage_reference": "V0 - V1"}
     except (ValidationError, ValueError) as failure:
         diagnostics = ([error["msg"] for error in failure.errors(include_input=False)]
                        if isinstance(failure, ValidationError) else [str(failure)])

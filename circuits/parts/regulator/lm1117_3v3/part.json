@@ -51,6 +51,30 @@
       "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
     }
   ],
+  "support": [
+    {
+      "between": [
+        "output",
+        "ground_or_adjust"
+      ],
+      "capacitance_min": 1e-05,
+      "level": "required",
+      "ceramic": false,
+      "purpose": "for stability; its ESR must be 0.3–22 Ω (TI specifies tantalum), so a ceramic is too low",
+      "source": "datasheet p.15"
+    },
+    {
+      "between": [
+        "input",
+        "ground_or_adjust"
+      ],
+      "capacitance_min": 1e-05,
+      "level": "recommended",
+      "ceramic": true,
+      "purpose": "an input capacitor; TI suggests 10 µF tantalum",
+      "source": "datasheet p.14"
+    }
+  ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,

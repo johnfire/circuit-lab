@@ -21,7 +21,7 @@ function bounded(value: unknown, minimum: number, maximum: number, integer = fal
 }
 
 function parsePart(value: unknown): Part {
-  const part = objectShape(value, ['id', 'kind', 'value', 'x', 'y', 'rotation', 'pulse', 'sine', 'device', 'board_pin', 'footprint']);
+  const part = objectShape(value, ['id', 'kind', 'value', 'x', 'y', 'rotation', 'pulse', 'sine', 'device', 'board_pin', 'footprint', 'voltage_rating']);
   const limits: Record<string, [number, number]> = Object.fromEntries(Object.entries(componentCatalog)
     .map(([kind, definition]) => [kind, [definition.minimum, definition.maximum]]));
   if (typeof part.id !== 'string' || !/^[a-zA-Z][a-zA-Z0-9_]{0,15}$/.test(part.id)) throw new Error('Invalid part identifier.');
@@ -30,6 +30,10 @@ function parsePart(value: unknown): Part {
   parseBoardPin(part);
   if (part.footprint !== undefined && part.footprint !== null
     && !footprintOptions(part as unknown as Part).some(option => option.id === part.footprint)) throw new Error('Unknown PCB footprint for ' + String(part.id) + '.');
+  if (part.voltage_rating !== undefined && part.voltage_rating !== null) {
+    if (part.kind !== 'C') throw new Error('Only capacitors carry a voltage rating.');
+    if (typeof part.voltage_rating !== 'number' || !(part.voltage_rating > 0 && part.voltage_rating <= 1000)) throw new Error('Capacitor voltage rating must be above 0 and at most 1000 V.');
+  }
   bounded(part.value, ...limits[part.kind]); bounded(part.x, 2, 38, true); bounded(part.y, 2, 22, true);
   if (![0, 90, 180, 270].includes(Number(part.rotation)) || typeof part.rotation !== 'number') throw new Error('Invalid rotation.');
   if (part.kind === 'PULSE' || (part.kind === 'PIN' && (part.board_pin as { mode?: unknown } | null)?.mode === 'pulse')) {
