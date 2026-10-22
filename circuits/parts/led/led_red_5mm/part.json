@@ -42,5 +42,37 @@
     "reviewed_by": null,
     "reviewed_on": null,
     "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying. Generic part: real LEDs vary by manufacturer and colour chemistry."
-  }
+  },
+  "footprints": [
+    {
+      "id": "led_5mm",
+      "mount": "tht",
+      "kicad": "LED_THT:LED_D5.0mm",
+      "pads": {
+        "anode": [
+          "2"
+        ],
+        "cathode": [
+          "1"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing"
+    },
+    {
+      "id": "led_0805",
+      "mount": "smd",
+      "kicad": "LED_SMD:LED_0805_2012Metric",
+      "pads": {
+        "anode": [
+          "2"
+        ],
+        "cathode": [
+          "1"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing. SMD equivalent LED, not the same part number"
+    }
+  ]
 }

@@ -19,6 +19,7 @@ from starlette.responses import Response
 from backend.account_export import export_account
 from backend.audit_log import record_simulation
 from backend.circuit_catalog import ROOT, Circuit, list_circuits, read_circuit
+from backend.kicad_routes import router as kicad_router
 from backend.mcp_http import MCPResponse, create_authenticated_server, create_http_app
 from backend.project_lifecycle import export_projects
 from backend.project_models import ProjectFailure
@@ -52,6 +53,7 @@ app = FastAPI(title="Circuit Lab", version="0.2.0", docs_url="/api/docs", lifesp
 app.state.mcp_http = mcp_http
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts())
 app.include_router(schematic_router)
+app.include_router(kicad_router)
 app.include_router(create_project_router(collaboration))
 
 

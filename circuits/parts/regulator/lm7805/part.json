@@ -30,7 +30,7 @@
     "pd_max": {
       "value": 2.0,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (free air, no heatsink: (125-25) \u00b0C / 50 \u00b0C/W)"
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (free air, no heatsink: (125-25) °C / 50 °C/W)"
     }
   },
   "characterization": [
@@ -56,5 +56,25 @@
     "reviewed_by": null,
     "reviewed_on": null,
     "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Power rating assumes no heatsink."
-  }
+  },
+  "footprints": [
+    {
+      "id": "to220",
+      "mount": "tht",
+      "kicad": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pads": {
+        "input": [
+          "1"
+        ],
+        "ground_or_adjust": [
+          "2"
+        ],
+        "output": [
+          "3"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing"
+    }
+  ]
 }

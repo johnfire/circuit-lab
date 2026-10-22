@@ -44,5 +44,22 @@
     "reviewed_by": null,
     "reviewed_on": null,
     "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
-  }
+  },
+  "footprints": [
+    {
+      "id": "do41",
+      "mount": "tht",
+      "kicad": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
+      "pads": {
+        "anode": [
+          "2"
+        ],
+        "cathode": [
+          "1"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing"
+    }
+  ]
 }

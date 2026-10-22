@@ -8,6 +8,12 @@ export async function simulateAnalog(schematic: Schematic): Promise<AnalogReport
   return await requestAnalysis('/api/schematic/simulate', schematic) as AnalogReport;
 }
 
+export interface KicadFiles { netlist: string; bom_csv: string; warnings: string[] }
+
+export async function exportKicad(schematic: Schematic): Promise<KicadFiles> {
+  return await requestAnalysis('/api/export/kicad', schematic) as KicadFiles;
+}
+
 async function requestAnalysis(endpoint: string, circuit: unknown): Promise<unknown> {
   const response = await fetch(endpoint, { method: 'POST',
     headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(circuit),

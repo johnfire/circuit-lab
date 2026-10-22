@@ -131,3 +131,21 @@ test('circuit library: insert a block beside the circuit, or open one and simula
   await expect(page.getByRole('region', { name: /Part ratings/ })).toContainText('All 9 within limits', { timeout: 15000 });
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
+
+test('PCB export downloads a KiCad netlist and a JLC parts list, honouring footprint choices', async ({ page }) => {
+  await page.goto('/?mode=build');
+  await page.getByText(/^Circuit library/).click();
+  page.once('dialog', dialog => { void dialog.accept(); });
+  await page.getByRole('button', { name: 'Open Relay or solenoid driver', exact: true }).click();
+  await page.getByRole('button', { name: 'Select D1 1N5819', exact: true }).click();
+  await page.getByLabel(/^PCB footprint/).selectOption('sma');
+  const downloads: Record<string, string> = {};
+  page.on('download', async download => { downloads[download.suggestedFilename()] = await (await download.createReadStream()).toArray()
+    .then(chunks => Buffer.concat(chunks).toString()); });
+  await page.getByRole('button', { name: 'Export for PCB (KiCad)', exact: true }).click();
+  await expect(page.getByRole('region', { name: 'PCB export' })).toContainText('No LCSC part number yet');
+  await expect.poll(() => Object.keys(downloads).sort()).toEqual(['circuit-lab-bom.csv', 'circuit-lab.net']);
+  expect(downloads['circuit-lab.net']).toContain('(ref "D1") (value "1N5819") (footprint "Diode_SMD:D_SMA")');
+  expect(downloads['circuit-lab-bom.csv'].split('\n')[0]).toBe('Comment,Designator,Footprint,LCSC Part #');
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});

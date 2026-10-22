@@ -56,5 +56,25 @@
     "reviewed_by": null,
     "reviewed_on": null,
     "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying."
-  }
+  },
+  "footprints": [
+    {
+      "id": "sot223",
+      "mount": "smd",
+      "kicad": "Package_TO_SOT_SMD:SOT-223-3_TabPin2",
+      "pads": {
+        "ground_or_adjust": [
+          "1"
+        ],
+        "output": [
+          "2"
+        ],
+        "input": [
+          "3"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing. The tab is also the output"
+    }
+  ]
 }

@@ -190,7 +190,10 @@ real part must meet.
   use the existing project storage, which goes live with the backup gate.
 - ✅ Daily backups (on the VPS for now; off-host copy still to do) and saved projects + MCP switched
   on in production (2026-10-22).
-- ⬜ KiCad export (netlist + BOM with footprints and LCSC numbers) as the path to ordering PCBs.
+- ✅ KiCad export (2026-10-22): footprints with pin-to-pad maps for every library part (THT and/or
+  SMD), R/C/L footprint choices, KiCad netlist + JLCPCB BOM from the browser and MCP
+  (`export_kicad_files`). Footprint names were checked against KiCad's library. Pad maps are drafts and
+  LCSC numbers are empty until Chris confirms them.
 - ⬜ Human review of draft parts and boards against datasheets → `verified`.
 - ⬜ Benchmark 1 (GPIO → MOSFET → relay) simulates correctly in tests; it still needs an AI
   client over MCP to design it end to end once MCP is switched on. Benchmark 2's op-amp option

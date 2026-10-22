@@ -51,5 +51,37 @@
     "reviewed_by": null,
     "reviewed_on": null,
     "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
-  }
+  },
+  "footprints": [
+    {
+      "id": "do35",
+      "mount": "tht",
+      "kicad": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+      "pads": {
+        "anode": [
+          "2"
+        ],
+        "cathode": [
+          "1"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing"
+    },
+    {
+      "id": "sod123",
+      "mount": "smd",
+      "kicad": "Diode_SMD:D_SOD-123",
+      "pads": {
+        "anode": [
+          "2"
+        ],
+        "cathode": [
+          "1"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing. SMD version is 1N4148W"
+    }
+  ]
 }

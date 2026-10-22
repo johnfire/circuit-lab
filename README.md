@@ -183,6 +183,23 @@ A part becomes `verified` only after a named human checks every value against th
 loader rejects `verified` unless the file has a datasheet URL, `datasheet p.N` citations on every
 rating and test, a reviewer and a date. All starter parts are currently drafts.
 
+## Ordering a PCB (via KiCad)
+
+Circuit Lab doesn't lay out boards; it hands KiCad a correct netlist. "Export for PCB (KiCad)" (or
+the MCP tool `export_kicad_files`) produces:
+
+- `circuit-lab.net`, which you import into KiCad's PCB editor (File → Import → Netlist). Every part
+  arrives with its chosen footprint and nets. Sources become 2-pin input headers; Raspberry Pi pins
+  land on a 2×20 socket at their real header positions, with all Pi GND pins on ground; other boards'
+  pins become labelled wire pads.
+- `circuit-lab-bom.csv`, in JLCPCB's columns (Comment, Designator, Footprint, LCSC Part #).
+
+Each part picks a footprint in its properties (through-hole or SMD where offered). Every footprint
+name is in `circuits/kicad-footprints-verified.txt`, checked against KiCad's official library, and
+CI refuses unchecked names. Pin-to-pad maps for library parts are **drafts**: check each against the
+datasheet's package drawing. LCSC numbers are left empty until confirmed. In KiCad: place, route,
+run DRC, then plot Gerbers and drill files and upload them to JLCPCB or PCBWay.
+
 ## Notes / pitfalls
 
 - `op ; print v(x)` can return stale/zero values if the engine isn't fully

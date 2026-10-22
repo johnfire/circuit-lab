@@ -33,7 +33,11 @@ ready to simulate. Drawn crossings are not connections; wires join named termina
 Use apply_circuit_edits for atomic direct edits: put_part (also move/rotate/set value),
 remove_part, connect, disconnect, insert_block (a curated block from list_circuit_blocks,
 its top-left part at x, y; clashing part ids are renamed), set_timing and set_sweep.
-Prefer a curated block over hand-building a common circuit, then adapt and re-simulate. Supply expected_revision,
+Prefer a curated block over hand-building a common circuit, then adapt and re-simulate.
+For a PCB, set each part's footprint (put_part with footprint: an option id from
+get_library_part, or for R/C/L: axial/r0805, disc/radial/c0805/c1206, axial/l1210), then call
+export_kicad_files: it returns a KiCad netlist and JLCPCB BOM plus what's left to check
+(draft pad maps, missing LCSC numbers). Layout, routing and Gerbers happen in KiCad. Supply expected_revision,
 idempotency_key and a short reason. Reread on conflict; don't overwrite human edits.
 Each edit is a new revision and undo_last_change restores the previous snapshot.
 Use simulate_transient or simulate_ac for real ngspice evidence, then get_simulation,

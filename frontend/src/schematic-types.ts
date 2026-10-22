@@ -9,7 +9,7 @@ export interface Sine { offset: number; frequency: number; phase: number }
 export interface Part {
   id: string; kind: PartKind; value: number; x: number; y: number;
   rotation: Rotation; pulse?: Pulse | null; sine?: Sine | null; device?: string | null;
-  board_pin?: BoardPinSettings | null;
+  board_pin?: BoardPinSettings | null; footprint?: string | null;
 }
 export interface Pin { part: string; terminal: Terminal }
 export interface Wire { a: Pin; b: Pin }

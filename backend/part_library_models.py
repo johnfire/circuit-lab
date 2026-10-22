@@ -174,6 +174,21 @@ TEST_KINDS: dict[str, frozenset[str]] = {
 }
 
 
+KicadFootprint = Annotated[str, Field(pattern=r"^[A-Za-z0-9_.-]+:[A-Za-z0-9_.,-]+$", max_length=120)]
+PadNumber = Annotated[str, Field(pattern=r"^[A-Z0-9]{1,4}$")]
+
+
+class Footprint(StrictModel):
+    """One physical package option: its KiCad footprint and which pad each terminal uses."""
+
+    id: Annotated[str, Field(pattern=r"^[a-z0-9_]{1,16}$")]
+    mount: Literal["tht", "smd"]
+    kicad: KicadFootprint
+    pads: dict[str, list[PadNumber]]
+    lcsc: Annotated[str, Field(pattern=r"^C[0-9]{1,9}$")] | None = None
+    note: str = Field(default="", max_length=240)
+
+
 class Datasheet(StrictModel):
     """Where a reviewer checks the numbers; required before verification."""
 
@@ -209,6 +224,7 @@ class LibraryPart(StrictModel):
     model: DeviceModel
     ratings: dict[str, Rating]
     characterization: list[Characterization] = Field(min_length=1, max_length=8)
+    footprints: list[Footprint] = Field(min_length=1, max_length=6)
     trust: Trust
 
     @model_validator(mode="after")
@@ -218,6 +234,7 @@ class LibraryPart(StrictModel):
             raise ValueError(f"A {self.category} cannot be kind {self.kind}")
         validate_rating_names(self)
         validate_template_parameters(self)
+        validate_footprints(self)
         for test in self.characterization:
             if self.kind not in TEST_KINDS[test.test]:
                 raise ValueError(f"{test.test} does not apply to kind {self.kind}")
@@ -243,6 +260,15 @@ def validate_rating_names(part: LibraryPart) -> None:
     for name, rating in part.ratings.items():
         if rating.unit != RATING_UNITS[name]:
             raise ValueError(f"{name} must be in {RATING_UNITS[name]}")
+
+
+def validate_footprints(part: LibraryPart) -> None:
+    """Every package option maps each terminal, and only those terminals, to at least one pad."""
+    if len({footprint.id for footprint in part.footprints}) != len(part.footprints):
+        raise ValueError("Footprint ids must be unique")
+    for footprint in part.footprints:
+        if set(footprint.pads) != set(TERMINAL_NAMES[part.kind]) or not all(footprint.pads.values()):
+            raise ValueError(f"Footprint {footprint.id} must map exactly: {', '.join(TERMINAL_NAMES[part.kind])}")
 
 
 def validate_template_parameters(part: LibraryPart) -> None:

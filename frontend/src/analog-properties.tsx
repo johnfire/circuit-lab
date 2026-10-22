@@ -3,6 +3,7 @@ import { isDeviceKind, libraryPart, partsOfKind } from './part-library';
 import type { DeviceKind, PinMode } from './schematic-types';
 import { BOARDS, boardOf, boardPinOf, MODE_NAMES, pinLabel, placeablePins } from './board-library';
 import type { Board, BoardPin } from './board-library';
+import { footprintLabel, footprintOptions } from './footprint-options';
 import type { Part, Pulse, Sine } from './schematic-types';
 import type { EditorState } from './use-schematic-editor';
 
@@ -76,6 +77,15 @@ function PulseControls({ part, onUpdate }: { part: Part; onUpdate: (part: Part) 
     value={Number((pulse[key] * 1000).toPrecision(10))} onChange={event => onUpdate({ ...part, pulse: { ...pulse, [key]: Number(event.target.value) / 1000 } })} /></label>)}</>;
 }
 
+function FootprintControls({ part, onUpdate }: { part: Part; onUpdate: (part: Part) => void }) {
+  const options = footprintOptions(part);
+  if (!options.length) return null;
+  const chosen = options.find(option => option.id === part.footprint) ?? options[0];
+  return <><label>PCB footprint<select value={chosen.id} onChange={event => onUpdate({ ...part, footprint: event.target.value })}>
+    {options.map(option => <option key={option.id} value={option.id}>{footprintLabel(option)}</option>)}</select></label>
+    {chosen.note && <p className="muted">{chosen.note}</p>}</>;
+}
+
 function PositionControls({ part, editor }: { part: Part; editor: EditorState }) {
   const move = (x: number, y: number) => editor.update({ ...part, x: snapped(x, 38), y: snapped(y, 22) }, false);
   return <><div className="compact-fields">
@@ -95,6 +105,7 @@ export function AnalogProperties({ editor }: { editor: EditorState }) {
   return <section className="editor-card"><h2>{part ? part.id + ' · ' + PART_NAMES[part.kind] : 'Component properties'}</h2>
     {!part ? <p className="muted">Select a symbol to change its value, orientation or placement.</p>
       : <fieldset disabled={editor.running}><legend className="sr-only">Edit {part.id}</legend>
-        <ValueControls part={part} onUpdate={editor.update} /><PositionControls part={part} editor={editor} /></fieldset>}
+        <ValueControls part={part} onUpdate={editor.update} /><FootprintControls part={part} onUpdate={next => editor.update(next, false)} />
+        <PositionControls part={part} editor={editor} /></fieldset>}
   </section>;
 }

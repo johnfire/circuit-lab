@@ -1,5 +1,6 @@
 import { isDeviceKind, libraryPart, terminalCount } from './part-library.ts';
 import { boardOf } from './board-library.ts';
+import { footprintOptions } from './footprint-options.ts';
 import type { Part, Pin, PinMode, Schematic } from './schematic-types';
 import componentCatalog from '../../circuits/components.json' with { type: 'json' };
 
@@ -20,13 +21,15 @@ function bounded(value: unknown, minimum: number, maximum: number, integer = fal
 }
 
 function parsePart(value: unknown): Part {
-  const part = objectShape(value, ['id', 'kind', 'value', 'x', 'y', 'rotation', 'pulse', 'sine', 'device', 'board_pin']);
+  const part = objectShape(value, ['id', 'kind', 'value', 'x', 'y', 'rotation', 'pulse', 'sine', 'device', 'board_pin', 'footprint']);
   const limits: Record<string, [number, number]> = Object.fromEntries(Object.entries(componentCatalog)
     .map(([kind, definition]) => [kind, [definition.minimum, definition.maximum]]));
   if (typeof part.id !== 'string' || !/^[a-zA-Z][a-zA-Z0-9_]{0,15}$/.test(part.id)) throw new Error('Invalid part identifier.');
   if (typeof part.kind !== 'string' || !Object.hasOwn(limits, part.kind)) throw new Error('Only supported part kinds are allowed.');
   parseDevice(part);
   parseBoardPin(part);
+  if (part.footprint !== undefined && part.footprint !== null
+    && !footprintOptions(part as unknown as Part).some(option => option.id === part.footprint)) throw new Error('Unknown PCB footprint for ' + String(part.id) + '.');
   bounded(part.value, ...limits[part.kind]); bounded(part.x, 2, 38, true); bounded(part.y, 2, 22, true);
   if (![0, 90, 180, 270].includes(Number(part.rotation)) || typeof part.rotation !== 'number') throw new Error('Invalid rotation.');
   if (part.kind === 'PULSE' || (part.kind === 'PIN' && (part.board_pin as { mode?: unknown } | null)?.mode === 'pulse')) {
@@ -98,6 +101,12 @@ export function readDraft(scope: string | null): Schematic | null {
 
 export function saveDraft(schematic: Schematic, scope: string | null): void {
   if (scope) localStorage.setItem(DRAFT_KEY + ':' + scope, JSON.stringify({ version: 2, circuit: schematic }));
+}
+
+export function downloadText(filename: string, contents: string, type: string): void {
+  const url = URL.createObjectURL(new Blob([contents], { type }));
+  const link = document.createElement('a'); link.href = url; link.download = filename; link.click();
+  URL.revokeObjectURL(url);
 }
 
 export function downloadJson(filename: string, contents: unknown): void {

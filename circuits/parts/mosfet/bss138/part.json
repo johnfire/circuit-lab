@@ -74,5 +74,25 @@
     "reviewed_by": null,
     "reviewed_on": null,
     "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
-  }
+  },
+  "footprints": [
+    {
+      "id": "sot23",
+      "mount": "smd",
+      "kicad": "Package_TO_SOT_SMD:SOT-23",
+      "pads": {
+        "gate": [
+          "1"
+        ],
+        "source": [
+          "2"
+        ],
+        "drain": [
+          "3"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing"
+    }
+  ]
 }

@@ -3,7 +3,7 @@
   "name": "LM317",
   "kind": "REG",
   "category": "regulator",
-  "description": "Adjustable linear regulator, 1.25\u201337 V, 1.5 A; set by two resistors",
+  "description": "Adjustable linear regulator, 1.25–37 V, 1.5 A; set by two resistors",
   "package": "TO-220",
   "datasheet": {
     "manufacturer": null,
@@ -49,6 +49,26 @@
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Terminal 2 is ADJ: Vout = 1.25 V \u00d7 (1 + R2/R1) + Iadj \u00d7 R2. Needs ~10 mA minimum load."
-  }
+    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Terminal 2 is ADJ: Vout = 1.25 V × (1 + R2/R1) + Iadj × R2. Needs ~10 mA minimum load."
+  },
+  "footprints": [
+    {
+      "id": "to220",
+      "mount": "tht",
+      "kicad": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "pads": {
+        "ground_or_adjust": [
+          "1"
+        ],
+        "output": [
+          "2"
+        ],
+        "input": [
+          "3"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing"
+    }
+  ]
 }

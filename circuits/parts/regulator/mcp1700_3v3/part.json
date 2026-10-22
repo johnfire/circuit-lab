@@ -3,7 +3,7 @@
   "name": "MCP1700-3.3",
   "kind": "REG",
   "category": "regulator",
-  "description": "3.3 V micropower LDO, 250 mA, 1.6 \u00b5A quiescent; for battery projects",
+  "description": "3.3 V micropower LDO, 250 mA, 1.6 µA quiescent; for battery projects",
   "package": "TO-92 / SOT-23",
   "datasheet": {
     "manufacturer": "Microchip",
@@ -48,5 +48,43 @@
     "reviewed_by": null,
     "reviewed_on": null,
     "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Input above 6 V exceeds its operating range."
-  }
+  },
+  "footprints": [
+    {
+      "id": "to92",
+      "mount": "tht",
+      "kicad": "Package_TO_SOT_THT:TO-92_Inline",
+      "pads": {
+        "ground_or_adjust": [
+          "1"
+        ],
+        "input": [
+          "2"
+        ],
+        "output": [
+          "3"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing"
+    },
+    {
+      "id": "sot23",
+      "mount": "smd",
+      "kicad": "Package_TO_SOT_SMD:SOT-23",
+      "pads": {
+        "ground_or_adjust": [
+          "1"
+        ],
+        "output": [
+          "2"
+        ],
+        "input": [
+          "3"
+        ]
+      },
+      "lcsc": null,
+      "note": "unconfirmed pinout: check the datasheet's package drawing"
+    }
+  ]
 }

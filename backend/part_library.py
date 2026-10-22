@@ -58,7 +58,9 @@ def part_summary(part: LibraryPart) -> dict[str, object]:
             "terminals": list(part.terminals), "trust": part.trust.level,
             "datasheet": part.datasheet.url,
             "ratings": {name: {"value": rating.value, "unit": rating.unit}
-                        for name, rating in part.ratings.items()}}
+                        for name, rating in part.ratings.items()},
+            "footprints": [{"id": option.id, "mount": option.mount, "kicad": option.kicad,
+                            "lcsc": option.lcsc, "note": option.note} for option in part.footprints]}
 
 
 def library_summaries() -> list[dict[str, object]]:

@@ -3,6 +3,15 @@
   "category": "bjt",
   "datasheet": null,
   "description": "General-purpose NPN transistor, up to ~600 mA",
+  "footprints": [
+   {
+    "id": "to92",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. PN2222A TO-92 order; the metal-can 2N2222A differs"
+   }
+  ],
   "id": "2n2222a",
   "kind": "NPN",
   "name": "2N2222A",
@@ -32,6 +41,15 @@
   "category": "bjt",
   "datasheet": null,
   "description": "General-purpose small-signal NPN transistor",
+  "footprints": [
+   {
+    "id": "to92",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "2n3904",
   "kind": "NPN",
   "name": "2N3904",
@@ -61,6 +79,15 @@
   "category": "bjt",
   "datasheet": null,
   "description": "General-purpose small-signal PNP transistor",
+  "footprints": [
+   {
+    "id": "to92",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "2n3906",
   "kind": "PNP",
   "name": "2N3906",
@@ -90,6 +117,15 @@
   "category": "bjt",
   "datasheet": null,
   "description": "Small-signal NPN transistor, gain group B",
+  "footprints": [
+   {
+    "id": "to92",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "bc547b",
   "kind": "NPN",
   "name": "BC547B",
@@ -119,6 +155,15 @@
   "category": "bjt",
   "datasheet": null,
   "description": "Small-signal PNP transistor, gain group B",
+  "footprints": [
+   {
+    "id": "to92",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "bc557b",
   "kind": "PNP",
   "name": "BC557B",
@@ -148,6 +193,22 @@
   "category": "diode",
   "datasheet": null,
   "description": "1 A general-purpose rectifier, 50 V",
+  "footprints": [
+   {
+    "id": "do41",
+    "kicad": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   },
+   {
+    "id": "sma",
+    "kicad": "Diode_SMD:D_SMA",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. SMD equivalent is M1"
+   }
+  ],
   "id": "1n4001",
   "kind": "D",
   "name": "1N4001",
@@ -172,6 +233,22 @@
   "category": "diode",
   "datasheet": null,
   "description": "1 A general-purpose rectifier, 1000 V",
+  "footprints": [
+   {
+    "id": "do41",
+    "kicad": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   },
+   {
+    "id": "sma",
+    "kicad": "Diode_SMD:D_SMA",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. SMD equivalent is M7"
+   }
+  ],
   "id": "1n4007",
   "kind": "D",
   "name": "1N4007",
@@ -196,6 +273,22 @@
   "category": "diode",
   "datasheet": null,
   "description": "Fast small-signal switching diode",
+  "footprints": [
+   {
+    "id": "do35",
+    "kicad": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   },
+   {
+    "id": "sod123",
+    "kicad": "Diode_SMD:D_SOD-123",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. SMD version is 1N4148W"
+   }
+  ],
   "id": "1n4148",
   "kind": "D",
   "name": "1N4148",
@@ -224,6 +317,22 @@
   "category": "led",
   "datasheet": null,
   "description": "Generic 5 mm blue InGaN indicator LED",
+  "footprints": [
+   {
+    "id": "led_5mm",
+    "kicad": "LED_THT:LED_D5.0mm",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   },
+   {
+    "id": "led_0805",
+    "kicad": "LED_SMD:LED_0805_2012Metric",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. SMD equivalent LED, not the same part number"
+   }
+  ],
   "id": "led_blue_5mm",
   "kind": "D",
   "name": "LED blue 5 mm",
@@ -248,6 +357,22 @@
   "category": "led",
   "datasheet": null,
   "description": "Generic 5 mm red indicator LED",
+  "footprints": [
+   {
+    "id": "led_5mm",
+    "kicad": "LED_THT:LED_D5.0mm",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   },
+   {
+    "id": "led_0805",
+    "kicad": "LED_SMD:LED_0805_2012Metric",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. SMD equivalent LED, not the same part number"
+   }
+  ],
   "id": "led_red_5mm",
   "kind": "D",
   "name": "LED red 5 mm",
@@ -272,6 +397,22 @@
   "category": "led",
   "datasheet": null,
   "description": "Generic 5 mm white (blue + phosphor) LED",
+  "footprints": [
+   {
+    "id": "led_5mm",
+    "kicad": "LED_THT:LED_D5.0mm",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   },
+   {
+    "id": "led_0805",
+    "kicad": "LED_SMD:LED_0805_2012Metric",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. SMD equivalent LED, not the same part number"
+   }
+  ],
   "id": "led_white_5mm",
   "kind": "D",
   "name": "LED white 5 mm",
@@ -296,6 +437,22 @@
   "category": "led",
   "datasheet": null,
   "description": "Generic 5 mm yellow indicator LED",
+  "footprints": [
+   {
+    "id": "led_5mm",
+    "kicad": "LED_THT:LED_D5.0mm",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   },
+   {
+    "id": "led_0805",
+    "kicad": "LED_SMD:LED_0805_2012Metric",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. SMD equivalent LED, not the same part number"
+   }
+  ],
   "id": "led_yellow_5mm",
   "kind": "D",
   "name": "LED yellow 5 mm",
@@ -320,6 +477,15 @@
   "category": "mosfet",
   "datasheet": null,
   "description": "Small-signal N-channel MOSFET, 60 V",
+  "footprints": [
+   {
+    "id": "to92",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "2n7000",
   "kind": "NMOS",
   "name": "2N7000",
@@ -353,6 +519,15 @@
   "category": "mosfet",
   "datasheet": null,
   "description": "Logic-level N-channel MOSFET, 30 V, 5.7 A; switches from 3.3 V GPIO",
+  "footprints": [
+   {
+    "id": "sot23",
+    "kicad": "Package_TO_SOT_SMD:SOT-23",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "ao3400a",
   "kind": "NMOS",
   "name": "AO3400A",
@@ -386,6 +561,15 @@
   "category": "mosfet",
   "datasheet": null,
   "description": "Logic-level P-channel MOSFET, -30 V, -4 A; high-side switching",
+  "footprints": [
+   {
+    "id": "sot23",
+    "kicad": "Package_TO_SOT_SMD:SOT-23",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "ao3401a",
   "kind": "PMOS",
   "name": "AO3401A",
@@ -419,6 +603,15 @@
   "category": "mosfet",
   "datasheet": null,
   "description": "Small-signal N-channel MOSFET, 60 V, 500 mA",
+  "footprints": [
+   {
+    "id": "to92",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "bs170",
   "kind": "NMOS",
   "name": "BS170",
@@ -452,6 +645,15 @@
   "category": "mosfet",
   "datasheet": null,
   "description": "Logic-level N-channel MOSFET, 50 V; used in I2C level shifters",
+  "footprints": [
+   {
+    "id": "sot23",
+    "kicad": "Package_TO_SOT_SMD:SOT-23",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "bss138",
   "kind": "NMOS",
   "name": "BSS138",
@@ -485,6 +687,15 @@
   "category": "mosfet",
   "datasheet": null,
   "description": "Logic-level N-channel power MOSFET, 55 V; drives relays, solenoids, motors",
+  "footprints": [
+   {
+    "id": "to220",
+    "kicad": "Package_TO_SOT_THT:TO-220-3_Vertical",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "irlz44n",
   "kind": "NMOS",
   "name": "IRLZ44N",
@@ -518,6 +729,15 @@
   "category": "opamp",
   "datasheet": null,
   "description": "Quad general-purpose op-amp (four LM358-class amplifiers)",
+  "footprints": [
+   {
+    "id": "dip14",
+    "kicad": "Package_DIP:DIP-14_W7.62mm",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. Uses amplifier 1 (pins 1-3); tie the three unused amplifiers as followers"
+   }
+  ],
   "id": "lm324",
   "kind": "OPAMP",
   "name": "LM324",
@@ -545,6 +765,22 @@
   "category": "opamp",
   "datasheet": null,
   "description": "Dual general-purpose op-amp; single supply, output reaches ground but not V+",
+  "footprints": [
+   {
+    "id": "dip8",
+    "kicad": "Package_DIP:DIP-8_W7.62mm",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
+   },
+   {
+    "id": "soic8",
+    "kicad": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
+   }
+  ],
   "id": "lm358",
   "kind": "OPAMP",
   "name": "LM358",
@@ -572,6 +808,22 @@
   "category": "opamp",
   "datasheet": null,
   "description": "Dual rail-to-rail CMOS op-amp, 1.8\u20136 V; suits 3.3 V Raspberry Pi circuits",
+  "footprints": [
+   {
+    "id": "dip8",
+    "kicad": "Package_DIP:DIP-8_W7.62mm",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
+   },
+   {
+    "id": "soic8",
+    "kicad": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
+   }
+  ],
   "id": "mcp6002",
   "kind": "OPAMP",
   "name": "MCP6002",
@@ -599,6 +851,22 @@
   "category": "opamp",
   "datasheet": null,
   "description": "Dual low-noise JFET-input op-amp for split supplies (e.g. \u00b115 V); not for 3.3/5 V",
+  "footprints": [
+   {
+    "id": "dip8",
+    "kicad": "Package_DIP:DIP-8_W7.62mm",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
+   },
+   {
+    "id": "soic8",
+    "kicad": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
+   }
+  ],
   "id": "tl072",
   "kind": "OPAMP",
   "name": "TL072",
@@ -626,6 +894,15 @@
   "category": "regulator",
   "datasheet": null,
   "description": "Fixed 3.3 V low-dropout regulator, 800 mA (AMS1117-3.3 is the common clone)",
+  "footprints": [
+   {
+    "id": "sot223",
+    "kicad": "Package_TO_SOT_SMD:SOT-223-3_TabPin2",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. The tab is also the output"
+   }
+  ],
   "id": "lm1117_3v3",
   "kind": "REG",
   "name": "LM1117-3.3",
@@ -655,6 +932,15 @@
   "category": "regulator",
   "datasheet": null,
   "description": "Adjustable linear regulator, 1.25\u201337 V, 1.5 A; set by two resistors",
+  "footprints": [
+   {
+    "id": "to220",
+    "kicad": "Package_TO_SOT_THT:TO-220-3_Vertical",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "lm317",
   "kind": "REG",
   "name": "LM317",
@@ -684,6 +970,15 @@
   "category": "regulator",
   "datasheet": null,
   "description": "Fixed 5 V linear regulator, 1.5 A; needs ~2 V headroom and gets hot",
+  "footprints": [
+   {
+    "id": "to220",
+    "kicad": "Package_TO_SOT_THT:TO-220-3_Vertical",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "lm7805",
   "kind": "REG",
   "name": "LM7805",
@@ -713,6 +1008,15 @@
   "category": "regulator",
   "datasheet": null,
   "description": "Fixed 12 V linear regulator, 1.5 A",
+  "footprints": [
+   {
+    "id": "to220",
+    "kicad": "Package_TO_SOT_THT:TO-220-3_Vertical",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "lm7812",
   "kind": "REG",
   "name": "LM7812",
@@ -742,6 +1046,22 @@
   "category": "regulator",
   "datasheet": null,
   "description": "3.3 V micropower LDO, 250 mA, 1.6 \u00b5A quiescent; for battery projects",
+  "footprints": [
+   {
+    "id": "to92",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   },
+   {
+    "id": "sot23",
+    "kicad": "Package_TO_SOT_SMD:SOT-23",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "mcp1700_3v3",
   "kind": "REG",
   "name": "MCP1700-3.3",
@@ -771,6 +1091,22 @@
   "category": "schottky",
   "datasheet": null,
   "description": "1 A Schottky rectifier, 20 V, low forward drop",
+  "footprints": [
+   {
+    "id": "do41",
+    "kicad": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   },
+   {
+    "id": "sma",
+    "kicad": "Diode_SMD:D_SMA",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. SMD equivalent is SS12"
+   }
+  ],
   "id": "1n5817",
   "kind": "D",
   "name": "1N5817",
@@ -795,6 +1131,22 @@
   "category": "schottky",
   "datasheet": null,
   "description": "1 A Schottky rectifier, 40 V; common flyback diode",
+  "footprints": [
+   {
+    "id": "do41",
+    "kicad": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   },
+   {
+    "id": "sma",
+    "kicad": "Diode_SMD:D_SMA",
+    "lcsc": null,
+    "mount": "smd",
+    "note": "unconfirmed pinout: check the datasheet's package drawing. SMD equivalent is SS14"
+   }
+  ],
   "id": "1n5819",
   "kind": "D",
   "name": "1N5819",
@@ -819,6 +1171,15 @@
   "category": "zener",
   "datasheet": null,
   "description": "3.3 V 1 W Zener diode",
+  "footprints": [
+   {
+    "id": "do41",
+    "kicad": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "1n4728a",
   "kind": "D",
   "name": "1N4728A",
@@ -843,6 +1204,15 @@
   "category": "zener",
   "datasheet": null,
   "description": "5.1 V 1 W Zener diode",
+  "footprints": [
+   {
+    "id": "do41",
+    "kicad": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "1n4733a",
   "kind": "D",
   "name": "1N4733A",
@@ -867,6 +1237,15 @@
   "category": "zener",
   "datasheet": null,
   "description": "12 V 1 W Zener diode",
+  "footprints": [
+   {
+    "id": "do41",
+    "kicad": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "unconfirmed pinout: check the datasheet's package drawing"
+   }
+  ],
   "id": "1n4742a",
   "kind": "D",
   "name": "1N4742A",

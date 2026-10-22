@@ -10,6 +10,7 @@ from mcp.server.mcpserver.exceptions import ResourceError
 from mcp_types import ToolAnnotations
 from pydantic import ValidationError
 
+from backend.kicad_export import export_kicad
 from backend.mcp_errors import guard_handler
 from backend.mcp_orientation import register_orientation
 from backend.project_documents import get_document, list_documents, list_revisions, mutate_document
@@ -35,6 +36,7 @@ from backend.project_models import (
 from backend.project_runs import RunCommand, get_report, get_run, list_runs, start_run
 from backend.project_runtime import CollaborationRuntime
 from backend.project_views import ObservationCommand, set_view, view_status
+from backend.schematic_models import SchematicRequest
 
 PrincipalProvider = Callable[[], Awaitable[Principal]]
 READ_ONLY = ToolAnnotations(read_only_hint=True, destructive_hint=False, open_world_hint=False)
@@ -151,6 +153,18 @@ def register_restore_tools(server: MCPServer[None], runtime: CollaborationRuntim
     async def export_circuit(document: UUID, revision: UUID | None = None) -> dict[str, object]:
         """Export one authorized structured graph without credentials or executable model input."""
         return await get_document(runtime.database, await principal(), document, revision)
+
+    @server.tool(annotations=READ_ONLY)
+    @guard_handler
+    async def export_kicad_files(document: UUID, revision: UUID | None = None) -> dict[str, object]:
+        """Export a fully wired circuit as a KiCad netlist and JLCPCB BOM, plus what's left to check."""
+        snapshot = await get_document(runtime.database, await principal(), document, revision)
+        circuit = DocumentContents.model_validate(snapshot["contents"]).circuit
+        try:
+            exported = export_kicad(SchematicRequest.model_validate(circuit.model_dump()))
+        except ValueError as error:
+            raise ProjectFailure(f"Not ready for PCB export: {error}") from error
+        return {"netlist": exported.netlist, "bom_csv": exported.bom_csv, "warnings": exported.warnings}
 
 
 def register_run_tools(server: MCPServer[None], runtime: CollaborationRuntime, principal: PrincipalProvider) -> None:

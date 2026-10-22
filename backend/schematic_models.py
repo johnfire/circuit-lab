@@ -8,6 +8,7 @@ from pydantic import Field, model_validator
 from backend.board_library import BOARDS
 from backend.board_models import PinId, PinMode, allowed_modes
 from backend.component_catalog import COMPONENTS, DEVICE_KINDS
+from backend.footprint_catalog import footprint_options
 from backend.model_primitives import Finite, Identifier, StrictModel
 from backend.part_library import LIBRARY
 from backend.part_library_models import PartId
@@ -58,6 +59,7 @@ class Part(StrictModel):
     sine: SineSettings | None = None
     device: PartId | None = None
     board_pin: BoardPinSettings | None = None
+    footprint: str | None = Field(default=None, pattern=r"^[a-z0-9_]{1,16}$")
 
     @model_validator(mode="after")
     def validate_device(self) -> Self:
@@ -71,6 +73,16 @@ class Part(StrictModel):
                 raise ValueError(f"Unknown library part {self.device}; call list_library_parts")
             if library_part.kind != self.kind:
                 raise ValueError(f"{self.device} is a {library_part.kind}, not a {self.kind}")
+        return self
+
+    @model_validator(mode="after")
+    def validate_footprint(self) -> Self:
+        """A chosen package must be one of this part's options."""
+        if self.footprint is None:
+            return self
+        options = [option.id for option in footprint_options(self.kind, self.device)]
+        if self.footprint not in options:
+            raise ValueError(f"{self.id} has no footprint {self.footprint}; options: {', '.join(options) or 'none'}")
         return self
 
     @model_validator(mode="after")

@@ -24,6 +24,8 @@ def part_file(**changes: object) -> dict[str, object]:
                     "if_max": {"value": 0.2, "unit": "A", "source": "unconfirmed"}},
         "characterization": [{"test": "diode_forward_voltage", "current": 0.01, "max": 1.0,
                               "source": "unconfirmed"}],
+        "footprints": [{"id": "do35", "mount": "tht", "kicad": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+                        "pads": {"anode": ["2"], "cathode": ["1"]}}],
         "trust": {"level": "draft"},
     }
     return definition | changes
@@ -68,6 +70,10 @@ def test_verified_requires_reviewer_date_datasheet_and_page_citations() -> None:
                             "collector_current": 0.01, "min": 100, "source": "x x"}]},
      "does not apply"),
     ({"model": {"parameters": {"IS ; shell": 1.0}}}, "pattern"),
+    ({"footprints": [{"id": "do35", "mount": "tht", "kicad": "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
+                      "pads": {"anode": ["2"]}}]}, "must map exactly"),
+    ({"footprints": [{"id": "do35", "mount": "tht", "kicad": "not a footprint",
+                      "pads": {"anode": ["2"], "cathode": ["1"]}}]}, "pattern"),
     ({"characterization": [{"test": "diode_forward_voltage", "current": 0.01, "min": 1,
                             "max": 0.5, "source": "x x"}]}, "below max"),
 ])

@@ -1,6 +1,7 @@
 """The release receiver rejects unsafe transport before touching service state."""
 
 import io
+import re
 import tarfile
 from pathlib import Path
 from xml.etree import ElementTree
@@ -131,3 +132,11 @@ def test_valid_archive_has_immutable_destination(tmp_path: Path,
     assert (release / 'README.md').read_text() == 'hello'
     with pytest.raises(ValueError, match='already received'):
         deploy_release.unpack_release('a' * 40, stream.getvalue())
+
+
+def test_docker_frontend_stage_copies_every_circuits_file_the_frontend_imports() -> None:
+    imported = {match for source in Path("frontend/src").glob("*.ts*")
+                for match in re.findall(r"'\.\./\.\./circuits/([^']+)'", source.read_text())}
+    copy_line = next(line for line in Path("Dockerfile").read_text().splitlines()
+                     if line.startswith("COPY circuits/") and "/build/circuits/" in line)
+    assert imported and imported <= {Path(item).name for item in copy_line.split()[1:-1]}

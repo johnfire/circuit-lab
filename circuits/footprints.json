@@ -1,0 +1,16 @@
+{
+  "R": [
+    {"id": "axial", "mount": "tht", "kicad": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal", "note": "1/4 W through-hole"},
+    {"id": "r0805", "mount": "smd", "kicad": "Resistor_SMD:R_0805_2012Metric", "note": "1/8 W surface-mount"}
+  ],
+  "C": [
+    {"id": "disc", "mount": "tht", "kicad": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", "note": "Ceramic, up to about 1 µF"},
+    {"id": "radial", "mount": "tht", "kicad": "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", "note": "Electrolytic: polarised, terminal 0 is +"},
+    {"id": "c0805", "mount": "smd", "kicad": "Capacitor_SMD:C_0805_2012Metric", "note": "Ceramic surface-mount"},
+    {"id": "c1206", "mount": "smd", "kicad": "Capacitor_SMD:C_1206_3216Metric", "note": "Ceramic surface-mount, larger values"}
+  ],
+  "L": [
+    {"id": "axial", "mount": "tht", "kicad": "Inductor_THT:L_Axial_L5.3mm_D2.2mm_P10.16mm_Horizontal_Vishay_IM-1", "note": "Small signal inductor; a relay or solenoid coil is off-board"},
+    {"id": "l1210", "mount": "smd", "kicad": "Inductor_SMD:L_1210_3225Metric", "note": "Surface-mount"}
+  ]
+}
