@@ -3,10 +3,12 @@
 from pathlib import Path
 
 from backend.part_library_models import LibraryPart
+from backend.part_subcircuits import SUBCIRCUITS
 
 PARTS_ROOT = Path(__file__).resolve().parent.parent / "circuits" / "parts"
 INDEX_PATH = Path(__file__).resolve().parent.parent / "circuits" / "parts-index.json"
 MODEL_TYPES = {"D": "D", "NMOS": "VDMOS", "PMOS": "VDMOS", "NPN": "NPN", "PNP": "PNP"}
+SPICE_PREFIX = {"D": "D", "NMOS": "M", "PMOS": "M", "NPN": "Q", "PNP": "Q", "OPAMP": "X", "REG": "X"}
 
 
 def load_part_file(path: Path, root: Path) -> LibraryPart:
@@ -41,7 +43,9 @@ def model_name(part: LibraryPart) -> str:
 
 
 def model_card(part: LibraryPart) -> str:
-    """Generate the `.model` line from validated numeric parameters only."""
+    """Generate the `.model` line, or a `.subckt` block, from validated numbers only."""
+    if part.kind in SUBCIRCUITS:
+        return "\n".join(SUBCIRCUITS[part.kind](model_name(part), part.model.parameters))
     settings = " ".join(f"{name}={value:.12g}" for name, value in sorted(part.model.parameters.items()))
     channel = "pchan " if part.kind == "PMOS" else ""
     return f".model {model_name(part)} {MODEL_TYPES[part.kind]}({channel}{settings})"

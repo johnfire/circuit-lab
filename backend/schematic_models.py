@@ -38,7 +38,8 @@ class Part(StrictModel):
     """One ideal component or library device, with placement independent of wiring."""
 
     id: Identifier
-    kind: Literal["R", "C", "L", "V", "PULSE", "SIN", "GND", "D", "NMOS", "PMOS", "NPN", "PNP"]
+    kind: Literal["R", "C", "L", "V", "PULSE", "SIN", "GND", "D", "NMOS", "PMOS", "NPN", "PNP",
+                  "OPAMP", "REG"]
     value: Finite
     x: int = Field(strict=True, ge=2, le=38)
     y: int = Field(strict=True, ge=2, le=22)
@@ -51,7 +52,8 @@ class Part(StrictModel):
     def validate_device(self) -> Self:
         """Device kinds name an existing library part of the same kind; others name none."""
         if (self.kind in DEVICE_KINDS) != (self.device is not None):
-            raise ValueError("Set device to a library part for diodes and transistors only")
+            raise ValueError("Set device to a library part only for library device kinds "
+                             "(diodes, transistors, op-amps, regulators)")
         if self.device is not None:
             library_part = LIBRARY.get(self.device)
             if library_part is None:
@@ -80,7 +82,7 @@ class Pin(StrictModel):
     """A stable terminal reference, unaffected by moving or rotating a part."""
 
     part: Identifier
-    terminal: Literal[0, 1, 2]
+    terminal: Literal[0, 1, 2, 3, 4]
 
 
 class Wire(StrictModel):

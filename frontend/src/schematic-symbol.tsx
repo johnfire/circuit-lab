@@ -32,12 +32,30 @@ function BjtSymbol({ polarity }: { polarity: 'npn' | 'pnp' }) {
   </g>;
 }
 
+function OpampSymbol() {
+  return <g>
+    <path d="M-56 -56 L-56 56 L56 0 Z" />
+    <path d="M-96 -32 H-56 M-96 32 H-56 M56 0 H96 M0 -64 V-28 M0 64 V28" />
+    <path d="M-48 -32 H-36 M-48 32 H-36 M-42 26 V38" />
+  </g>;
+}
+
+function RegulatorSymbol() {
+  return <g>
+    <rect x="-40" y="-28" width="80" height="56" rx="4" />
+    <path d="M-64 0 H-40 M40 0 H64 M0 28 V64" />
+    <text className="symbol-text" x="0" y="6" textAnchor="middle">REG</text>
+  </g>;
+}
+
 export function SchematicSymbol({ part }: { part: Part }) {
   const { kind } = part;
   if (kind === 'GND') return <g><path d="M0 -64 V0 M-22 0 H22 M-15 9 H15 M-7 18 H7" /></g>;
   if (kind === 'D') return <DiodeSymbol category={libraryPart(part.device)?.category} />;
   if (kind === 'NMOS' || kind === 'PMOS') return <MosfetSymbol channel={kind === 'NMOS' ? 'n' : 'p'} />;
   if (kind === 'NPN' || kind === 'PNP') return <BjtSymbol polarity={kind === 'NPN' ? 'npn' : 'pnp'} />;
+  if (kind === 'OPAMP') return <OpampSymbol />;
+  if (kind === 'REG') return <RegulatorSymbol />;
   return <g>
     <path d="M-64 0 H-32 M32 0 H64" />
     {kind === 'R' && <path d="M-32 0 L-26 -12 L-16 12 L-6 -12 L4 12 L14 -12 L24 12 L32 0" />}

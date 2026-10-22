@@ -1,0 +1,52 @@
+{
+  "id": "mcp1700_3v3",
+  "name": "MCP1700-3.3",
+  "kind": "REG",
+  "category": "regulator",
+  "description": "3.3 V micropower LDO, 250 mA, 1.6 \u00b5A quiescent; for battery projects",
+  "package": "TO-92 / SOT-23",
+  "datasheet": {
+    "manufacturer": "Microchip",
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "VREG": 3.3,
+      "DROPOUT": 0.178,
+      "IQ": 1.6e-06
+    }
+  },
+  "ratings": {
+    "vin_max": {
+      "value": 6.5,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "iout_max": {
+      "value": 0.25,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 0.5,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (TO-92, free air)"
+    }
+  },
+  "characterization": [
+    {
+      "test": "regulator_output_voltage",
+      "input_voltage": 5,
+      "load_current": 0.1,
+      "min": 3.23,
+      "max": 3.37,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Input above 6 V exceeds its operating range."
+  }
+}

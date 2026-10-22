@@ -43,7 +43,7 @@ function parsePart(value: unknown): Part {
 
 function parseDevice(part: Record<string, unknown>): void {
   if (!isDeviceKind(part.kind as Part['kind'])) {
-    if (part.device !== undefined && part.device !== null) throw new Error('Only diodes and transistors name a library part.');
+    if (part.device !== undefined && part.device !== null) throw new Error('Only library devices (diodes, transistors, op-amps, regulators) name a library part.');
     return;
   }
   const library = libraryPart(typeof part.device === 'string' ? part.device : null);
@@ -54,10 +54,10 @@ function parseDevice(part: Record<string, unknown>): void {
 function parsePin(value: unknown, parts: Part[]): Pin {
   const pin = objectShape(value, ['part', 'terminal']);
   const part = parts.find(part => part.id === pin.part);
-  if (!part || (pin.terminal !== 0 && pin.terminal !== 1 && pin.terminal !== 2) || pin.terminal >= terminalCount(part.kind)) {
+  if (!part || typeof pin.terminal !== 'number' || !Number.isInteger(pin.terminal) || pin.terminal < 0 || pin.terminal >= terminalCount(part.kind)) {
     throw new Error('A wire points to a missing terminal.');
   }
-  return { part: part.id, terminal: pin.terminal };
+  return { part: part.id, terminal: pin.terminal as Pin['terminal'] };
 }
 
 export function parseSchematic(text: string): Schematic {

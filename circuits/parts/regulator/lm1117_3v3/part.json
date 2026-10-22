@@ -1,0 +1,60 @@
+{
+  "id": "lm1117_3v3",
+  "name": "LM1117-3.3",
+  "kind": "REG",
+  "category": "regulator",
+  "description": "Fixed 3.3 V low-dropout regulator, 800 mA (AMS1117-3.3 is the common clone)",
+  "package": "SOT-223",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "VREG": 3.3,
+      "DROPOUT": 1.2,
+      "IQ": 0.005
+    }
+  },
+  "ratings": {
+    "vin_max": {
+      "value": 15,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (AMS1117 limit; TI LM1117 allows 20 V)"
+    },
+    "iout_max": {
+      "value": 0.8,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 1.2,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (SOT-223, free air)"
+    }
+  },
+  "characterization": [
+    {
+      "test": "regulator_output_voltage",
+      "input_voltage": 5,
+      "load_current": 0.1,
+      "min": 3.235,
+      "max": 3.365,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "regulator_output_voltage",
+      "input_voltage": 4.5,
+      "load_current": 0.8,
+      "min": 3.2,
+      "max": 3.4,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying."
+  }
+}

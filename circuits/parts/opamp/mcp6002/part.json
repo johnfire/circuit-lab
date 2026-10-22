@@ -1,0 +1,67 @@
+{
+  "id": "mcp6002",
+  "name": "MCP6002",
+  "kind": "OPAMP",
+  "category": "opamp",
+  "description": "Dual rail-to-rail CMOS op-amp, 1.8\u20136 V; suits 3.3 V Raspberry Pi circuits",
+  "package": "DIP-8 / SO-8",
+  "datasheet": {
+    "manufacturer": "Microchip",
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "AOL": 400000.0,
+      "GBW": 1000000.0,
+      "SR": 600000.0,
+      "VOS": 0.001,
+      "ISUP": 0.0001,
+      "VOHDROP": 0.025,
+      "VOLDROP": 0.025,
+      "RIN": 10000000000000.0,
+      "ROUT": 100
+    }
+  },
+  "ratings": {
+    "vs_max": {
+      "value": 7,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "iout_max": {
+      "value": 0.023,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "opamp_unity_gain_bandwidth",
+      "supply": 3.3,
+      "min": 800000.0,
+      "max": 1200000.0,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "opamp_slew_rate",
+      "supply": 3.3,
+      "min": 400000.0,
+      "max": 800000.0,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "opamp_output_high",
+      "supply": 3.3,
+      "load_resistance": 10000,
+      "min": 3.2,
+      "max": 3.3,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Package holds two amplifiers; each placed part models one."
+  }
+}

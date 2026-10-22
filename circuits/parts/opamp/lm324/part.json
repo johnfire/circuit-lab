@@ -1,0 +1,67 @@
+{
+  "id": "lm324",
+  "name": "LM324",
+  "kind": "OPAMP",
+  "category": "opamp",
+  "description": "Quad general-purpose op-amp (four LM358-class amplifiers)",
+  "package": "DIP-14 / SO-14",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "AOL": 100000.0,
+      "GBW": 1000000.0,
+      "SR": 300000.0,
+      "VOS": 0.002,
+      "ISUP": 0.00035,
+      "VOHDROP": 1.5,
+      "VOLDROP": 0.005,
+      "RIN": 2000000.0,
+      "ROUT": 30
+    }
+  },
+  "ratings": {
+    "vs_max": {
+      "value": 32,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "iout_max": {
+      "value": 0.04,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "opamp_unity_gain_bandwidth",
+      "supply": 5,
+      "min": 700000.0,
+      "max": 1300000.0,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "opamp_slew_rate",
+      "supply": 5,
+      "min": 200000.0,
+      "max": 500000.0,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "opamp_output_high",
+      "supply": 5,
+      "load_resistance": 10000,
+      "min": 3.2,
+      "max": 3.8,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Package holds four amplifiers; each placed part models one."
+  }
+}

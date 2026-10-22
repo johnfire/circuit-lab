@@ -19,18 +19,25 @@ export function NodeReadings({ parts, wires, report, frame }: { parts: Part[]; w
   </g>)}</g>;
 }
 
+/** Arrow beside terminal 0's lead, pointing into the device: down the drain/collector, or left into an output. */
+function terminalZeroArrow(part: Part): string {
+  if (part.kind === 'OPAMP') return 'translate(72 -14) rotate(180)';
+  if (part.kind === 'REG') return 'translate(52 -14) rotate(180)';
+  return 'translate(56 -48) rotate(90)';
+}
+
 export function BranchDirection({ part, report, frame, observation }: {
   part: Part; report: ObservationReport; frame: number; observation: GridObservation;
 }) {
   if (report.analysis === 'ac' || part.kind === 'GND') return null;
   const current = sampleSignal(namedSignal(report, 'I:' + part.id), frame)?.real;
   if (current === undefined || Math.abs(current) < 1e-12) return null;
-  const direction = terminalCount(part.kind) === 3 ? (current < 0 ? 'out of terminal 0' : 'into terminal 0') : current < 0 ? '1 → 0' : '0 → 1';
+  const direction = terminalCount(part.kind) > 2 ? (current < 0 ? 'out of terminal 0' : 'into terminal 0') : current < 0 ? '1 → 0' : '0 → 1';
   const duration = Math.max(.4, Math.min(3, 1 / (1 + Math.abs(current) * 1000)));
   return <g className="branch-direction" role="img" aria-label={part.id + ' current ' + engineering(current, 'A') + ', direction ' + direction}
     data-direction={direction} transform={'translate(' + part.x * GRID + ' ' + part.y * GRID + ') rotate(' + part.rotation + ')'}>
-    {terminalCount(part.kind) === 3
-      ? <g transform={'translate(56 -48)' + (current < 0 ? ' rotate(180)' : '')}><path d="M0 -18 V18 M-8 8 L0 18 L8 8" /></g>
+    {terminalCount(part.kind) > 2
+      ? <g transform={terminalZeroArrow(part) + (current < 0 ? ' rotate(180)' : '')}><path d="M-18 0 H18 M8 -8 L18 0 L8 8" /></g>
       : <g transform={current < 0 ? 'rotate(180)' : undefined}><path d="M-34 34 H34 M24 26 L34 34 L24 42" />
         {observation.markers && observation.playing && <circle className="flow-marker" r="3" cy="34"
           style={{ animationDuration: duration + 's' }} />}</g>}

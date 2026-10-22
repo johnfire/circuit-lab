@@ -4,8 +4,8 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, RootModel
 
-DEVICE_KINDS = frozenset({"D", "NMOS", "PMOS", "NPN", "PNP"})
-THREE_TERMINAL_KINDS = frozenset({"NMOS", "PMOS", "NPN", "PNP"})
+DEVICE_KINDS = frozenset({"D", "NMOS", "PMOS", "NPN", "PNP", "OPAMP", "REG"})
+TERMINAL_COUNTS = {"GND": 1, "NMOS": 3, "PMOS": 3, "NPN": 3, "PNP": 3, "REG": 3, "OPAMP": 5}
 
 
 class ComponentDefinition(BaseModel):
@@ -27,10 +27,8 @@ COMPONENTS = ComponentCatalog.model_validate_json(CATALOG_PATH.read_text()).root
 
 
 def terminal_count(kind: str) -> int:
-    """Ground has one terminal, transistors three, everything else two."""
-    if kind == "GND":
-        return 1
-    return 3 if kind in THREE_TERMINAL_KINDS else 2
+    """Ground one, transistors and regulators three, op-amps five, everything else two."""
+    return TERMINAL_COUNTS.get(kind, 2)
 
 
 def component_definitions() -> list[dict[str, object]]:

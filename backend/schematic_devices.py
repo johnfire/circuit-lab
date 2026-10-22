@@ -3,10 +3,8 @@
 from collections.abc import Sequence
 
 from backend.component_catalog import terminal_count
-from backend.part_library import LIBRARY, model_card, model_name
+from backend.part_library import LIBRARY, SPICE_PREFIX, model_card, model_name
 from backend.schematic_models import Part
-
-SPICE_PREFIX = {"D": "D", "NMOS": "M", "PMOS": "M", "NPN": "Q", "PNP": "Q"}
 
 
 def device_lines(part: Part, index: int, nodes: dict[str, str]) -> list[str]:

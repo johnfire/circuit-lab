@@ -33,18 +33,24 @@ def positive(expression: str) -> str:
     return f"(({expression})+abs({expression}))/2"
 
 
-def stress_expressions(kind: str, voltages: list[str], current: str) -> dict[str, str]:
-    """SPICE vector expressions for each rating a device family can have."""
-    v0, v1 = voltages[0], voltages[1]
+def stress_expressions(kind: str, v: list[str], current: str) -> dict[str, str]:
+    """SPICE vector expressions for each rating a device family can have.
+
+    `current` flows into terminal 0: anode, drain, collector, or the op-amp/regulator output.
+    """
     if kind == "D":
-        return {"if_max": positive(current), "vr_max": positive(f"{v1}-{v0}"),
-                "iz_max": positive(f"-{current}"), "pd_max": f"abs(({v0}-{v1})*{current})"}
-    v2 = voltages[2]
-    main = {"pd_max": f"abs(({v0}-{v2})*{current})"}
+        return {"if_max": positive(current), "vr_max": positive(f"{v[1]}-{v[0]}"),
+                "iz_max": positive(f"-{current}"), "pd_max": f"abs(({v[0]}-{v[1]})*{current})"}
     if kind in {"NMOS", "PMOS"}:
-        return main | {"vds_max": f"abs({v0}-{v2})", "vgs_max": f"abs({v1}-{v2})",
-                       "id_max": f"abs({current})"}
-    return main | {"vceo_max": f"abs({v0}-{v2})", "ic_max": f"abs({current})"}
+        return {"vds_max": f"abs({v[0]}-{v[2]})", "vgs_max": f"abs({v[1]}-{v[2]})",
+                "id_max": f"abs({current})", "pd_max": f"abs(({v[0]}-{v[2]})*{current})"}
+    if kind in {"NPN", "PNP"}:
+        return {"vceo_max": f"abs({v[0]}-{v[2]})", "ic_max": f"abs({current})",
+                "pd_max": f"abs(({v[0]}-{v[2]})*{current})"}
+    if kind == "OPAMP":
+        return {"vs_max": f"abs({v[3]}-{v[4]})", "iout_max": f"abs({current})"}
+    return {"vin_max": f"abs({v[1]}-{v[2]})", "iout_max": f"abs({current})",
+            "pd_max": f"abs(({v[1]}-{v[0]})*{current})"}
 
 
 def rating_probes(submitted: SchematicRequest, nodes: dict[str, str]) -> list[RatingProbe]:
@@ -99,8 +105,10 @@ def rating_warnings(submitted: SchematicRequest) -> list[str]:
     warnings = ["Library devices are checked against their absolute-maximum ratings: peak voltage "
                 "and current on the solver's own timepoints, and time-averaged power over this run. "
                 "R/C/L and sources stay ideal.",
-                "Transistor current is measured into terminal 0 (drain/collector); BJT power "
-                "omits the small base-emitter term. No Pi GPIO protection checks."]
+                "Device current is measured into terminal 0 (drain, collector or output); BJT "
+                "power omits the small base term. Op-amps and regulators are behavioral models "
+                "and do not current-limit: an iout_max failure means the real part would limit "
+                "or fail."]
     if drafts:
         warnings.append(f"Draft parts ({', '.join(drafts)}): models and ratings are unconfirmed "
                         "against datasheets, so a pass is not hardware approval.")

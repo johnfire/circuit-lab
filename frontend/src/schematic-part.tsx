@@ -44,7 +44,7 @@ function Terminal({ pin, props }: { pin: Pin; props: PartProps }) {
 }
 
 function currentReference(part: Part): string {
-  return terminalCount(part.kind) === 3 ? '(into ' + terminalLetter(part, 0) + ')' : '(' + terminalLetter(part, 0) + '→' + terminalLetter(part, 1) + ')';
+  return terminalCount(part.kind) > 2 ? '(into ' + terminalLetter(part, 0) + ')' : '(' + terminalLetter(part, 0) + '→' + terminalLetter(part, 1) + ')';
 }
 
 export function SchematicPart(props: PartProps) {

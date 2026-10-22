@@ -59,3 +59,24 @@ test('a placed transistor offers library parts of its kind and shows their trust
   await expect(page.getByRole('button', { name: 'Q1 terminal gate', exact: true })).toBeVisible();
   expect(await choice.locator('option').allTextContents()).not.toContain(expect.stringMatching(/1N4148/));
 });
+
+test('a 7805 dropping 12 V at 0.5 A fails its power rating in the browser', async ({ page }) => {
+  await page.goto('/?mode=build');
+  const circuit = { version: 2, circuit: { timing: { stop: .001, step: .00001 }, parts: [
+    { id: 'VIN', kind: 'V', value: 12, x: 4, y: 10, rotation: 90 },
+    { id: 'U1', kind: 'REG', device: 'lm7805', value: 0, x: 14, y: 8, rotation: 0 },
+    { id: 'RL', kind: 'R', value: 10, x: 24, y: 10, rotation: 90 },
+    { id: 'G1', kind: 'GND', value: 0, x: 14, y: 18, rotation: 0 }],
+  wires: [['VIN', 0, 'U1', 1], ['U1', 0, 'RL', 0], ['U1', 2, 'G1', 0], ['RL', 1, 'G1', 0], ['VIN', 1, 'G1', 0]]
+    .map(([a, ta, b, tb]) => ({ a: { part: a, terminal: ta }, b: { part: b, terminal: tb } })) } };
+  await page.getByLabel('Import circuit', { exact: true }).setInputFiles({ name: 'regulator.json', mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(circuit)) });
+  await expect(page.getByRole('button', { name: 'Select U1 LM7805', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'U1 terminal ground_or_adjust', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Simulate circuit' }).click();
+  const ratings = page.getByRole('region', { name: /Part ratings/ });
+  await expect(ratings).toContainText('1 of 3 exceeded', { timeout: 15000 });
+  await expect(ratings.locator('.check.fail')).toContainText('Power dissipation');
+  await expect(page.getByRole('row', { name: /^U1 OUT 5 V IN 12 V G\/A 0 V/ })).toBeVisible();
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});

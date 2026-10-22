@@ -11,9 +11,11 @@ from backend.part_library import LIBRARY, library_summaries, part_summary
 GUIDE = """Circuit Lab lets you inspect, edit and simulate explicitly shared analog circuits.
 Use get_capabilities, list_components and list_library_parts first. Editable parts are
 ideal R, C, L, DC/pulse/sine voltage sources, ground, and real library devices: diodes,
-LEDs, Zeners (kind D) and transistors (NMOS, PMOS, NPN, PNP). A library device sets
-`device` to a library part id of the same kind and value 0. Diode terminals: 0 anode,
-1 cathode. Transistor terminals: 0 drain/collector, 1 gate/base, 2 source/emitter.
+LEDs, Zeners (kind D), transistors (NMOS, PMOS, NPN, PNP), op-amps (OPAMP) and linear
+regulators (REG). A library device sets `device` to a library part id of the same kind
+and value 0. Terminals: diode 0 anode, 1 cathode; transistor 0 drain/collector, 1 gate/
+base, 2 source/emitter; op-amp 0 output, 1 in+, 2 in-, 3 V+, 4 V- (wire both supply
+pins); regulator 0 output, 1 input, 2 ground (fixed) or adjust (LM317).
 Curated recipes are a separate simulation surface.
 Read list_projects or list_shared_workspaces, ask which target the user means, then
 get_circuit with its revision. Never assume a particular browser tab is active.
@@ -80,7 +82,7 @@ def get_component(kind: str) -> dict[str, object]:
 
 
 def list_library_parts(category: str | None = None) -> list[dict[str, object]]:
-    """List real library parts (diode, schottky, zener, led, mosfet, bjt) with trust and ratings."""
+    """List library parts (diode, schottky, zener, led, mosfet, bjt, opamp, regulator)."""
     return [summary for summary in library_summaries()
             if category is None or summary["category"] == category]
 

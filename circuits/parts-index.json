@@ -515,6 +515,259 @@
   "trust": "draft"
  },
  {
+  "category": "opamp",
+  "datasheet": null,
+  "description": "Quad general-purpose op-amp (four LM358-class amplifiers)",
+  "id": "lm324",
+  "kind": "OPAMP",
+  "name": "LM324",
+  "package": "DIP-14 / SO-14",
+  "ratings": {
+   "iout_max": {
+    "unit": "A",
+    "value": 0.04
+   },
+   "vs_max": {
+    "unit": "V",
+    "value": 32.0
+   }
+  },
+  "terminals": [
+   "output",
+   "in_plus",
+   "in_minus",
+   "v_plus",
+   "v_minus"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "opamp",
+  "datasheet": null,
+  "description": "Dual general-purpose op-amp; single supply, output reaches ground but not V+",
+  "id": "lm358",
+  "kind": "OPAMP",
+  "name": "LM358",
+  "package": "DIP-8 / SO-8",
+  "ratings": {
+   "iout_max": {
+    "unit": "A",
+    "value": 0.04
+   },
+   "vs_max": {
+    "unit": "V",
+    "value": 32.0
+   }
+  },
+  "terminals": [
+   "output",
+   "in_plus",
+   "in_minus",
+   "v_plus",
+   "v_minus"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "opamp",
+  "datasheet": null,
+  "description": "Dual rail-to-rail CMOS op-amp, 1.8\u20136 V; suits 3.3 V Raspberry Pi circuits",
+  "id": "mcp6002",
+  "kind": "OPAMP",
+  "name": "MCP6002",
+  "package": "DIP-8 / SO-8",
+  "ratings": {
+   "iout_max": {
+    "unit": "A",
+    "value": 0.023
+   },
+   "vs_max": {
+    "unit": "V",
+    "value": 7.0
+   }
+  },
+  "terminals": [
+   "output",
+   "in_plus",
+   "in_minus",
+   "v_plus",
+   "v_minus"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "opamp",
+  "datasheet": null,
+  "description": "Dual low-noise JFET-input op-amp for split supplies (e.g. \u00b115 V); not for 3.3/5 V",
+  "id": "tl072",
+  "kind": "OPAMP",
+  "name": "TL072",
+  "package": "DIP-8 / SO-8",
+  "ratings": {
+   "iout_max": {
+    "unit": "A",
+    "value": 0.04
+   },
+   "vs_max": {
+    "unit": "V",
+    "value": 36.0
+   }
+  },
+  "terminals": [
+   "output",
+   "in_plus",
+   "in_minus",
+   "v_plus",
+   "v_minus"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "regulator",
+  "datasheet": null,
+  "description": "Fixed 3.3 V low-dropout regulator, 800 mA (AMS1117-3.3 is the common clone)",
+  "id": "lm1117_3v3",
+  "kind": "REG",
+  "name": "LM1117-3.3",
+  "package": "SOT-223",
+  "ratings": {
+   "iout_max": {
+    "unit": "A",
+    "value": 0.8
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 1.2
+   },
+   "vin_max": {
+    "unit": "V",
+    "value": 15.0
+   }
+  },
+  "terminals": [
+   "output",
+   "input",
+   "ground_or_adjust"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "regulator",
+  "datasheet": null,
+  "description": "Adjustable linear regulator, 1.25\u201337 V, 1.5 A; set by two resistors",
+  "id": "lm317",
+  "kind": "REG",
+  "name": "LM317",
+  "package": "TO-220",
+  "ratings": {
+   "iout_max": {
+    "unit": "A",
+    "value": 1.5
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 2.0
+   },
+   "vin_max": {
+    "unit": "V",
+    "value": 40.0
+   }
+  },
+  "terminals": [
+   "output",
+   "input",
+   "ground_or_adjust"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "regulator",
+  "datasheet": null,
+  "description": "Fixed 5 V linear regulator, 1.5 A; needs ~2 V headroom and gets hot",
+  "id": "lm7805",
+  "kind": "REG",
+  "name": "LM7805",
+  "package": "TO-220",
+  "ratings": {
+   "iout_max": {
+    "unit": "A",
+    "value": 1.5
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 2.0
+   },
+   "vin_max": {
+    "unit": "V",
+    "value": 35.0
+   }
+  },
+  "terminals": [
+   "output",
+   "input",
+   "ground_or_adjust"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "regulator",
+  "datasheet": null,
+  "description": "Fixed 12 V linear regulator, 1.5 A",
+  "id": "lm7812",
+  "kind": "REG",
+  "name": "LM7812",
+  "package": "TO-220",
+  "ratings": {
+   "iout_max": {
+    "unit": "A",
+    "value": 1.5
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 2.0
+   },
+   "vin_max": {
+    "unit": "V",
+    "value": 35.0
+   }
+  },
+  "terminals": [
+   "output",
+   "input",
+   "ground_or_adjust"
+  ],
+  "trust": "draft"
+ },
+ {
+  "category": "regulator",
+  "datasheet": null,
+  "description": "3.3 V micropower LDO, 250 mA, 1.6 \u00b5A quiescent; for battery projects",
+  "id": "mcp1700_3v3",
+  "kind": "REG",
+  "name": "MCP1700-3.3",
+  "package": "TO-92 / SOT-23",
+  "ratings": {
+   "iout_max": {
+    "unit": "A",
+    "value": 0.25
+   },
+   "pd_max": {
+    "unit": "W",
+    "value": 0.5
+   },
+   "vin_max": {
+    "unit": "V",
+    "value": 6.5
+   }
+  },
+  "terminals": [
+   "output",
+   "input",
+   "ground_or_adjust"
+  ],
+  "trust": "draft"
+ },
+ {
   "category": "schottky",
   "datasheet": null,
   "description": "1 A Schottky rectifier, 20 V, low forward drop",

@@ -3,7 +3,7 @@ import { PART_NAMES, snapped } from './schematic-model';
 import type { PartKind } from './schematic-types';
 import type { EditorState } from './use-schematic-editor';
 
-const SHELF_ICONS: Partial<Record<PartKind, string>> = { GND: '⏚', PULSE: '▔▁', D: '▷|', NMOS: 'N', PMOS: 'P', NPN: 'Q', PNP: 'Q' };
+const SHELF_ICONS: Partial<Record<PartKind, string>> = { GND: '⏚', PULSE: '▔▁', D: '▷|', NMOS: 'N', PMOS: 'P', NPN: 'Q', PNP: 'Q', OPAMP: '▷', REG: 'REG' };
 
 export function AnalogPartsPanel({ editor }: { editor: EditorState }) {
   const [x, setX] = useState(10), [y, setY] = useState(6);
@@ -14,6 +14,6 @@ export function AnalogPartsPanel({ editor }: { editor: EditorState }) {
     <div className="compact-fields"><label>Place column<input type="number" min="2" max="38" value={x} onChange={event => setX(snapped(Number(event.target.value), 38))} /></label>
       <label>Place row<input type="number" min="2" max="22" value={y} onChange={event => setY(snapped(Number(event.target.value), 22))} /></label></div>
     <button className="secondary-action" disabled={!editor.armed || editor.running} onClick={() => editor.place(x, y)}>Add to grid</button>
-    <p className="muted">{editor.schematic.parts.length}/20 parts · {editor.schematic.wires.length}/40 wires<br />Ideal R/C/L and sources, plus real library diodes and transistors checked against their ratings.</p>
+    <p className="muted">{editor.schematic.parts.length}/20 parts · {editor.schematic.wires.length}/40 wires<br />Ideal R/C/L and sources, plus library diodes, transistors, op-amps and regulators checked against their ratings.</p>
   </section>;
 }

@@ -1,0 +1,67 @@
+{
+  "id": "tl072",
+  "name": "TL072",
+  "kind": "OPAMP",
+  "category": "opamp",
+  "description": "Dual low-noise JFET-input op-amp for split supplies (e.g. \u00b115 V); not for 3.3/5 V",
+  "package": "DIP-8 / SO-8",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "AOL": 200000.0,
+      "GBW": 3000000.0,
+      "SR": 13000000.0,
+      "VOS": 0.003,
+      "ISUP": 0.0014,
+      "VOHDROP": 1.5,
+      "VOLDROP": 1.5,
+      "RIN": 1000000000000.0,
+      "ROUT": 50
+    }
+  },
+  "ratings": {
+    "vs_max": {
+      "value": 36,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "iout_max": {
+      "value": 0.04,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  },
+  "characterization": [
+    {
+      "test": "opamp_unity_gain_bandwidth",
+      "supply": 30,
+      "min": 2500000.0,
+      "max": 4000000.0,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "opamp_slew_rate",
+      "supply": 30,
+      "min": 8000000.0,
+      "max": 16000000.0,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    {
+      "test": "opamp_output_high",
+      "supply": 30,
+      "load_resistance": 10000,
+      "min": 27.5,
+      "max": 29,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Output stays about 1.5 V from each rail; needs at least ~\u00b15 V supplies."
+  }
+}

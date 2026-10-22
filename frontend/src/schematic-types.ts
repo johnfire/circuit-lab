@@ -1,6 +1,6 @@
-export type DeviceKind = 'D' | 'NMOS' | 'PMOS' | 'NPN' | 'PNP';
+export type DeviceKind = 'D' | 'NMOS' | 'PMOS' | 'NPN' | 'PNP' | 'OPAMP' | 'REG';
 export type PartKind = 'R' | 'C' | 'L' | 'V' | 'PULSE' | 'SIN' | 'GND' | DeviceKind;
-export type Terminal = 0 | 1 | 2;
+export type Terminal = 0 | 1 | 2 | 3 | 4;
 export type Rotation = 0 | 90 | 180 | 270;
 export interface Pulse { period: number; width: number; delay: number }
 export interface Sine { offset: number; frequency: number; phase: number }

@@ -1,0 +1,54 @@
+{
+  "id": "lm317",
+  "name": "LM317",
+  "kind": "REG",
+  "category": "regulator",
+  "description": "Adjustable linear regulator, 1.25\u201337 V, 1.5 A; set by two resistors",
+  "package": "TO-220",
+  "datasheet": {
+    "manufacturer": null,
+    "url": null
+  },
+  "model": {
+    "parameters": {
+      "VREG": 1.25,
+      "DROPOUT": 1.7,
+      "IQ": 5e-05
+    }
+  },
+  "ratings": {
+    "vin_max": {
+      "value": 40,
+      "unit": "V",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (input-output differential; checked here as input-adjust)"
+    },
+    "iout_max": {
+      "value": 1.5,
+      "unit": "A",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    },
+    "pd_max": {
+      "value": 2.0,
+      "unit": "W",
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (free air, no heatsink)"
+    }
+  },
+  "characterization": [
+    {
+      "test": "regulator_output_voltage",
+      "input_voltage": 12,
+      "load_current": 0.01,
+      "adjust_top": 240,
+      "adjust_bottom": 720,
+      "min": 4.85,
+      "max": 5.2,
+      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+    }
+  ],
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Terminal 2 is ADJ: Vout = 1.25 V \u00d7 (1 + R2/R1) + Iadj \u00d7 R2. Needs ~10 mA minimum load."
+  }
+}

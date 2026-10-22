@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 
 from backend.model_primitives import StrictModel
-from backend.part_library import model_card, model_name
+from backend.part_library import SPICE_PREFIX, model_card, model_name
 from backend.part_library_models import (
     BjtCurrentGain,
     BjtSaturationVoltage,
@@ -14,6 +14,10 @@ from backend.part_library_models import (
     LibraryPart,
     MosfetOnResistance,
     MosfetThreshold,
+    OpampOutputHigh,
+    OpampSlewRate,
+    OpampUnityGainBandwidth,
+    RegulatorOutputVoltage,
     ZenerVoltage,
 )
 from harness.run_circuit import run_ngspice, simulation_error
@@ -37,8 +41,7 @@ class CharacterizationResult(StrictModel):
 
 def device_line(part: LibraryPart, terminals: str) -> str:
     """Instantiate a library device on generated nodes; prefix letters follow SPICE."""
-    prefix = {"D": "D", "NMOS": "M", "PMOS": "M", "NPN": "Q", "PNP": "Q"}[part.kind]
-    return f"{prefix}1 {terminals} {model_name(part)}"
+    return f"{SPICE_PREFIX[part.kind]}1 {terminals} {model_name(part)}"
 
 
 def operating_point_netlist(part: LibraryPart, lines: list[str], expression: str) -> str:
@@ -88,6 +91,51 @@ def gain_netlist(part: LibraryPart, test: BjtCurrentGain) -> str:
     ]) + "\n"
 
 
+def control_netlist(part: LibraryPart, lines: list[str], analysis: list[str]) -> str:
+    """A generated netlist whose control block ends by printing `measured`."""
+    return "\n".join([f"Characterize {part.id}", model_card(part), *lines, ".control", *analysis,
+                      "print measured", "quit", ".endc", ".end"]) + "\n"
+
+
+def bandwidth_netlist(part: LibraryPart, test: OpampUnityGainBandwidth) -> str:
+    """Unity-gain follower at mid-supply; report where its gain falls to −3 dB."""
+    lines = [f"VS vp 0 {test.supply:.12g}", f"VIN inp 0 DC {test.supply / 2:.12g} AC 1",
+             device_line(part, "o inp o vp 0")]
+    return control_netlist(part, lines, ["ac dec 50 1 1e9", "let gain = mag(v(o))",
+                                         "meas ac measured WHEN gain=0.7071067812 FALL=1"])
+
+
+def slew_netlist(part: LibraryPart, test: OpampSlewRate) -> str:
+    """Follower stepped across half the supply; report the 20–80 % average output slope."""
+    low, high = test.supply / 4, 3 * test.supply / 4
+    start, end = low + 0.2 * (high - low), low + 0.8 * (high - low)
+    lines = [f"VS vp 0 {test.supply:.12g}",
+             f"VIN inp 0 PULSE({low:.12g} {high:.12g} 10u 1n 1n 100u 200u)",
+             device_line(part, "o inp o vp 0")]
+    return control_netlist(part, lines, [
+        "tran 5n 60u 0 5n", f"meas tran rise_start WHEN v(o)={start:.12g} RISE=1",
+        f"meas tran rise_end WHEN v(o)={end:.12g} RISE=1",
+        f"let measured = {end - start:.12g}/(rise_end-rise_start)"])
+
+
+def output_high_netlist(part: LibraryPart, test: OpampOutputHigh) -> str:
+    """Drive the output high with a large differential input into a load to ground."""
+    lines = [f"VS vp 0 {test.supply:.12g}", f"VINP inp 0 {0.6 * test.supply:.12g}",
+             f"VINN inn 0 {0.4 * test.supply:.12g}", device_line(part, "o inp inn vp 0"),
+             f"RL o 0 {test.load_resistance:.12g}"]
+    return operating_point_netlist(part, lines, "v(o)")
+
+
+def regulator_netlist(part: LibraryPart, test: RegulatorOutputVoltage) -> str:
+    """Load the output with a current sink; adjustable parts get their resistor divider."""
+    divider = test.adjust_top is not None and test.adjust_bottom is not None
+    lines = [f"VIN in 0 {test.input_voltage:.12g}", f"ILOAD o 0 {test.load_current:.12g}",
+             device_line(part, "o in ref" if divider else "o in 0")]
+    if divider:
+        lines += [f"RTOP o ref {test.adjust_top:.12g}", f"RBOT ref 0 {test.adjust_bottom:.12g}"]
+    return operating_point_netlist(part, lines, "v(o)")
+
+
 def printed_measurement(transcript: str) -> float | None:
     """Read the single `measured = value` line, or nothing if the solver printed none."""
     values = [float(match["value"]) for match in PRINTED_VALUE.finditer(transcript)
@@ -121,6 +169,14 @@ def netlist_for(part: LibraryPart, test: Characterization) -> tuple[str, str]:
             return saturation_netlist(part, test), "V"
         case BjtCurrentGain():
             return gain_netlist(part, test), "hFE"
+        case OpampUnityGainBandwidth():
+            return bandwidth_netlist(part, test), "Hz"
+        case OpampSlewRate():
+            return slew_netlist(part, test), "V/s"
+        case OpampOutputHigh():
+            return output_high_netlist(part, test), "V"
+        case RegulatorOutputVoltage():
+            return regulator_netlist(part, test), "V"
 
 
 def run_test(part: LibraryPart, test: Characterization) -> CharacterizationResult:

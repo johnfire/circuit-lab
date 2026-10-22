@@ -38,7 +38,26 @@ test('circuit files accept library devices and reject unknown or mismatched ones
   assert.equal(parsed.parts.at(-1)?.device, 'irlz44n');
   assert.throws(() => parseSchematic(withDevice({ ...fet, device: 'made_up' })), /not available/);
   assert.throws(() => parseSchematic(withDevice({ ...fet, device: '1n4148' })), /is not a NMOS/);
-  assert.throws(() => parseSchematic(withDevice({ ...fet, kind: 'R', value: 100 })), /Only diodes and transistors/);
+  assert.throws(() => parseSchematic(withDevice({ ...fet, kind: 'R', value: 100 })), /Only library devices/);
   assert.throws(() => parseSchematic(JSON.stringify({ ...starterCircuit(), wires: [
     { a: { part: 'R1', terminal: 2 }, b: { part: 'G1', terminal: 0 } }] })), /missing terminal/);
+});
+
+test('op-amps and regulators get their own terminal layouts, labels and reference terminals', () => {
+  const amplifier = makePart('OPAMP', [], 10, 10);
+  assert.equal(amplifier.id, 'U1'); assert.equal(libraryPart(amplifier.device)?.kind, 'OPAMP');
+  assert.deepEqual(pinsFor(amplifier).map(pin => pin.terminal), [0, 1, 2, 3, 4]);
+  assert.deepEqual([0, 1, 2, 3, 4].map(terminal => terminalLetter(amplifier, terminal)), ['OUT', '+', '−', 'V+', 'V−']);
+  assert.deepEqual(pinPosition(amplifier, 0), { x: 13 * 32, y: 10 * 32 });
+  assert.deepEqual(pinPosition(amplifier, 3), { x: 10 * 32, y: 8 * 32 });
+  assert.equal(voltageReferenceTerminal('OPAMP'), 4);
+  const regulator = makePart('REG', [amplifier], 20, 10);
+  assert.equal(regulator.id, 'U2');
+  assert.deepEqual([0, 1, 2].map(terminal => terminalLetter(regulator, terminal)), ['OUT', 'IN', 'G/A']);
+  assert.equal(voltageReferenceTerminal('REG'), 2);
+  const circuit = { ...starterCircuit(), parts: [...starterCircuit().parts, amplifier] };
+  assert.equal(parseSchematic(JSON.stringify({ ...circuit, wires: [...circuit.wires,
+    { a: { part: 'U1', terminal: 4 }, b: { part: 'G1', terminal: 0 } }] })).wires.at(-1)?.a.terminal, 4);
+  assert.throws(() => parseSchematic(JSON.stringify({ ...circuit, wires: [
+    { a: { part: 'U1', terminal: 5 }, b: { part: 'G1', terminal: 0 } }] })), /missing terminal/);
 });

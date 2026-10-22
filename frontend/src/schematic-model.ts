@@ -1,11 +1,12 @@
 import type { Part, PartKind, Pin, Rotation, Schematic, Terminal, Wire } from './schematic-types';
 import componentCatalog from '../../circuits/components.json' with { type: 'json' };
-import { isDeviceKind, libraryPart, partsOfKind, terminalCount } from './part-library.ts';
+import { isDeviceKind, isTransistor, libraryPart, partsOfKind, terminalCount } from './part-library.ts';
 
 export const GRID = 32;
 export const PART_NAMES: Record<PartKind, string> = {
   R: 'Resistor', C: 'Capacitor', L: 'Inductor', V: 'DC source', PULSE: 'Pulse source', SIN: 'Sine source', GND: 'Ground',
   D: 'Diode / LED', NMOS: 'N-MOSFET', PMOS: 'P-MOSFET', NPN: 'NPN transistor', PNP: 'PNP transistor',
+  OPAMP: 'Op-amp', REG: 'Voltage regulator',
 };
 export const STANDARD_VALUES = Object.fromEntries(Object.entries(componentCatalog)
   .map(([kind, definition]) => [kind, definition.standard_values])) as Record<PartKind, number[]>;
@@ -26,14 +27,21 @@ export function partValue(part: Part): string {
 export function pinKey(pin: Pin): string { return pin.part + ':' + pin.terminal; }
 export function samePin(first: Pin, second: Pin): boolean { return pinKey(first) === pinKey(second); }
 export function pinsFor(part: Part): Pin[] {
-  return ([0, 1, 2] as Terminal[]).slice(0, terminalCount(part.kind)).map(terminal => ({ part: part.id, terminal }));
+  return ([0, 1, 2, 3, 4] as Terminal[]).slice(0, terminalCount(part.kind)).map(terminal => ({ part: part.id, terminal }));
 }
 
-/** Grid offsets: two-terminal leads left/right; transistors drain/collector up, gate/base left, source/emitter down. */
+const OFFSETS: Partial<Record<PartKind, { x: number; y: number }[]>> = {
+  GND: [{ x: 0, y: -2 }],
+  NMOS: [{ x: 1, y: -2 }, { x: -2, y: 0 }, { x: 1, y: 2 }],
+  OPAMP: [{ x: 3, y: 0 }, { x: -3, y: 1 }, { x: -3, y: -1 }, { x: 0, y: -2 }, { x: 0, y: 2 }],
+  REG: [{ x: 2, y: 0 }, { x: -2, y: 0 }, { x: 0, y: 2 }],
+};
+
+/** Grid offsets per terminal: two-terminal leads left/right; transistors drain/collector up, gate/base left,
+ * source/emitter down; op-amps output right, inputs left, supplies up/down; regulators in left, out right, ground down. */
 function terminalOffset(part: Part, terminal: Terminal): { x: number; y: number } {
-  if (part.kind === 'GND') return { x: 0, y: -2 };
-  if (terminalCount(part.kind) === 3) return [{ x: 1, y: -2 }, { x: -2, y: 0 }, { x: 1, y: 2 }][terminal];
-  return { x: terminal === 0 ? -2 : 2, y: 0 };
+  const layout = OFFSETS[isTransistor(part.kind) ? 'NMOS' : part.kind];
+  return layout ? layout[terminal] : { x: terminal === 0 ? -2 : 2, y: 0 };
 }
 
 export function pinPosition(part: Part, terminal: Terminal): { x: number; y: number } {
@@ -63,7 +71,7 @@ export function addWire(schematic: Schematic, a: Pin, b: Pin): Schematic {
 
 export function makePart(kind: PartKind, parts: Part[], x: number, y: number): Part {
   if (parts.length >= 20) throw new Error('This prototype supports up to 20 parts.');
-  const prefix = kind === 'GND' ? 'G' : kind === 'PULSE' || kind === 'SIN' ? 'V' : isDeviceKind(kind) ? (kind === 'D' ? 'D' : 'Q') : kind;
+  const prefix = kind === 'GND' ? 'G' : kind === 'PULSE' || kind === 'SIN' ? 'V' : isDeviceKind(kind) ? ({ D: 'D', OPAMP: 'U', REG: 'U' } as Record<string, string>)[kind] ?? 'Q' : kind;
   let suffix = 1;
   while (parts.some(part => part.id === prefix + suffix)) suffix++;
   if (isDeviceKind(kind)) {
