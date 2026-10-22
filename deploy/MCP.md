@@ -136,6 +136,34 @@ password change and deletion. Verify conflict handling with unsent local edits.
 Sharing permits the external AI provider to receive circuit/results. Revocation
 blocks further access but cannot retract information already sent to that provider.
 
+## Connect Claude Code
+
+Claude Code registers `http://localhost:PORT/callback` with a fixed port, not
+`127.0.0.1` (its MCP docs, checked 2026-10-22), so it is a separate reviewed
+client with its own exact callback:
+
+```sh
+uv run python -m deploy.mcp_identity_configuration \
+  https://circuit-lab.christopherrehm.de \
+  http://localhost:8125/callback circuit-lab-claude
+```
+
+Only `clients[0]` (the public `circuit-lab-claude` client) is new; the scopes,
+resource client and mappings already exist from the Codex rollout. Import that
+one client in the private Keycloak console (realm `circuit-lab` → Clients →
+Import client), then add it to the API's allowlist in `/opt/circuit-lab/.env`
+as `CIRCUIT_MCP_CLIENTS=circuit-lab-codex,circuit-lab-claude` and redeploy.
+On the computer running Claude Code:
+
+```sh
+claude mcp add --transport http --scope user --client-id circuit-lab-claude \
+  --callback-port 8125 circuit-lab https://circuit-lab.christopherrehm.de/mcp
+claude mcp login circuit-lab
+```
+
+Sign in, approve the consent screen, then share a grid with `circuit-lab-claude`
+on the workbench and run the same smoke test as for Codex.
+
 ## Documentation checked
 
 - [Codex MCP configuration](https://learn.chatgpt.com/docs/config-file/config-reference)
@@ -143,6 +171,8 @@ blocks further access but cannot retract information already sent to that provid
 - [OpenAI MCP authentication](https://developers.openai.com/plugins/build/auth)
   describes protected-resource discovery, PKCE, exact issuer/callback validation
   and resource-audience checks.
+- [Claude Code MCP](https://code.claude.com/docs/en/mcp) documents
+  `--client-id`, `--callback-port` and the `http://localhost:PORT/callback` redirect.
 - [Keycloak 26.8 upgrade guidance](https://www.keycloak.org/docs/26.8.0/upgrading/)
   documents the introspection-client audience check and least-privilege role
   scope mapping requirements.

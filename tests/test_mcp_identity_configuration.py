@@ -15,8 +15,14 @@ def test_codex_reviewed_pkce_configuration():
     assert configured["serviceAccountRoleMappings"]["circuit-lab-mcp-resource"]["realm-management"] == ["view-users", "view-events"]
 
 
+def test_claude_code_localhost_callback_is_accepted_exactly():
+    client = reviewed_client("https://circuit-lab.christopherrehm.de", "http://localhost:8125/callback", "circuit-lab-claude")
+    assert client["redirectUris"] == ["http://localhost:8125/callback"]
+
+
 @pytest.mark.parametrize("callback", ["https://example.test/*", "http://example.test/callback", "http://127.0.0.1:8124/callback#code",
-                                     "https://user:password@example.test/callback"])
+                                     "https://user:password@example.test/callback", "http://localhost.example.test/callback",
+                                     "http://localhost:*/callback"])
 def test_reject_unreviewable_oauth_callbacks(callback):
     with pytest.raises(ValueError):
         reviewed_client("https://circuit-lab.christopherrehm.de", callback, "circuit-lab-codex")

@@ -5,6 +5,8 @@ import sys
 import urllib.parse
 
 SCOPES = ("read", "edit", "simulate", "view")
+# Codex listens on 127.0.0.1; Claude Code registers http://localhost:PORT/callback (its docs, 2026-10-22).
+LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost"})
 
 
 def reviewed_client(origin: str, callback: str, identifier: str) -> dict[str, object]:
@@ -15,8 +17,8 @@ def reviewed_client(origin: str, callback: str, identifier: str) -> dict[str, ob
         raise ValueError("Resource origin must be HTTPS without a path")
     if "*" in callback or redirect.username or redirect.fragment or not redirect.hostname:
         raise ValueError("Use the exact reviewed callback, never a wildcard")
-    if redirect.scheme != "https" and not (redirect.scheme == "http" and redirect.hostname == "127.0.0.1"):
-        raise ValueError("Only HTTPS or an exact IPv4 loopback callback is allowed")
+    if redirect.scheme != "https" and not (redirect.scheme == "http" and redirect.hostname in LOOPBACK_HOSTS):
+        raise ValueError("Only HTTPS or an exact loopback callback is allowed")
     if not identifier or len(identifier) > 80 or not all(character.isalnum() or character in "._-" for character in identifier):
         raise ValueError("Invalid reviewed OAuth client ID")
     return {"clientId": identifier, "name": "Circuit Lab · " + identifier, "enabled": True,
