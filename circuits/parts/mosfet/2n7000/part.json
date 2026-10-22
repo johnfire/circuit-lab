@@ -6,8 +6,8 @@
   "description": "Small-signal N-channel MOSFET, 60 V",
   "package": "TO-92",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "onsemi",
+    "url": "https://www.onsemi.com/download/data-sheet/pdf/2n7000ta-d.pdf"
   },
   "model": {
     "parameters": {
@@ -28,45 +28,45 @@
     "vds_max": {
       "value": 60,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "vgs_max": {
-      "value": 20,
+      "value": 30,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "id_max": {
       "value": 0.2,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "pd_max": {
       "value": 0.4,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     }
   },
   "characterization": [
     {
       "test": "mosfet_threshold",
       "drain_current": 0.001,
-      "min": 0.8,
+      "min": 0.4,
       "max": 3.0,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     {
       "test": "mosfet_on_resistance",
-      "gate_voltage": 4.5,
-      "drain_current": 0.075,
-      "max": 5.3,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "gate_voltage": 10,
+      "drain_current": 0.5,
+      "max": 5.0,
+      "source": "datasheet p.2"
     }
   ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying. Not reliably switched by 3.3 V GPIO: the threshold can reach 3 V."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms. Vgs max corrected ±20 → ±30 V, threshold min 0.8 → 0.4 V; Rds(on) test now at the datasheet's 10 V / 0.5 A."
   },
   "footprints": [
     {
@@ -85,7 +85,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing"
+      "note": "Pinout matches datasheet p.1"
     }
   ]
 }

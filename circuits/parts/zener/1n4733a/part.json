@@ -6,8 +6,8 @@
   "description": "5.1 V 1 W Zener diode",
   "package": "DO-41",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "Vishay",
+    "url": "https://www.vishay.com/docs/85816/1n4728a.pdf"
   },
   "model": {
     "parameters": {
@@ -22,12 +22,12 @@
     "iz_max": {
       "value": 0.178,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     "pd_max": {
       "value": 1,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     }
   },
   "characterization": [
@@ -36,14 +36,14 @@
       "current": 0.049,
       "min": 4.845,
       "max": 5.355,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     }
   ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms. Vishay allows 1.3 W with 4 mm leads; the common 1 W rating is kept."
   },
   "footprints": [
     {
@@ -59,7 +59,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing"
+      "note": "Pinout matches datasheet p.1"
     }
   ]
 }

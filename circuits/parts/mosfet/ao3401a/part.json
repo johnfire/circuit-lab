@@ -7,7 +7,7 @@
   "package": "SOT-23",
   "datasheet": {
     "manufacturer": "Alpha & Omega Semiconductor",
-    "url": null
+    "url": "https://www.aosmd.com/pdfs/datasheet/AO3401A.pdf"
   },
   "model": {
     "parameters": {
@@ -28,22 +28,22 @@
     "vds_max": {
       "value": 30,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "vgs_max": {
       "value": 12,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "id_max": {
       "value": 4,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "pd_max": {
       "value": 1.4,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     }
   },
   "characterization": [
@@ -52,21 +52,21 @@
       "drain_current": 0.00025,
       "min": 0.5,
       "max": 1.3,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     {
       "test": "mosfet_on_resistance",
       "gate_voltage": 4.5,
-      "drain_current": 4,
+      "drain_current": 3.5,
       "max": 0.06,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     }
   ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying. Ratings are magnitudes; P-channel voltages and currents are negative."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms. Rds(on) test current corrected to 3.5 A. The datasheet draws SOT-23 without pin numbers: G-S-D on pads 1-2-3 is inferred, not printed."
   },
   "footprints": [
     {

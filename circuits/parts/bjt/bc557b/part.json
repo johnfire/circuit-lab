@@ -6,8 +6,8 @@
   "description": "Small-signal PNP transistor, gain group B",
   "package": "TO-92",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "onsemi",
+    "url": "https://www.onsemi.com/download/data-sheet/pdf/bc556b-d.pdf"
   },
   "model": {
     "parameters": {
@@ -42,17 +42,17 @@
     "vceo_max": {
       "value": 45,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "ic_max": {
       "value": 0.1,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "pd_max": {
-      "value": 0.5,
+      "value": 0.625,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     }
   },
   "characterization": [
@@ -60,16 +60,16 @@
       "test": "bjt_current_gain",
       "collector_voltage": 5,
       "collector_current": 0.002,
-      "min": 220,
-      "max": 475,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "min": 180,
+      "max": 460,
+      "source": "datasheet p.2"
     }
   ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms. Pd corrected 0.5 → 0.625 W and group-B hFE 220–475 → 180–460."
   },
   "footprints": [
     {
@@ -88,7 +88,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing"
+      "note": "Pinout matches datasheet p.1"
     }
   ]
 }

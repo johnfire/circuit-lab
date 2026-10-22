@@ -10,7 +10,14 @@ from fastapi.testclient import TestClient
 from backend.application import app
 from backend.block_library import BLOCKS
 from backend.footprint_catalog import GENERIC, verified_footprints
-from backend.kicad_export import HEADER_1X1, HEADER_1X2, PI_SOCKET, export_kicad
+from backend.kicad_export import (
+    HEADER_1X1,
+    HEADER_1X2,
+    PI_SOCKET,
+    Component,
+    export_kicad,
+    netlist_text,
+)
 from backend.part_library import LIBRARY
 from backend.schematic_models import SchematicRequest
 
@@ -98,3 +105,10 @@ def test_every_library_block_exports(block_id: str) -> None:
     exported = export_kicad(BLOCKS[block_id].circuit)
     assert exported.netlist.count("(") == exported.netlist.count(")")
     assert '"/GND"' in exported.netlist
+
+
+def test_lcsc_numbers_are_written_the_way_kicad_writes_component_fields() -> None:
+    netlist = netlist_text([Component("R1", "10k", "Resistor_SMD:R_0805_2012Metric", "C17414",
+                                      [("1", "0"), ("2", "n1")])], {"0": "GND", "n1": "N1"})
+    assert '(fields (field (name "LCSC") "C17414")) (property (name "LCSC") (value "C17414"))' in netlist
+    assert '(net (code "1") (name "/GND") (node (ref "R1") (pin "1")))' in netlist

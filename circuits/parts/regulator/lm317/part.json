@@ -6,8 +6,8 @@
   "description": "Adjustable linear regulator, 1.25–37 V, 1.5 A; set by two resistors",
   "package": "TO-220",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "Texas Instruments",
+    "url": "https://www.ti.com/lit/ds/symlink/lm317.pdf"
   },
   "model": {
     "parameters": {
@@ -20,12 +20,12 @@
     "vin_max": {
       "value": 40,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (input-output differential; checked here as input-adjust)"
+      "source": "datasheet p.6"
     },
     "iout_max": {
       "value": 1.5,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.6"
     },
     "pd_max": {
       "value": 2.0,
@@ -49,7 +49,7 @@
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Terminal 2 is ADJ: Vout = 1.25 V × (1 + R2/R1) + Iadj × R2. Needs ~10 mA minimum load."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms."
   },
   "footprints": [
     {
@@ -68,7 +68,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing"
+      "note": "Pinout matches datasheet p.5"
     }
   ]
 }

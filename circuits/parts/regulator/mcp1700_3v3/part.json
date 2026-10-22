@@ -7,7 +7,7 @@
   "package": "TO-92 / SOT-23",
   "datasheet": {
     "manufacturer": "Microchip",
-    "url": null
+    "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/MCP1700-Data-Sheet-20001826F.pdf"
   },
   "model": {
     "parameters": {
@@ -20,12 +20,12 @@
     "vin_max": {
       "value": 6.5,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.3"
     },
     "iout_max": {
       "value": 0.25,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.3"
     },
     "pd_max": {
       "value": 0.5,
@@ -36,18 +36,18 @@
   "characterization": [
     {
       "test": "regulator_output_voltage",
-      "input_voltage": 5,
-      "load_current": 0.1,
-      "min": 3.23,
-      "max": 3.37,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "input_voltage": 4.3,
+      "load_current": 0.0001,
+      "min": 3.234,
+      "max": 3.366,
+      "source": "datasheet p.3"
     }
   ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Input above 6 V exceeds its operating range."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms. Test now matches the datasheet's ±2 % condition (Vin = Vr + 1 V, 100 µA load)."
   },
   "footprints": [
     {
@@ -66,7 +66,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing"
+      "note": "Pinout matches datasheet p.1"
     },
     {
       "id": "sot23",

@@ -6,8 +6,8 @@
   "description": "Fixed 3.3 V low-dropout regulator, 800 mA (AMS1117-3.3 is the common clone)",
   "package": "SOT-223",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "Texas Instruments",
+    "url": "https://www.ti.com/lit/ds/symlink/lm1117.pdf"
   },
   "model": {
     "parameters": {
@@ -20,7 +20,7 @@
     "vin_max": {
       "value": 15,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (AMS1117 limit; TI LM1117 allows 20 V)"
+      "source": "datasheet p.4"
     },
     "iout_max": {
       "value": 0.8,
@@ -28,9 +28,9 @@
       "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
     },
     "pd_max": {
-      "value": 1.2,
+      "value": 1.6,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (SOT-223, free air)"
+      "source": "datasheet p.4"
     }
   },
   "characterization": [
@@ -40,7 +40,7 @@
       "load_current": 0.1,
       "min": 3.235,
       "max": 3.365,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.5"
     },
     {
       "test": "regulator_output_voltage",
@@ -55,7 +55,7 @@
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms. Vin kept at 15 V (TI's recommended max; abs max 20 V) because AMS1117 clones are 15 V abs max. Pd 1.6 W is derived, not printed: (125 °C recommended Tj − 25 °C) / 61.6 °C/W SOT-223 RθJA on a PCB (p.4); the datasheet says internally limited."
   },
   "footprints": [
     {
@@ -74,7 +74,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing. The tab is also the output"
+      "note": "Pinout matches datasheet p.3. The tab is also the output"
     }
   ]
 }

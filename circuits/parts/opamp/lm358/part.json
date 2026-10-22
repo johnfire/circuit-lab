@@ -6,8 +6,8 @@
   "description": "Dual general-purpose op-amp; single supply, output reaches ground but not V+",
   "package": "DIP-8 / SO-8",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "Texas Instruments",
+    "url": "https://www.ti.com/lit/ds/symlink/lm358.pdf"
   },
   "model": {
     "parameters": {
@@ -26,12 +26,12 @@
     "vs_max": {
       "value": 32,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.4"
     },
     "iout_max": {
       "value": 0.04,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.6"
     }
   },
   "characterization": [
@@ -62,7 +62,7 @@
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Package holds two amplifiers; each placed part models one."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms."
   },
   "footprints": [
     {
@@ -87,7 +87,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing. Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
+      "note": "Pinout matches datasheet p.3. Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
     },
     {
       "id": "soic8",

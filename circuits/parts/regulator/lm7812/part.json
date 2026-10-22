@@ -6,8 +6,8 @@
   "description": "Fixed 12 V linear regulator, 1.5 A",
   "package": "TO-220",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "Texas Instruments",
+    "url": "https://www.ti.com/lit/gpn/LM7800"
   },
   "model": {
     "parameters": {
@@ -20,17 +20,17 @@
     "vin_max": {
       "value": 35,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.4"
     },
     "iout_max": {
       "value": 1.5,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.5"
     },
     "pd_max": {
-      "value": 2.0,
+      "value": 1.85,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (free air, no heatsink: (125-25) °C / 50 °C/W)"
+      "source": "datasheet p.4"
     }
   },
   "characterization": [
@@ -47,7 +47,7 @@
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Behavioral model generated from datasheet-style numbers, not the vendor macromodel; values drafted without a datasheet check. Review every value before verifying. Power rating assumes no heatsink."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms. Pd corrected 2.0 → 1.85 W from RθJA 54 °C/W free air (p.4 note 3)."
   },
   "footprints": [
     {
@@ -66,7 +66,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing"
+      "note": "Pinout matches datasheet p.3"
     }
   ]
 }

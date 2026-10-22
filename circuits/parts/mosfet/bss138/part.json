@@ -6,8 +6,8 @@
   "description": "Logic-level N-channel MOSFET, 50 V; used in I2C level shifters",
   "package": "SOT-23",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "onsemi",
+    "url": "https://www.onsemi.com/download/data-sheet/pdf/bss138-d.pdf"
   },
   "model": {
     "parameters": {
@@ -28,22 +28,22 @@
     "vds_max": {
       "value": 50,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     "vgs_max": {
       "value": 20,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     "id_max": {
       "value": 0.22,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     "pd_max": {
       "value": 0.36,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     }
   },
   "characterization": [
@@ -52,28 +52,28 @@
       "drain_current": 0.001,
       "min": 0.8,
       "max": 1.5,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     {
       "test": "mosfet_on_resistance",
       "gate_voltage": 10,
       "drain_current": 0.22,
       "max": 3.5,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     {
       "test": "mosfet_on_resistance",
       "gate_voltage": 4.5,
       "drain_current": 0.22,
       "max": 6,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     }
   ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms."
   },
   "footprints": [
     {
@@ -92,7 +92,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing"
+      "note": "Pinout matches datasheet p.1"
     }
   ]
 }

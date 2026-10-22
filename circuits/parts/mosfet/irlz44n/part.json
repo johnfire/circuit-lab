@@ -6,8 +6,8 @@
   "description": "Logic-level N-channel power MOSFET, 55 V; drives relays, solenoids, motors",
   "package": "TO-220",
   "datasheet": {
-    "manufacturer": "Infineon (International Rectifier)",
-    "url": null
+    "manufacturer": "Infineon",
+    "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irlz44npbf-datasheet-en.pdf"
   },
   "model": {
     "parameters": {
@@ -28,22 +28,22 @@
     "vds_max": {
       "value": 55,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "vgs_max": {
       "value": 16,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "id_max": {
       "value": 47,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (at 25 °C case; far lower without a heatsink)"
+      "source": "datasheet p.1"
     },
     "pd_max": {
       "value": 2.4,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet (free air, no heatsink: (175-25) °C / 62 °C/W)"
+      "source": "datasheet p.1"
     }
   },
   "characterization": [
@@ -52,21 +52,21 @@
       "drain_current": 0.00025,
       "min": 1.0,
       "max": 2.0,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     {
       "test": "mosfet_on_resistance",
       "gate_voltage": 5,
       "drain_current": 25,
-      "max": 0.022,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "max": 0.025,
+      "source": "datasheet p.2"
     }
   ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying. Power rating assumes no heatsink; with a heatsink it is much higher."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms. Rds(on) at 5 V corrected 22 → 25 mΩ (22 mΩ is the 10 V figure). Pd 2.4 W is derived from RθJA 62 °C/W (p.1), no heatsink."
   },
   "footprints": [
     {
@@ -85,7 +85,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing"
+      "note": "Pinout matches datasheet p.1"
     }
   ]
 }

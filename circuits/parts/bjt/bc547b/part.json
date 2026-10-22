@@ -6,8 +6,8 @@
   "description": "Small-signal NPN transistor, gain group B",
   "package": "TO-92",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "onsemi",
+    "url": "https://www.onsemi.com/download/data-sheet/pdf/bc550-d.pdf"
   },
   "model": {
     "parameters": {
@@ -42,17 +42,17 @@
     "vceo_max": {
       "value": 45,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "ic_max": {
       "value": 0.1,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "pd_max": {
       "value": 0.5,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     }
   },
   "characterization": [
@@ -62,14 +62,14 @@
       "collector_current": 0.002,
       "min": 200,
       "max": 450,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     }
   ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms."
   },
   "footprints": [
     {
@@ -88,7 +88,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing"
+      "note": "Pinout matches datasheet p.1"
     }
   ]
 }

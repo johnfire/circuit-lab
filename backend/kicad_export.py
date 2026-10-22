@@ -134,7 +134,8 @@ def netlist_text(components: list[Component], names: dict[str, str]) -> str:
     lines = ['(export (version "E")', '  (design (source "circuit-lab") (tool "Circuit Lab"))', "  (components"]
     for component in components:
         stamp = uuid.uuid5(uuid.NAMESPACE_URL, "circuit-lab/" + component.ref)
-        fields = f" (fields (field (name \"LCSC\") {quote(component.lcsc)}))" if component.lcsc else ""
+        fields = (f' (fields (field (name "LCSC") {quote(component.lcsc)}))'
+                  f' (property (name "LCSC") (value {quote(component.lcsc)}))') if component.lcsc else ""
         lines.append(f"    (comp (ref {quote(component.ref)}) (value {quote(component.value)}) "
                      f"(footprint {quote(component.footprint)}){fields} "
                      f'(sheetpath (names "/") (tstamps "/")) (tstamps {quote(str(stamp))}))')

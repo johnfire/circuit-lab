@@ -6,8 +6,8 @@
   "description": "1 A Schottky rectifier, 20 V, low forward drop",
   "package": "DO-41",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "Vishay",
+    "url": "https://www.vishay.com/docs/88525/1n5817.pdf"
   },
   "model": {
     "parameters": {
@@ -26,12 +26,12 @@
     "vr_max": {
       "value": 20,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     },
     "if_max": {
       "value": 1,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     }
   },
   "characterization": [
@@ -39,14 +39,14 @@
       "test": "diode_forward_voltage",
       "current": 1,
       "max": 0.45,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.1"
     }
   ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms."
   },
   "footprints": [
     {
@@ -62,7 +62,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing"
+      "note": "Pinout matches datasheet p.1"
     },
     {
       "id": "sma",

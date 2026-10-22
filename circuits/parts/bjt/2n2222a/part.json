@@ -6,8 +6,8 @@
   "description": "General-purpose NPN transistor, up to ~600 mA",
   "package": "TO-92 / TO-18",
   "datasheet": {
-    "manufacturer": null,
-    "url": null
+    "manufacturer": "onsemi (Fairchild PN2222A)",
+    "url": "https://www.onsemi.com/pdf/datasheet/pn2222a-d.pdf"
   },
   "model": {
     "parameters": {
@@ -42,17 +42,17 @@
     "vceo_max": {
       "value": 40,
       "unit": "V",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     "ic_max": {
-      "value": 0.6,
+      "value": 1.0,
       "unit": "A",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.2"
     },
     "pd_max": {
       "value": 0.625,
       "unit": "W",
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.3"
     }
   },
   "characterization": [
@@ -62,21 +62,21 @@
       "collector_current": 0.15,
       "min": 100,
       "max": 300,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.4"
     },
     {
       "test": "bjt_saturation_voltage",
       "collector_current": 0.15,
       "base_current": 0.015,
       "max": 0.3,
-      "source": "unconfirmed: drafted from model knowledge; check against the datasheet"
+      "source": "datasheet p.4"
     }
   ],
   "trust": {
     "level": "draft",
     "reviewed_by": null,
     "reviewed_on": null,
-    "notes": "Draft. Model parameters and ratings were drafted from model knowledge without a datasheet check. Review every value against the datasheet before verifying."
+    "notes": "Checked against the manufacturer datasheet by Claude on 2026-10-22 (page numbers are PDF pages). Still draft until Chris confirms. Ic max corrected 0.6 → 1.0 A (PN2222A abs max); the datasheet recommends up to 500 mA."
   },
   "footprints": [
     {
@@ -95,7 +95,7 @@
         ]
       },
       "lcsc": null,
-      "note": "unconfirmed pinout: check the datasheet's package drawing. PN2222A TO-92 order; the metal-can 2N2222A differs"
+      "note": "Pinout matches datasheet p.2. PN2222A TO-92 order; the metal-can 2N2222A differs"
     }
   ]
 }
