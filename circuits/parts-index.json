@@ -857,14 +857,14 @@
     "kicad": "Package_DIP:DIP-8_W7.62mm",
     "lcsc": null,
     "mount": "tht",
-    "note": "Pinout matches datasheet p.5. Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
+    "note": "Pinout matches datasheet p.5 (PDIP package). Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
    },
    {
     "id": "soic8",
     "kicad": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
     "lcsc": null,
     "mount": "smd",
-    "note": "unconfirmed pinout: check the datasheet's package drawing. Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
+    "note": "Pinout matches datasheet p.5 (SOIC package). Uses amplifier A (pins 1-3); tie unused amplifier B as a follower to a mid-supply or ground"
    }
   ],
   "id": "tl072",
@@ -874,7 +874,7 @@
   "ratings": {
    "iout_max": {
     "unit": "A",
-    "value": 0.04
+    "value": 0.026
    },
    "vs_max": {
     "unit": "V",
