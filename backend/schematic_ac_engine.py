@@ -8,6 +8,7 @@ from backend.component_catalog import DEVICE_KINDS
 from backend.schematic_ac_models import ACRequest, ACResponse, ComplexTrace
 from backend.schematic_devices import device_lines, model_cards
 from backend.schematic_models import Part
+from backend.schematic_pins import pin_lines, pin_model_cards
 from backend.schematic_topology import assign_nodes
 from backend.simulation_engine import SimulationFailure
 from harness.run_circuit import run_ngspice, simulation_error
@@ -28,11 +29,15 @@ def compile_ac(submitted: ACRequest) -> tuple[str, dict[str, str], list[str]]:
     voltage_nodes = sorted(set(nodes.values()) - {"0"})
     vectors = [f"v({node})" for node in voltage_nodes] + [f"i(Vprobe{i})" for i, _ in active]
     names = [f"V:{node}" for node in voltage_nodes] + [f"I:{part.id}" for _, part in active]
-    lines = ["Circuit Lab small-signal AC", ".options numdgt=12", *model_cards(submitted.circuit.parts)]
+    lines = ["Circuit Lab small-signal AC", ".options numdgt=12", *model_cards(submitted.circuit.parts),
+             *pin_model_cards(submitted.circuit.parts)]
     sweep = submitted.sweep
     for index, part in active:
         if part.kind in DEVICE_KINDS:
             lines.extend(device_lines(part, index, nodes))
+            continue
+        if part.kind == "PIN":
+            lines.extend(pin_lines(part, index, nodes, 1.0, analysis="ac"))
             continue
         first, second = nodes[f"{part.id}:0"], nodes[f"{part.id}:1"]
         lines.append(f"Vprobe{index} {first} p{index} 0")

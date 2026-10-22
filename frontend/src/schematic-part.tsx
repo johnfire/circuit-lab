@@ -44,6 +44,7 @@ function Terminal({ pin, props }: { pin: Pin; props: PartProps }) {
 }
 
 function currentReference(part: Part): string {
+  if (part.kind === 'PIN') return '(into pin)';
   return terminalCount(part.kind) > 2 ? '(into ' + terminalLetter(part, 0) + ')' : '(' + terminalLetter(part, 0) + '→' + terminalLetter(part, 1) + ')';
 }
 
@@ -65,7 +66,7 @@ export function SchematicPart(props: PartProps) {
       <text className="part-value" x={part.x * GRID + 48} y={part.y * GRID - 7}>{partValue(part)}</text>
       {current && props.report && <text className="current-reading" x={part.x * GRID + 86} y={part.y * GRID + 18}>
         I {signalReading(props.report, current, props.frame)} {props.report.analysis !== 'ac' && currentReference(part)}</text>}
-      {props.selected && props.report && props.observation?.observing && part.kind !== 'GND' &&
+      {props.selected && props.report && props.observation?.observing && terminalCount(part.kind) > 1 &&
         <text className="current-reading" x={part.x * GRID + 86} y={part.y * GRID + 40}>ΔV {signalReading(props.report,
           probeSignal(props.report, { kind: 'differential', first: { part: part.id, terminal: 0 }, second: { part: part.id, terminal: voltageReferenceTerminal(part.kind) } }), props.frame)}</text>}
     </g>

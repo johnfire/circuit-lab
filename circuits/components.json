@@ -12,5 +12,6 @@
   "NPN": {"unit": "device", "minimum": 0, "maximum": 0, "standard_values": [0]},
   "PNP": {"unit": "device", "minimum": 0, "maximum": 0, "standard_values": [0]},
   "OPAMP": {"unit": "device", "minimum": 0, "maximum": 0, "standard_values": [0]},
-  "REG": {"unit": "device", "minimum": 0, "maximum": 0, "standard_values": [0]}
+  "REG": {"unit": "device", "minimum": 0, "maximum": 0, "standard_values": [0]},
+  "PIN": {"unit": "pin", "minimum": 0, "maximum": 0, "standard_values": [0]}
 }

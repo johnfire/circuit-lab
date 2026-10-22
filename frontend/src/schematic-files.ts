@@ -1,5 +1,6 @@
 import { isDeviceKind, libraryPart, terminalCount } from './part-library.ts';
-import type { Part, Pin, Schematic } from './schematic-types';
+import { boardOf } from './board-library.ts';
+import type { Part, Pin, PinMode, Schematic } from './schematic-types';
 import componentCatalog from '../../circuits/components.json' with { type: 'json' };
 
 const DRAFT_KEY = 'circuit-lab.analog-draft.v1';
@@ -19,15 +20,16 @@ function bounded(value: unknown, minimum: number, maximum: number, integer = fal
 }
 
 function parsePart(value: unknown): Part {
-  const part = objectShape(value, ['id', 'kind', 'value', 'x', 'y', 'rotation', 'pulse', 'sine', 'device']);
+  const part = objectShape(value, ['id', 'kind', 'value', 'x', 'y', 'rotation', 'pulse', 'sine', 'device', 'board_pin']);
   const limits: Record<string, [number, number]> = Object.fromEntries(Object.entries(componentCatalog)
     .map(([kind, definition]) => [kind, [definition.minimum, definition.maximum]]));
   if (typeof part.id !== 'string' || !/^[a-zA-Z][a-zA-Z0-9_]{0,15}$/.test(part.id)) throw new Error('Invalid part identifier.');
   if (typeof part.kind !== 'string' || !Object.hasOwn(limits, part.kind)) throw new Error('Only supported part kinds are allowed.');
   parseDevice(part);
+  parseBoardPin(part);
   bounded(part.value, ...limits[part.kind]); bounded(part.x, 2, 38, true); bounded(part.y, 2, 22, true);
   if (![0, 90, 180, 270].includes(Number(part.rotation)) || typeof part.rotation !== 'number') throw new Error('Invalid rotation.');
-  if (part.kind === 'PULSE') {
+  if (part.kind === 'PULSE' || (part.kind === 'PIN' && (part.board_pin as { mode?: unknown } | null)?.mode === 'pulse')) {
     const pulse = objectShape(part.pulse, ['period', 'width', 'delay']);
     const period = bounded(pulse.period, 1e-6, 10);
     bounded(pulse.width, period * .01, period * .99); bounded(pulse.delay, 0, 10);
@@ -49,6 +51,18 @@ function parseDevice(part: Record<string, unknown>): void {
   const library = libraryPart(typeof part.device === 'string' ? part.device : null);
   if (!library) throw new Error('This circuit uses a library part that is not available.');
   if (library.kind !== part.kind) throw new Error(library.name + ' is not a ' + String(part.kind) + '.');
+}
+
+function parseBoardPin(part: Record<string, unknown>): void {
+  if (part.kind !== 'PIN') {
+    if (part.board_pin !== undefined && part.board_pin !== null) throw new Error('Only board pins set board_pin.');
+    return;
+  }
+  const settings = objectShape(part.board_pin, ['board', 'pin', 'mode']);
+  const board = boardOf(typeof settings.board === 'string' ? settings.board : undefined);
+  const pin = board?.pins.find(candidate => candidate.id === settings.pin);
+  if (!board || !pin) throw new Error('This circuit uses a board pin that is not available.');
+  if (!pin.modes.includes(settings.mode as PinMode)) throw new Error(pin.name + ' cannot be set to ' + String(settings.mode) + '.');
 }
 
 function parsePin(value: unknown, parts: Part[]): Pin {

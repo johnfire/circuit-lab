@@ -15,7 +15,7 @@ def test_real_sdk_discovers_only_implemented_orientation_tools() -> None:
             catalog = await client.list_tools()
             assert {tool.name for tool in catalog.tools} == {
                 "get_app_guide", "get_capabilities", "list_components", "get_component",
-                "list_library_parts", "get_library_part", "list_examples"}
+                "list_library_parts", "get_library_part", "list_boards", "get_board", "list_examples"}
             for tool in catalog.tools:
                 assert tool.annotations is not None
                 assert tool.annotations.read_only_hint is True
@@ -73,4 +73,18 @@ def test_real_sdk_resources_and_prompts_explain_boundaries() -> None:
                 assert "Do not invent" in str(response.messages) or "Do not invent" in str(response).replace("do not", "Do not")
                 assert "Raspberry Pi" in str(response.messages)
                 assert "expected_revision" in str(response.messages)
+    asyncio.run(round_trip())
+
+
+def test_real_sdk_board_pinouts_name_physical_pins() -> None:
+    async def round_trip() -> None:
+        async with Client(create_mcp_server()) as client:
+            boards = await client.call_tool("list_boards", {})
+            assert boards.structured_content is not None
+            assert {"raspberry_pi_4", "raspberry_pi_5"} <= {board["id"] for board in boards.structured_content["result"]}
+            pinout = await client.call_tool("get_board", {"board_id": "raspberry_pi_5"})
+            assert pinout.structured_content is not None
+            pin_11 = next(pin for pin in pinout.structured_content["pins"] if pin["id"] == "11")
+            assert pin_11["name"] == "GPIO17" and "output_high" in pin_11["modes"]
+            assert (await client.call_tool("get_board", {"board_id": "nope"})).is_error is True
     asyncio.run(round_trip())

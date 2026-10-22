@@ -1,0 +1,405 @@
+{
+  "id": "esp32_devkitc",
+  "name": "ESP32-DevKitC V4",
+  "header": "J2 (left) and J3 (right) 19-pin headers",
+  "description": "ESP32-WROOM-32, 3.3 V GPIO (not 5 V tolerant); GPIO34–39 are input-only",
+  "columns": 2,
+  "pins": [
+    {
+      "id": "J2-1",
+      "name": "3V3",
+      "kind": "power",
+      "voltage": 3.3,
+      "current_max": {
+        "value": 0.5,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (onboard regulator, less what the ESP32 uses)"
+      },
+      "note": "onboard regulator, less what the ESP32 uses"
+    },
+    {
+      "id": "J3-1",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "J2-2",
+      "name": "EN",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "Chip enable / reset button."
+    },
+    {
+      "id": "J3-2",
+      "name": "GPIO23",
+      "kind": "gpio",
+      "gpio": 23,
+      "functions": [
+        "VSPI MOSI"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J2-3",
+      "name": "GPIO36",
+      "kind": "input_only",
+      "gpio": 36,
+      "functions": [
+        "ADC1_0",
+        "SENSOR_VP"
+      ],
+      "note": "Input only, no pull resistors."
+    },
+    {
+      "id": "J3-3",
+      "name": "GPIO22",
+      "kind": "gpio",
+      "gpio": 22,
+      "functions": [
+        "I2C SCL"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J2-4",
+      "name": "GPIO39",
+      "kind": "input_only",
+      "gpio": 39,
+      "functions": [
+        "ADC1_3",
+        "SENSOR_VN"
+      ],
+      "note": "Input only, no pull resistors."
+    },
+    {
+      "id": "J3-4",
+      "name": "GPIO1",
+      "kind": "gpio",
+      "gpio": 1,
+      "functions": [
+        "UART0 TX (USB serial)"
+      ],
+      "note": "Used by USB serial."
+    },
+    {
+      "id": "J2-5",
+      "name": "GPIO34",
+      "kind": "input_only",
+      "gpio": 34,
+      "functions": [
+        "ADC1_6"
+      ],
+      "note": "Input only, no pull resistors."
+    },
+    {
+      "id": "J3-5",
+      "name": "GPIO3",
+      "kind": "gpio",
+      "gpio": 3,
+      "functions": [
+        "UART0 RX (USB serial)"
+      ],
+      "note": "Used by USB serial."
+    },
+    {
+      "id": "J2-6",
+      "name": "GPIO35",
+      "kind": "input_only",
+      "gpio": 35,
+      "functions": [
+        "ADC1_7"
+      ],
+      "note": "Input only, no pull resistors."
+    },
+    {
+      "id": "J3-6",
+      "name": "GPIO21",
+      "kind": "gpio",
+      "gpio": 21,
+      "functions": [
+        "I2C SDA"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J2-7",
+      "name": "GPIO32",
+      "kind": "gpio",
+      "gpio": 32,
+      "functions": [
+        "ADC1_4",
+        "TOUCH9"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J3-7",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "J2-8",
+      "name": "GPIO33",
+      "kind": "gpio",
+      "gpio": 33,
+      "functions": [
+        "ADC1_5",
+        "TOUCH8"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J3-8",
+      "name": "GPIO19",
+      "kind": "gpio",
+      "gpio": 19,
+      "functions": [
+        "VSPI MISO"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J2-9",
+      "name": "GPIO25",
+      "kind": "gpio",
+      "gpio": 25,
+      "functions": [
+        "DAC1",
+        "ADC2_8"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J3-9",
+      "name": "GPIO18",
+      "kind": "gpio",
+      "gpio": 18,
+      "functions": [
+        "VSPI CLK"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J2-10",
+      "name": "GPIO26",
+      "kind": "gpio",
+      "gpio": 26,
+      "functions": [
+        "DAC2",
+        "ADC2_9"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J3-10",
+      "name": "GPIO5",
+      "kind": "gpio",
+      "gpio": 5,
+      "functions": [
+        "VSPI CS"
+      ],
+      "note": "Strapping pin."
+    },
+    {
+      "id": "J2-11",
+      "name": "GPIO27",
+      "kind": "gpio",
+      "gpio": 27,
+      "functions": [
+        "ADC2_7",
+        "TOUCH7"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J3-11",
+      "name": "GPIO17",
+      "kind": "gpio",
+      "gpio": 17,
+      "functions": [
+        "UART2 TX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J2-12",
+      "name": "GPIO14",
+      "kind": "gpio",
+      "gpio": 14,
+      "functions": [
+        "ADC2_6",
+        "HSPI CLK"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J3-12",
+      "name": "GPIO16",
+      "kind": "gpio",
+      "gpio": 16,
+      "functions": [
+        "UART2 RX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J2-13",
+      "name": "GPIO12",
+      "kind": "gpio",
+      "gpio": 12,
+      "functions": [
+        "ADC2_5",
+        "HSPI MISO"
+      ],
+      "note": "Strapping pin: must be low at boot."
+    },
+    {
+      "id": "J3-13",
+      "name": "GPIO4",
+      "kind": "gpio",
+      "gpio": 4,
+      "functions": [
+        "ADC2_0",
+        "TOUCH0"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J2-14",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "J3-14",
+      "name": "GPIO0",
+      "kind": "gpio",
+      "gpio": 0,
+      "functions": [
+        "BOOT button"
+      ],
+      "note": "Strapping pin: low at boot enters download mode."
+    },
+    {
+      "id": "J2-15",
+      "name": "GPIO13",
+      "kind": "gpio",
+      "gpio": 13,
+      "functions": [
+        "ADC2_4",
+        "HSPI MOSI"
+      ],
+      "note": ""
+    },
+    {
+      "id": "J3-15",
+      "name": "GPIO2",
+      "kind": "gpio",
+      "gpio": 2,
+      "functions": [
+        "ADC2_2"
+      ],
+      "note": "Strapping pin."
+    },
+    {
+      "id": "J2-16",
+      "name": "SD2 (GPIO9)",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "Connected to the module flash; do not use."
+    },
+    {
+      "id": "J3-16",
+      "name": "GPIO15",
+      "kind": "gpio",
+      "gpio": 15,
+      "functions": [
+        "HSPI CS"
+      ],
+      "note": "Strapping pin."
+    },
+    {
+      "id": "J2-17",
+      "name": "SD3 (GPIO10)",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "Connected to the module flash; do not use."
+    },
+    {
+      "id": "J3-17",
+      "name": "SD1 (GPIO8)",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "Connected to the module flash; do not use."
+    },
+    {
+      "id": "J2-18",
+      "name": "CMD (GPIO11)",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "Connected to the module flash; do not use."
+    },
+    {
+      "id": "J3-18",
+      "name": "SD0 (GPIO7)",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "Connected to the module flash; do not use."
+    },
+    {
+      "id": "J2-19",
+      "name": "5V",
+      "kind": "power",
+      "voltage": 5.0,
+      "current_max": {
+        "value": 0.5,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (USB 5 V, less what the board uses)"
+      },
+      "note": "USB 5 V, less what the board uses"
+    },
+    {
+      "id": "J3-19",
+      "name": "CLK (GPIO6)",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "Connected to the module flash; do not use."
+    }
+  ],
+  "electrical": {
+    "logic_voltage": 3.3,
+    "output_resistance": 40,
+    "pull_resistance": 45000,
+    "ratings": {
+      "pin_current_max": {
+        "value": 0.04,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (absolute maximum source current)"
+      },
+      "pin_voltage_max": {
+        "value": 3.6,
+        "unit": "V",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation"
+      },
+      "pin_negative_voltage_max": {
+        "value": 0.3,
+        "unit": "V",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation"
+      }
+    }
+  },
+  "documentation": null,
+  "sources": "unconfirmed: drafted from model knowledge; check against the official documentation",
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Header order drafted from memory of the Espressif DevKitC V4; clone boards differ. Check against the board's own pinout. Electrical limits unconfirmed."
+  }
+}

@@ -5,6 +5,8 @@ from typing import Literal, Self
 
 from pydantic import Field, model_validator
 
+from backend.board_library import BOARDS
+from backend.board_models import PinId, PinMode, allowed_modes
 from backend.component_catalog import COMPONENTS, DEVICE_KINDS
 from backend.model_primitives import Finite, Identifier, StrictModel
 from backend.part_library import LIBRARY
@@ -34,12 +36,20 @@ class SineSettings(StrictModel):
     phase: Finite = Field(ge=-360, le=360)
 
 
+class BoardPinSettings(StrictModel):
+    """Which header pin of which board, and what the firmware sets it to."""
+
+    board: PartId
+    pin: PinId
+    mode: PinMode
+
+
 class Part(StrictModel):
     """One ideal component or library device, with placement independent of wiring."""
 
     id: Identifier
     kind: Literal["R", "C", "L", "V", "PULSE", "SIN", "GND", "D", "NMOS", "PMOS", "NPN", "PNP",
-                  "OPAMP", "REG"]
+                  "OPAMP", "REG", "PIN"]
     value: Finite
     x: int = Field(strict=True, ge=2, le=38)
     y: int = Field(strict=True, ge=2, le=22)
@@ -47,6 +57,7 @@ class Part(StrictModel):
     pulse: PulseSettings | None = None
     sine: SineSettings | None = None
     device: PartId | None = None
+    board_pin: BoardPinSettings | None = None
 
     @model_validator(mode="after")
     def validate_device(self) -> Self:
@@ -63,13 +74,35 @@ class Part(StrictModel):
         return self
 
     @model_validator(mode="after")
+    def validate_board_pin(self) -> Self:
+        """A board pin names a real pin of a real board, in a mode that pin supports."""
+        if (self.kind == "PIN") != (self.board_pin is not None):
+            raise ValueError("Set board_pin for board pins (kind PIN) only")
+        if self.board_pin is None:
+            return self
+        board = BOARDS.get(self.board_pin.board)
+        if board is None:
+            raise ValueError(f"Unknown board {self.board_pin.board}; call list_boards")
+        header_pin = board.pin(self.board_pin.pin)
+        if header_pin is None:
+            raise ValueError(f"{board.name} has no pin {self.board_pin.pin}; call get_board")
+        if header_pin.kind == "ground":
+            raise ValueError(f"Pin {header_pin.id} is ground: use the Ground symbol instead")
+        if self.board_pin.mode not in allowed_modes(header_pin):
+            raise ValueError(f"Pin {header_pin.id} ({header_pin.name}) cannot be {self.board_pin.mode}; "
+                             f"allowed: {', '.join(sorted(allowed_modes(header_pin))) or 'none'}")
+        if (self.board_pin.mode == "pulse") != (self.pulse is not None):
+            raise ValueError("Pulse settings are required only for pins in pulse mode")
+        return self
+
+    @model_validator(mode="after")
     def validate_value(self) -> Self:
         """Bound physical values without permitting expressions or SPICE text."""
         definition = COMPONENTS[self.kind]
         minimum, maximum = definition.minimum, definition.maximum
         if not minimum <= self.value <= maximum:
             raise ValueError(f"{self.kind} value must be between {minimum:g} and {maximum:g}")
-        if (self.kind == "PULSE") != (self.pulse is not None):
+        if self.kind != "PIN" and (self.kind == "PULSE") != (self.pulse is not None):
             raise ValueError("Pulse settings are required only for pulse sources")
         if (self.kind == "SIN") != (self.sine is not None):
             raise ValueError("Sine settings are required only for sine sources")

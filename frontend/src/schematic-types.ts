@@ -1,5 +1,7 @@
 export type DeviceKind = 'D' | 'NMOS' | 'PMOS' | 'NPN' | 'PNP' | 'OPAMP' | 'REG';
-export type PartKind = 'R' | 'C' | 'L' | 'V' | 'PULSE' | 'SIN' | 'GND' | DeviceKind;
+export type PartKind = 'R' | 'C' | 'L' | 'V' | 'PULSE' | 'SIN' | 'GND' | 'PIN' | DeviceKind;
+export type PinMode = 'output_high' | 'output_low' | 'pulse' | 'input' | 'input_pull_up' | 'input_pull_down' | 'supply';
+export interface BoardPinSettings { board: string; pin: string; mode: PinMode }
 export type Terminal = 0 | 1 | 2 | 3 | 4;
 export type Rotation = 0 | 90 | 180 | 270;
 export interface Pulse { period: number; width: number; delay: number }
@@ -7,6 +9,7 @@ export interface Sine { offset: number; frequency: number; phase: number }
 export interface Part {
   id: string; kind: PartKind; value: number; x: number; y: number;
   rotation: Rotation; pulse?: Pulse | null; sine?: Sine | null; device?: string | null;
+  board_pin?: BoardPinSettings | null;
 }
 export interface Pin { part: string; terminal: Terminal }
 export interface Wire { a: Pin; b: Pin }

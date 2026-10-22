@@ -14,6 +14,7 @@ from backend.part_ratings import (
 )
 from backend.schematic_devices import device_lines, model_cards
 from backend.schematic_models import Part, SchematicRequest, SchematicResponse, Trace
+from backend.schematic_pins import pin_lines, pin_model_cards
 from backend.schematic_topology import assign_nodes
 from backend.simulation_engine import SimulationFailure
 from harness.run_circuit import run_ngspice, simulation_error
@@ -25,6 +26,8 @@ def component_lines(part: Part, index: int, nodes: dict[str, str], step: float) 
         return []
     if part.kind in DEVICE_KINDS:
         return device_lines(part, index, nodes)
+    if part.kind == "PIN":
+        return pin_lines(part, index, nodes, step)
     first, second = nodes[f"{part.id}:0"], nodes[f"{part.id}:1"]
     internal = f"p{index}"
     source = f"{part.value:.12g}"
@@ -51,7 +54,8 @@ def compile_schematic(submitted: SchematicRequest) -> tuple[str, dict[str, str],
     vectors = [f"v({node})" for node in voltage_nodes] + [f"i(Vprobe{i})" for i, _ in active]
     names = [f"V:{node}" for node in voltage_nodes] + [f"I:{part.id}" for _, part in active]
     timing = submitted.timing
-    lines = ["Circuit Lab analog schematic", ".options numdgt=12 method=gear", *model_cards(submitted.parts)]
+    lines = ["Circuit Lab analog schematic", ".options numdgt=12 method=gear", *model_cards(submitted.parts),
+             *pin_model_cards(submitted.parts)]
     for index, part in enumerate(submitted.parts):
         lines.extend(component_lines(part, index, nodes, timing.step))
     lines.extend([".control", "set wr_singlescale", "set numdgt=12",

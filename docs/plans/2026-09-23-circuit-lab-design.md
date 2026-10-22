@@ -179,7 +179,13 @@ real part must meet.
   analysis and MCP (`list_library_parts`, `get_library_part`). Every transient run checks ratings
   with ngspice `meas` on raw solver points, so it catches spikes between output frames. Transient
   analysis uses Gear integration to stop the trapezoidal ringing that inductive switching caused.
-- ⬜ Human review of starter parts against datasheets → `verified`. ← **next for Chris**
+- ✅ **Op-amps, regulators and boards** (2026-10-22): op-amps (LM358, LM324, TL072, MCP6002) and
+  linear regulators (7805, 7812, LM1117-3.3, LM317, MCP1700-3.3) as behavioral subcircuits
+  generated from datasheet-style numbers; development boards (Pi 4, Pi 5, Pico, Uno R3,
+  ESP32-DevKitC) with header pinouts, a "Board pin" part with pin protection checks, a pinout
+  view, and MCP `list_boards` / `get_board`. Switching regulators and firmware simulation are
+  out of scope for now.
+- ⬜ Human review of draft parts and boards against datasheets → `verified`. ← **next for Chris**
 - ⬜ Benchmark 1 (GPIO → MOSFET → relay) simulates correctly in tests; it still needs an AI
   client over MCP to design it end to end once MCP is switched on. Benchmark 2's op-amp option
   needs subcircuit support; its divider + Zener option works today.
@@ -188,7 +194,7 @@ real part must meet.
 
 ### Phase 2 — Make it good
 
-- Grow the library to 30–50 parts, including op-amps (these need subcircuit model support).
+- Grow the library beyond the current 32 parts; vendor macromodels where the behavioral ones fall short.
 - Datasheet-PDF → draft-part flow; BOM view; explain-level dial with Flashkarte links.
 
 ### Phase 3 — Beyond the schematic

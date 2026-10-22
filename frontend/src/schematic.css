@@ -40,6 +40,7 @@
 .symbol { fill: none; stroke: var(--color-accent); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
 .symbol .symbol-fill { fill: var(--color-accent); }
 .symbol .symbol-text { fill: var(--color-accent); stroke: none; font-size: 15px; font-weight: 700; }
+.symbol .symbol-text-small { font-size: 12px; }
 .part-hitbox { fill: transparent; stroke: transparent; }
 .schematic-part { cursor: grab; touch-action: none; }.schematic-part:active { cursor: grabbing; }
 .selected-part .part-hitbox { fill: var(--color-surface); stroke: var(--color-control-border); stroke-dasharray: 5 5; }
@@ -73,3 +74,14 @@
 .project-actions label { display: grid; gap: .3rem; }
 .collaboration-panel code { overflow-wrap: anywhere; }
 .collaboration-panel time { display: block; color: var(--muted); font-size: .8rem; }
+
+.pinout-grid { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 4px; }
+.pinout-columns-2 { grid-template-columns: 1fr 1fr; }
+.pinout-pin { display: grid; gap: 2px; padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 11px; min-width: 0; }
+.pinout-number { font-family: monospace; color: var(--color-text); }
+.pinout-name { color: var(--color-heading); font-weight: 600; overflow-wrap: anywhere; }
+.pinout-functions { color: var(--color-text); overflow-wrap: anywhere; }
+.pin-power { border-color: var(--color-accent); }
+.pin-ground { opacity: .7; }
+.pin-special, .pin-input_only { border-style: dashed; }
+.pin-used { background: var(--color-raised); outline: 2px solid var(--color-accent); }

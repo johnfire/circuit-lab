@@ -1,0 +1,310 @@
+{
+  "id": "arduino_uno_r3",
+  "name": "Arduino Uno R3",
+  "header": "Power, analog and digital headers",
+  "description": "ATmega328P, 5 V logic; D0–D13 and A0–A5 (A0–A5 are also digital 14–19)",
+  "columns": 1,
+  "pins": [
+    {
+      "id": "IOREF",
+      "name": "IOREF",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "Reference for shields; 5 V on the Uno."
+    },
+    {
+      "id": "RESET",
+      "name": "RESET",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "3V3",
+      "name": "3.3V",
+      "kind": "power",
+      "voltage": 3.3,
+      "current_max": {
+        "value": 0.05,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (small onboard regulator)"
+      },
+      "note": "small onboard regulator"
+    },
+    {
+      "id": "5V",
+      "name": "5V",
+      "kind": "power",
+      "voltage": 5.0,
+      "current_max": {
+        "value": 0.4,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (USB-powered: 500 mA polyfuse, less what the board uses)"
+      },
+      "note": "USB-powered: 500 mA polyfuse, less what the board uses"
+    },
+    {
+      "id": "GND1",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "GND2",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "VIN",
+      "name": "VIN",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "7–12 V input, not an output."
+    },
+    {
+      "id": "A0",
+      "name": "A0",
+      "kind": "gpio",
+      "gpio": 14,
+      "functions": [
+        "ADC0"
+      ],
+      "note": ""
+    },
+    {
+      "id": "A1",
+      "name": "A1",
+      "kind": "gpio",
+      "gpio": 15,
+      "functions": [
+        "ADC1"
+      ],
+      "note": ""
+    },
+    {
+      "id": "A2",
+      "name": "A2",
+      "kind": "gpio",
+      "gpio": 16,
+      "functions": [
+        "ADC2"
+      ],
+      "note": ""
+    },
+    {
+      "id": "A3",
+      "name": "A3",
+      "kind": "gpio",
+      "gpio": 17,
+      "functions": [
+        "ADC3"
+      ],
+      "note": ""
+    },
+    {
+      "id": "A4",
+      "name": "A4",
+      "kind": "gpio",
+      "gpio": 18,
+      "functions": [
+        "ADC4",
+        "SDA (I2C)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "A5",
+      "name": "A5",
+      "kind": "gpio",
+      "gpio": 19,
+      "functions": [
+        "ADC5",
+        "SCL (I2C)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "D0",
+      "name": "D0",
+      "kind": "gpio",
+      "gpio": 0,
+      "functions": [
+        "RX (USB serial)"
+      ],
+      "note": "Used by USB serial; avoid while uploading."
+    },
+    {
+      "id": "D1",
+      "name": "D1",
+      "kind": "gpio",
+      "gpio": 1,
+      "functions": [
+        "TX (USB serial)"
+      ],
+      "note": "Used by USB serial; avoid while uploading."
+    },
+    {
+      "id": "D2",
+      "name": "D2",
+      "kind": "gpio",
+      "gpio": 2,
+      "functions": [
+        "INT0"
+      ],
+      "note": ""
+    },
+    {
+      "id": "D3",
+      "name": "D3",
+      "kind": "gpio",
+      "gpio": 3,
+      "functions": [
+        "INT1",
+        "PWM"
+      ],
+      "note": ""
+    },
+    {
+      "id": "D4",
+      "name": "D4",
+      "kind": "gpio",
+      "gpio": 4,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "D5",
+      "name": "D5",
+      "kind": "gpio",
+      "gpio": 5,
+      "functions": [
+        "PWM"
+      ],
+      "note": ""
+    },
+    {
+      "id": "D6",
+      "name": "D6",
+      "kind": "gpio",
+      "gpio": 6,
+      "functions": [
+        "PWM"
+      ],
+      "note": ""
+    },
+    {
+      "id": "D7",
+      "name": "D7",
+      "kind": "gpio",
+      "gpio": 7,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "D8",
+      "name": "D8",
+      "kind": "gpio",
+      "gpio": 8,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "D9",
+      "name": "D9",
+      "kind": "gpio",
+      "gpio": 9,
+      "functions": [
+        "PWM"
+      ],
+      "note": ""
+    },
+    {
+      "id": "D10",
+      "name": "D10",
+      "kind": "gpio",
+      "gpio": 10,
+      "functions": [
+        "PWM",
+        "SS (SPI)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "D11",
+      "name": "D11",
+      "kind": "gpio",
+      "gpio": 11,
+      "functions": [
+        "PWM",
+        "MOSI (SPI)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "D12",
+      "name": "D12",
+      "kind": "gpio",
+      "gpio": 12,
+      "functions": [
+        "MISO (SPI)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "D13",
+      "name": "D13",
+      "kind": "gpio",
+      "gpio": 13,
+      "functions": [
+        "SCK (SPI)",
+        "LED"
+      ],
+      "note": ""
+    },
+    {
+      "id": "GND3",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "AREF",
+      "name": "AREF",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "Analog reference input."
+    }
+  ],
+  "electrical": {
+    "logic_voltage": 5.0,
+    "output_resistance": 40,
+    "pull_resistance": 35000,
+    "ratings": {
+      "pin_current_max": {
+        "value": 0.04,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (absolute maximum; 20 mA recommended)"
+      },
+      "pin_voltage_max": {
+        "value": 5.5,
+        "unit": "V",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation"
+      },
+      "pin_negative_voltage_max": {
+        "value": 0.5,
+        "unit": "V",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation"
+      }
+    }
+  },
+  "documentation": null,
+  "sources": "unconfirmed: drafted from model knowledge; check against the official documentation",
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Pin names are the standard Uno R3 headers; electrical limits are unconfirmed."
+  }
+}

@@ -1,4 +1,5 @@
 import { libraryPart } from './part-library';
+import { boardPinOf } from './board-library';
 import type { Part } from './schematic-types';
 
 function DiodeSymbol({ category }: { category: string | undefined }) {
@@ -48,6 +49,15 @@ function RegulatorSymbol() {
   </g>;
 }
 
+function BoardPinSymbol({ part }: { part: Part }) {
+  const found = boardPinOf(part);
+  return <g>
+    <path d="M-60 -18 H28 L40 0 L28 18 H-60 Z" />
+    <path d="M40 0 H64" />
+    <text className="symbol-text symbol-text-small" x="-14" y="5" textAnchor="middle">{found?.pin.name ?? '?'}</text>
+  </g>;
+}
+
 export function SchematicSymbol({ part }: { part: Part }) {
   const { kind } = part;
   if (kind === 'GND') return <g><path d="M0 -64 V0 M-22 0 H22 M-15 9 H15 M-7 18 H7" /></g>;
@@ -56,6 +66,7 @@ export function SchematicSymbol({ part }: { part: Part }) {
   if (kind === 'NPN' || kind === 'PNP') return <BjtSymbol polarity={kind === 'NPN' ? 'npn' : 'pnp'} />;
   if (kind === 'OPAMP') return <OpampSymbol />;
   if (kind === 'REG') return <RegulatorSymbol />;
+  if (kind === 'PIN') return <BoardPinSymbol part={part} />;
   return <g>
     <path d="M-64 0 H-32 M32 0 H64" />
     {kind === 'R' && <path d="M-32 0 L-26 -12 L-16 12 L-6 -12 L4 12 L14 -12 L24 12 L32 0" />}

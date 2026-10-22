@@ -1,0 +1,3551 @@
+[
+ {
+  "columns": 1,
+  "description": "ATmega328P, 5 V logic; D0–D13 and A0–A5 (A0–A5 are also digital 14–19)",
+  "documentation": null,
+  "header": "Power, analog and digital headers",
+  "id": "arduino_uno_r3",
+  "logic_voltage": 5.0,
+  "name": "Arduino Uno R3",
+  "pins": [
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "IOREF",
+    "kind": "special",
+    "modes": [],
+    "name": "IOREF",
+    "note": "Reference for shields; 5 V on the Uno.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "RESET",
+    "kind": "special",
+    "modes": [],
+    "name": "RESET",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": 0.05,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "3V3",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "3.3V",
+    "note": "small onboard regulator",
+    "voltage": 3.3
+   },
+   {
+    "current_max": 0.4,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "5V",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "5V",
+    "note": "USB-powered: 500 mA polyfuse, less what the board uses",
+    "voltage": 5.0
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "GND1",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "GND2",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "VIN",
+    "kind": "special",
+    "modes": [],
+    "name": "VIN",
+    "note": "7–12 V input, not an output.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC0"
+    ],
+    "gpio": 14,
+    "id": "A0",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "A0",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC1"
+    ],
+    "gpio": 15,
+    "id": "A1",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "A1",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC2"
+    ],
+    "gpio": 16,
+    "id": "A2",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "A2",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC3"
+    ],
+    "gpio": 17,
+    "id": "A3",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "A3",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC4",
+     "SDA (I2C)"
+    ],
+    "gpio": 18,
+    "id": "A4",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "A4",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC5",
+     "SCL (I2C)"
+    ],
+    "gpio": 19,
+    "id": "A5",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "A5",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "RX (USB serial)"
+    ],
+    "gpio": 0,
+    "id": "D0",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D0",
+    "note": "Used by USB serial; avoid while uploading.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "TX (USB serial)"
+    ],
+    "gpio": 1,
+    "id": "D1",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D1",
+    "note": "Used by USB serial; avoid while uploading.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "INT0"
+    ],
+    "gpio": 2,
+    "id": "D2",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D2",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "INT1",
+     "PWM"
+    ],
+    "gpio": 3,
+    "id": "D3",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D3",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 4,
+    "id": "D4",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D4",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM"
+    ],
+    "gpio": 5,
+    "id": "D5",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D5",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM"
+    ],
+    "gpio": 6,
+    "id": "D6",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D6",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 7,
+    "id": "D7",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D7",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 8,
+    "id": "D8",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D8",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM"
+    ],
+    "gpio": 9,
+    "id": "D9",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D9",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM",
+     "SS (SPI)"
+    ],
+    "gpio": 10,
+    "id": "D10",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D10",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM",
+     "MOSI (SPI)"
+    ],
+    "gpio": 11,
+    "id": "D11",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D11",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "MISO (SPI)"
+    ],
+    "gpio": 12,
+    "id": "D12",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D12",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "SCK (SPI)",
+     "LED"
+    ],
+    "gpio": 13,
+    "id": "D13",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "D13",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "GND3",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "AREF",
+    "kind": "special",
+    "modes": [],
+    "name": "AREF",
+    "note": "Analog reference input.",
+    "voltage": null
+   }
+  ],
+  "ratings": {
+   "pin_current_max": {
+    "unit": "A",
+    "value": 0.04
+   },
+   "pin_negative_voltage_max": {
+    "unit": "V",
+    "value": 0.5
+   },
+   "pin_voltage_max": {
+    "unit": "V",
+    "value": 5.5
+   }
+  },
+  "trust": "draft"
+ },
+ {
+  "columns": 2,
+  "description": "ESP32-WROOM-32, 3.3 V GPIO (not 5 V tolerant); GPIO34–39 are input-only",
+  "documentation": null,
+  "header": "J2 (left) and J3 (right) 19-pin headers",
+  "id": "esp32_devkitc",
+  "logic_voltage": 3.3,
+  "name": "ESP32-DevKitC V4",
+  "pins": [
+   {
+    "current_max": 0.5,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J2-1",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "3V3",
+    "note": "onboard regulator, less what the ESP32 uses",
+    "voltage": 3.3
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J3-1",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J2-2",
+    "kind": "special",
+    "modes": [],
+    "name": "EN",
+    "note": "Chip enable / reset button.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "VSPI MOSI"
+    ],
+    "gpio": 23,
+    "id": "J3-2",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO23",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC1_0",
+     "SENSOR_VP"
+    ],
+    "gpio": 36,
+    "id": "J2-3",
+    "kind": "input_only",
+    "modes": [
+     "input"
+    ],
+    "name": "GPIO36",
+    "note": "Input only, no pull resistors.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C SCL"
+    ],
+    "gpio": 22,
+    "id": "J3-3",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO22",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC1_3",
+     "SENSOR_VN"
+    ],
+    "gpio": 39,
+    "id": "J2-4",
+    "kind": "input_only",
+    "modes": [
+     "input"
+    ],
+    "name": "GPIO39",
+    "note": "Input only, no pull resistors.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART0 TX (USB serial)"
+    ],
+    "gpio": 1,
+    "id": "J3-4",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO1",
+    "note": "Used by USB serial.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC1_6"
+    ],
+    "gpio": 34,
+    "id": "J2-5",
+    "kind": "input_only",
+    "modes": [
+     "input"
+    ],
+    "name": "GPIO34",
+    "note": "Input only, no pull resistors.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART0 RX (USB serial)"
+    ],
+    "gpio": 3,
+    "id": "J3-5",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO3",
+    "note": "Used by USB serial.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC1_7"
+    ],
+    "gpio": 35,
+    "id": "J2-6",
+    "kind": "input_only",
+    "modes": [
+     "input"
+    ],
+    "name": "GPIO35",
+    "note": "Input only, no pull resistors.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C SDA"
+    ],
+    "gpio": 21,
+    "id": "J3-6",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO21",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC1_4",
+     "TOUCH9"
+    ],
+    "gpio": 32,
+    "id": "J2-7",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO32",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J3-7",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC1_5",
+     "TOUCH8"
+    ],
+    "gpio": 33,
+    "id": "J2-8",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO33",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "VSPI MISO"
+    ],
+    "gpio": 19,
+    "id": "J3-8",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO19",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "DAC1",
+     "ADC2_8"
+    ],
+    "gpio": 25,
+    "id": "J2-9",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO25",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "VSPI CLK"
+    ],
+    "gpio": 18,
+    "id": "J3-9",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO18",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "DAC2",
+     "ADC2_9"
+    ],
+    "gpio": 26,
+    "id": "J2-10",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO26",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "VSPI CS"
+    ],
+    "gpio": 5,
+    "id": "J3-10",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO5",
+    "note": "Strapping pin.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC2_7",
+     "TOUCH7"
+    ],
+    "gpio": 27,
+    "id": "J2-11",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO27",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART2 TX"
+    ],
+    "gpio": 17,
+    "id": "J3-11",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO17",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC2_6",
+     "HSPI CLK"
+    ],
+    "gpio": 14,
+    "id": "J2-12",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO14",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART2 RX"
+    ],
+    "gpio": 16,
+    "id": "J3-12",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO16",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC2_5",
+     "HSPI MISO"
+    ],
+    "gpio": 12,
+    "id": "J2-13",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO12",
+    "note": "Strapping pin: must be low at boot.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC2_0",
+     "TOUCH0"
+    ],
+    "gpio": 4,
+    "id": "J3-13",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO4",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J2-14",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "BOOT button"
+    ],
+    "gpio": 0,
+    "id": "J3-14",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO0",
+    "note": "Strapping pin: low at boot enters download mode.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC2_4",
+     "HSPI MOSI"
+    ],
+    "gpio": 13,
+    "id": "J2-15",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO13",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC2_2"
+    ],
+    "gpio": 2,
+    "id": "J3-15",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO2",
+    "note": "Strapping pin.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J2-16",
+    "kind": "special",
+    "modes": [],
+    "name": "SD2 (GPIO9)",
+    "note": "Connected to the module flash; do not use.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "HSPI CS"
+    ],
+    "gpio": 15,
+    "id": "J3-16",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO15",
+    "note": "Strapping pin.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J2-17",
+    "kind": "special",
+    "modes": [],
+    "name": "SD3 (GPIO10)",
+    "note": "Connected to the module flash; do not use.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J3-17",
+    "kind": "special",
+    "modes": [],
+    "name": "SD1 (GPIO8)",
+    "note": "Connected to the module flash; do not use.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J2-18",
+    "kind": "special",
+    "modes": [],
+    "name": "CMD (GPIO11)",
+    "note": "Connected to the module flash; do not use.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J3-18",
+    "kind": "special",
+    "modes": [],
+    "name": "SD0 (GPIO7)",
+    "note": "Connected to the module flash; do not use.",
+    "voltage": null
+   },
+   {
+    "current_max": 0.5,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J2-19",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "5V",
+    "note": "USB 5 V, less what the board uses",
+    "voltage": 5.0
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "J3-19",
+    "kind": "special",
+    "modes": [],
+    "name": "CLK (GPIO6)",
+    "note": "Connected to the module flash; do not use.",
+    "voltage": null
+   }
+  ],
+  "ratings": {
+   "pin_current_max": {
+    "unit": "A",
+    "value": 0.04
+   },
+   "pin_negative_voltage_max": {
+    "unit": "V",
+    "value": 0.3
+   },
+   "pin_voltage_max": {
+    "unit": "V",
+    "value": 3.6
+   }
+  },
+  "trust": "draft"
+ },
+ {
+  "columns": 2,
+  "description": "BCM2711, 3.3 V GPIO (not 5 V tolerant), 40-pin header",
+  "documentation": null,
+  "header": "J8 40-pin GPIO header",
+  "id": "raspberry_pi_4",
+  "logic_voltage": 3.3,
+  "name": "Raspberry Pi 4 Model B",
+  "pins": [
+   {
+    "current_max": 0.5,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "1",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "3V3",
+    "note": "Pins 1 and 17 share one 3.3 V rail budget.",
+    "voltage": 3.3
+   },
+   {
+    "current_max": 1.2,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "2",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "5V",
+    "note": "depends on the power supply: a 3 A supply leaves about 1.2 A for USB and header",
+    "voltage": 5.0
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": 1800.0,
+    "functions": [
+     "SDA1 (I2C1)"
+    ],
+    "gpio": 2,
+    "id": "3",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO2",
+    "note": "1.8 kΩ pull-up to 3.3 V on the board.",
+    "voltage": null
+   },
+   {
+    "current_max": 1.2,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "4",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "5V",
+    "note": "depends on the power supply: a 3 A supply leaves about 1.2 A for USB and header",
+    "voltage": 5.0
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": 1800.0,
+    "functions": [
+     "SCL1 (I2C1)"
+    ],
+    "gpio": 3,
+    "id": "5",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO3",
+    "note": "1.8 kΩ pull-up to 3.3 V on the board.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "6",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "GPCLK0"
+    ],
+    "gpio": 4,
+    "id": "7",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO4",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "TXD (UART0)"
+    ],
+    "gpio": 14,
+    "id": "8",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO14",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "9",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "RXD (UART0)"
+    ],
+    "gpio": 15,
+    "id": "10",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO15",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 17,
+    "id": "11",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO17",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM0",
+     "PCM_CLK"
+    ],
+    "gpio": 18,
+    "id": "12",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO18",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 27,
+    "id": "13",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO27",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "14",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 22,
+    "id": "15",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO22",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 23,
+    "id": "16",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO23",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": 0.5,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "17",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "3V3",
+    "note": "Pins 1 and 17 share one 3.3 V rail budget.",
+    "voltage": 3.3
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 24,
+    "id": "18",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO24",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "MOSI (SPI0)"
+    ],
+    "gpio": 10,
+    "id": "19",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO10",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "20",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "MISO (SPI0)"
+    ],
+    "gpio": 9,
+    "id": "21",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO9",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 25,
+    "id": "22",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO25",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "SCLK (SPI0)"
+    ],
+    "gpio": 11,
+    "id": "23",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO11",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "CE0 (SPI0)"
+    ],
+    "gpio": 8,
+    "id": "24",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO8",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "25",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "CE1 (SPI0)"
+    ],
+    "gpio": 7,
+    "id": "26",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO7",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ID_SD (HAT EEPROM)"
+    ],
+    "gpio": 0,
+    "id": "27",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO0",
+    "note": "Reserved for HAT ID EEPROM; avoid.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ID_SC (HAT EEPROM)"
+    ],
+    "gpio": 1,
+    "id": "28",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO1",
+    "note": "Reserved for HAT ID EEPROM; avoid.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 5,
+    "id": "29",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO5",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "30",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 6,
+    "id": "31",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO6",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM0"
+    ],
+    "gpio": 12,
+    "id": "32",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO12",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM1"
+    ],
+    "gpio": 13,
+    "id": "33",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO13",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "34",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM1",
+     "MISO (SPI1)",
+     "PCM_FS"
+    ],
+    "gpio": 19,
+    "id": "35",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO19",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "CE2 (SPI1)"
+    ],
+    "gpio": 16,
+    "id": "36",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO16",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 26,
+    "id": "37",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO26",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "MOSI (SPI1)",
+     "PCM_DIN"
+    ],
+    "gpio": 20,
+    "id": "38",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO20",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "39",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "SCLK (SPI1)",
+     "PCM_DOUT"
+    ],
+    "gpio": 21,
+    "id": "40",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO21",
+    "note": "",
+    "voltage": null
+   }
+  ],
+  "ratings": {
+   "pin_current_max": {
+    "unit": "A",
+    "value": 0.016
+   },
+   "pin_negative_voltage_max": {
+    "unit": "V",
+    "value": 0.3
+   },
+   "pin_voltage_max": {
+    "unit": "V",
+    "value": 3.6
+   }
+  },
+  "trust": "draft"
+ },
+ {
+  "columns": 2,
+  "description": "BCM2712 with RP1 I/O controller, 3.3 V GPIO (not 5 V tolerant), 40-pin header",
+  "documentation": null,
+  "header": "J8 40-pin GPIO header",
+  "id": "raspberry_pi_5",
+  "logic_voltage": 3.3,
+  "name": "Raspberry Pi 5",
+  "pins": [
+   {
+    "current_max": 0.5,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "1",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "3V3",
+    "note": "Pins 1 and 17 share one 3.3 V rail budget.",
+    "voltage": 3.3
+   },
+   {
+    "current_max": 1.6,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "2",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "5V",
+    "note": "depends on the power supply: a 5 A supply allows about 1.6 A for USB and header",
+    "voltage": 5.0
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": 1800.0,
+    "functions": [
+     "SDA1 (I2C1)"
+    ],
+    "gpio": 2,
+    "id": "3",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO2",
+    "note": "1.8 kΩ pull-up to 3.3 V on the board.",
+    "voltage": null
+   },
+   {
+    "current_max": 1.6,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "4",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "5V",
+    "note": "depends on the power supply: a 5 A supply allows about 1.6 A for USB and header",
+    "voltage": 5.0
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": 1800.0,
+    "functions": [
+     "SCL1 (I2C1)"
+    ],
+    "gpio": 3,
+    "id": "5",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO3",
+    "note": "1.8 kΩ pull-up to 3.3 V on the board.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "6",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "GPCLK0"
+    ],
+    "gpio": 4,
+    "id": "7",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO4",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "TXD (UART0)"
+    ],
+    "gpio": 14,
+    "id": "8",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO14",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "9",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "RXD (UART0)"
+    ],
+    "gpio": 15,
+    "id": "10",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO15",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 17,
+    "id": "11",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO17",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM0",
+     "PCM_CLK"
+    ],
+    "gpio": 18,
+    "id": "12",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO18",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 27,
+    "id": "13",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO27",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "14",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 22,
+    "id": "15",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO22",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 23,
+    "id": "16",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO23",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": 0.5,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "17",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "3V3",
+    "note": "Pins 1 and 17 share one 3.3 V rail budget.",
+    "voltage": 3.3
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 24,
+    "id": "18",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO24",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "MOSI (SPI0)"
+    ],
+    "gpio": 10,
+    "id": "19",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO10",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "20",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "MISO (SPI0)"
+    ],
+    "gpio": 9,
+    "id": "21",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO9",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 25,
+    "id": "22",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO25",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "SCLK (SPI0)"
+    ],
+    "gpio": 11,
+    "id": "23",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO11",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "CE0 (SPI0)"
+    ],
+    "gpio": 8,
+    "id": "24",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO8",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "25",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "CE1 (SPI0)"
+    ],
+    "gpio": 7,
+    "id": "26",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO7",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ID_SD (HAT EEPROM)"
+    ],
+    "gpio": 0,
+    "id": "27",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO0",
+    "note": "Reserved for HAT ID EEPROM; avoid.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ID_SC (HAT EEPROM)"
+    ],
+    "gpio": 1,
+    "id": "28",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO1",
+    "note": "Reserved for HAT ID EEPROM; avoid.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 5,
+    "id": "29",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO5",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "30",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 6,
+    "id": "31",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO6",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM0"
+    ],
+    "gpio": 12,
+    "id": "32",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO12",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM1"
+    ],
+    "gpio": 13,
+    "id": "33",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO13",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "34",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "PWM1",
+     "MISO (SPI1)",
+     "PCM_FS"
+    ],
+    "gpio": 19,
+    "id": "35",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO19",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "CE2 (SPI1)"
+    ],
+    "gpio": 16,
+    "id": "36",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO16",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 26,
+    "id": "37",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO26",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "MOSI (SPI1)",
+     "PCM_DIN"
+    ],
+    "gpio": 20,
+    "id": "38",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO20",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "39",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "SCLK (SPI1)",
+     "PCM_DOUT"
+    ],
+    "gpio": 21,
+    "id": "40",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO21",
+    "note": "",
+    "voltage": null
+   }
+  ],
+  "ratings": {
+   "pin_current_max": {
+    "unit": "A",
+    "value": 0.012
+   },
+   "pin_negative_voltage_max": {
+    "unit": "V",
+    "value": 0.3
+   },
+   "pin_voltage_max": {
+    "unit": "V",
+    "value": 3.6
+   }
+  },
+  "trust": "draft"
+ },
+ {
+  "columns": 2,
+  "description": "RP2040, 3.3 V GPIO (not 5 V tolerant), GP0–GP28",
+  "documentation": null,
+  "header": "40-pin castellated edge",
+  "id": "raspberry_pi_pico",
+  "logic_voltage": 3.3,
+  "name": "Raspberry Pi Pico",
+  "pins": [
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART0 TX",
+     "I2C0 SDA",
+     "SPI0 RX"
+    ],
+    "gpio": 0,
+    "id": "1",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO0",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": 0.45,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "40",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "VBUS",
+    "note": "USB 5 V, less what the Pico uses",
+    "voltage": 5.0
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART0 RX",
+     "I2C0 SCL",
+     "SPI0 CSn"
+    ],
+    "gpio": 1,
+    "id": "2",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO1",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "39",
+    "kind": "special",
+    "modes": [],
+    "name": "VSYS",
+    "note": "System supply input, 1.8–5.5 V.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "3",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "38",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C1 SDA",
+     "SPI0 SCK"
+    ],
+    "gpio": 2,
+    "id": "4",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO2",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "37",
+    "kind": "special",
+    "modes": [],
+    "name": "3V3_EN",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C1 SCL",
+     "SPI0 TX"
+    ],
+    "gpio": 3,
+    "id": "5",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO3",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": 0.3,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "36",
+    "kind": "power",
+    "modes": [
+     "supply"
+    ],
+    "name": "3V3(OUT)",
+    "note": "onboard buck-boost; keep under 300 mA",
+    "voltage": 3.3
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART1 TX",
+     "I2C0 SDA",
+     "SPI0 RX"
+    ],
+    "gpio": 4,
+    "id": "6",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO4",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "35",
+    "kind": "special",
+    "modes": [],
+    "name": "ADC_VREF",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART1 RX",
+     "I2C0 SCL",
+     "SPI0 CSn"
+    ],
+    "gpio": 5,
+    "id": "7",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO5",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC2"
+    ],
+    "gpio": 28,
+    "id": "34",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO28",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "8",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "33",
+    "kind": "ground",
+    "modes": [],
+    "name": "AGND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C1 SDA",
+     "SPI0 SCK"
+    ],
+    "gpio": 6,
+    "id": "9",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO6",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC1",
+     "I2C1 SCL"
+    ],
+    "gpio": 27,
+    "id": "32",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO27",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C1 SCL",
+     "SPI0 TX"
+    ],
+    "gpio": 7,
+    "id": "10",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO7",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "ADC0",
+     "I2C1 SDA"
+    ],
+    "gpio": 26,
+    "id": "31",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO26",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART1 TX",
+     "I2C0 SDA",
+     "SPI1 RX"
+    ],
+    "gpio": 8,
+    "id": "11",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO8",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "30",
+    "kind": "special",
+    "modes": [],
+    "name": "RUN",
+    "note": "Pull low to reset.",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART1 RX",
+     "I2C0 SCL",
+     "SPI1 CSn"
+    ],
+    "gpio": 9,
+    "id": "12",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO9",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": 22,
+    "id": "29",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO22",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "13",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "28",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C1 SDA",
+     "SPI1 SCK"
+    ],
+    "gpio": 10,
+    "id": "14",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO10",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C0 SCL"
+    ],
+    "gpio": 21,
+    "id": "27",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO21",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C1 SCL",
+     "SPI1 TX"
+    ],
+    "gpio": 11,
+    "id": "15",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO11",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C0 SDA"
+    ],
+    "gpio": 20,
+    "id": "26",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO20",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART0 TX",
+     "I2C0 SDA",
+     "SPI1 RX"
+    ],
+    "gpio": 12,
+    "id": "16",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO12",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C1 SCL",
+     "SPI0 TX"
+    ],
+    "gpio": 19,
+    "id": "25",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO19",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART0 RX",
+     "I2C0 SCL",
+     "SPI1 CSn"
+    ],
+    "gpio": 13,
+    "id": "17",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO13",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C1 SDA",
+     "SPI0 SCK"
+    ],
+    "gpio": 18,
+    "id": "24",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO18",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "18",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [],
+    "gpio": null,
+    "id": "23",
+    "kind": "ground",
+    "modes": [],
+    "name": "GND",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C1 SDA",
+     "SPI1 SCK"
+    ],
+    "gpio": 14,
+    "id": "19",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO14",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART0 RX",
+     "I2C0 SCL",
+     "SPI0 CSn"
+    ],
+    "gpio": 17,
+    "id": "22",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO17",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "I2C1 SCL",
+     "SPI1 TX"
+    ],
+    "gpio": 15,
+    "id": "20",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO15",
+    "note": "",
+    "voltage": null
+   },
+   {
+    "current_max": null,
+    "fixed_pull_up": null,
+    "functions": [
+     "UART0 TX",
+     "I2C0 SDA",
+     "SPI0 RX"
+    ],
+    "gpio": 16,
+    "id": "21",
+    "kind": "gpio",
+    "modes": [
+     "input",
+     "input_pull_down",
+     "input_pull_up",
+     "output_high",
+     "output_low",
+     "pulse"
+    ],
+    "name": "GPIO16",
+    "note": "",
+    "voltage": null
+   }
+  ],
+  "ratings": {
+   "pin_current_max": {
+    "unit": "A",
+    "value": 0.012
+   },
+   "pin_negative_voltage_max": {
+    "unit": "V",
+    "value": 0.3
+   },
+   "pin_voltage_max": {
+    "unit": "V",
+    "value": 3.6
+   }
+  },
+  "trust": "draft"
+ }
+]

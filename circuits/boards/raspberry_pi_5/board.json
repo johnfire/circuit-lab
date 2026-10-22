@@ -1,0 +1,396 @@
+{
+  "id": "raspberry_pi_5",
+  "name": "Raspberry Pi 5",
+  "header": "J8 40-pin GPIO header",
+  "description": "BCM2712 with RP1 I/O controller, 3.3 V GPIO (not 5 V tolerant), 40-pin header",
+  "columns": 2,
+  "pins": [
+    {
+      "id": "1",
+      "name": "3V3",
+      "kind": "power",
+      "voltage": 3.3,
+      "current_max": {
+        "value": 0.5,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (Pins 1 and 17 share one 3.3 V rail budget.)"
+      },
+      "note": "Pins 1 and 17 share one 3.3 V rail budget."
+    },
+    {
+      "id": "2",
+      "name": "5V",
+      "kind": "power",
+      "voltage": 5.0,
+      "current_max": {
+        "value": 1.6,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (depends on the power supply: a 5 A supply allows about 1.6 A for USB and header)"
+      },
+      "note": "depends on the power supply: a 5 A supply allows about 1.6 A for USB and header"
+    },
+    {
+      "id": "3",
+      "name": "GPIO2",
+      "kind": "gpio",
+      "gpio": 2,
+      "functions": [
+        "SDA1 (I2C1)"
+      ],
+      "note": "1.8 kΩ pull-up to 3.3 V on the board.",
+      "fixed_pull_up": 1800
+    },
+    {
+      "id": "4",
+      "name": "5V",
+      "kind": "power",
+      "voltage": 5.0,
+      "current_max": {
+        "value": 1.6,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (depends on the power supply: a 5 A supply allows about 1.6 A for USB and header)"
+      },
+      "note": "depends on the power supply: a 5 A supply allows about 1.6 A for USB and header"
+    },
+    {
+      "id": "5",
+      "name": "GPIO3",
+      "kind": "gpio",
+      "gpio": 3,
+      "functions": [
+        "SCL1 (I2C1)"
+      ],
+      "note": "1.8 kΩ pull-up to 3.3 V on the board.",
+      "fixed_pull_up": 1800
+    },
+    {
+      "id": "6",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "7",
+      "name": "GPIO4",
+      "kind": "gpio",
+      "gpio": 4,
+      "functions": [
+        "GPCLK0"
+      ],
+      "note": ""
+    },
+    {
+      "id": "8",
+      "name": "GPIO14",
+      "kind": "gpio",
+      "gpio": 14,
+      "functions": [
+        "TXD (UART0)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "9",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "10",
+      "name": "GPIO15",
+      "kind": "gpio",
+      "gpio": 15,
+      "functions": [
+        "RXD (UART0)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "11",
+      "name": "GPIO17",
+      "kind": "gpio",
+      "gpio": 17,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "12",
+      "name": "GPIO18",
+      "kind": "gpio",
+      "gpio": 18,
+      "functions": [
+        "PWM0",
+        "PCM_CLK"
+      ],
+      "note": ""
+    },
+    {
+      "id": "13",
+      "name": "GPIO27",
+      "kind": "gpio",
+      "gpio": 27,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "14",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "15",
+      "name": "GPIO22",
+      "kind": "gpio",
+      "gpio": 22,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "16",
+      "name": "GPIO23",
+      "kind": "gpio",
+      "gpio": 23,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "17",
+      "name": "3V3",
+      "kind": "power",
+      "voltage": 3.3,
+      "current_max": {
+        "value": 0.5,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (Pins 1 and 17 share one 3.3 V rail budget.)"
+      },
+      "note": "Pins 1 and 17 share one 3.3 V rail budget."
+    },
+    {
+      "id": "18",
+      "name": "GPIO24",
+      "kind": "gpio",
+      "gpio": 24,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "19",
+      "name": "GPIO10",
+      "kind": "gpio",
+      "gpio": 10,
+      "functions": [
+        "MOSI (SPI0)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "20",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "21",
+      "name": "GPIO9",
+      "kind": "gpio",
+      "gpio": 9,
+      "functions": [
+        "MISO (SPI0)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "22",
+      "name": "GPIO25",
+      "kind": "gpio",
+      "gpio": 25,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "23",
+      "name": "GPIO11",
+      "kind": "gpio",
+      "gpio": 11,
+      "functions": [
+        "SCLK (SPI0)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "24",
+      "name": "GPIO8",
+      "kind": "gpio",
+      "gpio": 8,
+      "functions": [
+        "CE0 (SPI0)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "25",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "26",
+      "name": "GPIO7",
+      "kind": "gpio",
+      "gpio": 7,
+      "functions": [
+        "CE1 (SPI0)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "27",
+      "name": "GPIO0",
+      "kind": "gpio",
+      "gpio": 0,
+      "functions": [
+        "ID_SD (HAT EEPROM)"
+      ],
+      "note": "Reserved for HAT ID EEPROM; avoid."
+    },
+    {
+      "id": "28",
+      "name": "GPIO1",
+      "kind": "gpio",
+      "gpio": 1,
+      "functions": [
+        "ID_SC (HAT EEPROM)"
+      ],
+      "note": "Reserved for HAT ID EEPROM; avoid."
+    },
+    {
+      "id": "29",
+      "name": "GPIO5",
+      "kind": "gpio",
+      "gpio": 5,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "30",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "31",
+      "name": "GPIO6",
+      "kind": "gpio",
+      "gpio": 6,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "32",
+      "name": "GPIO12",
+      "kind": "gpio",
+      "gpio": 12,
+      "functions": [
+        "PWM0"
+      ],
+      "note": ""
+    },
+    {
+      "id": "33",
+      "name": "GPIO13",
+      "kind": "gpio",
+      "gpio": 13,
+      "functions": [
+        "PWM1"
+      ],
+      "note": ""
+    },
+    {
+      "id": "34",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "35",
+      "name": "GPIO19",
+      "kind": "gpio",
+      "gpio": 19,
+      "functions": [
+        "PWM1",
+        "MISO (SPI1)",
+        "PCM_FS"
+      ],
+      "note": ""
+    },
+    {
+      "id": "36",
+      "name": "GPIO16",
+      "kind": "gpio",
+      "gpio": 16,
+      "functions": [
+        "CE2 (SPI1)"
+      ],
+      "note": ""
+    },
+    {
+      "id": "37",
+      "name": "GPIO26",
+      "kind": "gpio",
+      "gpio": 26,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "38",
+      "name": "GPIO20",
+      "kind": "gpio",
+      "gpio": 20,
+      "functions": [
+        "MOSI (SPI1)",
+        "PCM_DIN"
+      ],
+      "note": ""
+    },
+    {
+      "id": "39",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "40",
+      "name": "GPIO21",
+      "kind": "gpio",
+      "gpio": 21,
+      "functions": [
+        "SCLK (SPI1)",
+        "PCM_DOUT"
+      ],
+      "note": ""
+    }
+  ],
+  "electrical": {
+    "logic_voltage": 3.3,
+    "output_resistance": 75,
+    "pull_resistance": 50000,
+    "ratings": {
+      "pin_current_max": {
+        "value": 0.012,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (RP1 drive limit, unconfirmed)"
+      },
+      "pin_voltage_max": {
+        "value": 3.6,
+        "unit": "V",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation"
+      },
+      "pin_negative_voltage_max": {
+        "value": 0.3,
+        "unit": "V",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation"
+      }
+    }
+  },
+  "documentation": null,
+  "sources": "unconfirmed: drafted from model knowledge; check against the official documentation",
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. The 40-pin layout and functions are the standard Raspberry Pi header; the electrical limits are unconfirmed and modelled at the default drive setting. GPIO is 3.3 V only and NOT 5 V tolerant."
+  }
+}

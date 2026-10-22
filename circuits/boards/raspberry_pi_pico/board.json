@@ -1,0 +1,425 @@
+{
+  "id": "raspberry_pi_pico",
+  "name": "Raspberry Pi Pico",
+  "header": "40-pin castellated edge",
+  "description": "RP2040, 3.3 V GPIO (not 5 V tolerant), GP0–GP28",
+  "columns": 2,
+  "pins": [
+    {
+      "id": "1",
+      "name": "GPIO0",
+      "kind": "gpio",
+      "gpio": 0,
+      "functions": [
+        "UART0 TX",
+        "I2C0 SDA",
+        "SPI0 RX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "40",
+      "name": "VBUS",
+      "kind": "power",
+      "voltage": 5.0,
+      "current_max": {
+        "value": 0.45,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (USB 5 V, less what the Pico uses)"
+      },
+      "note": "USB 5 V, less what the Pico uses"
+    },
+    {
+      "id": "2",
+      "name": "GPIO1",
+      "kind": "gpio",
+      "gpio": 1,
+      "functions": [
+        "UART0 RX",
+        "I2C0 SCL",
+        "SPI0 CSn"
+      ],
+      "note": ""
+    },
+    {
+      "id": "39",
+      "name": "VSYS",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "System supply input, 1.8–5.5 V."
+    },
+    {
+      "id": "3",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "38",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "4",
+      "name": "GPIO2",
+      "kind": "gpio",
+      "gpio": 2,
+      "functions": [
+        "I2C1 SDA",
+        "SPI0 SCK"
+      ],
+      "note": ""
+    },
+    {
+      "id": "37",
+      "name": "3V3_EN",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "5",
+      "name": "GPIO3",
+      "kind": "gpio",
+      "gpio": 3,
+      "functions": [
+        "I2C1 SCL",
+        "SPI0 TX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "36",
+      "name": "3V3(OUT)",
+      "kind": "power",
+      "voltage": 3.3,
+      "current_max": {
+        "value": 0.3,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (onboard buck-boost; keep under 300 mA)"
+      },
+      "note": "onboard buck-boost; keep under 300 mA"
+    },
+    {
+      "id": "6",
+      "name": "GPIO4",
+      "kind": "gpio",
+      "gpio": 4,
+      "functions": [
+        "UART1 TX",
+        "I2C0 SDA",
+        "SPI0 RX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "35",
+      "name": "ADC_VREF",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "7",
+      "name": "GPIO5",
+      "kind": "gpio",
+      "gpio": 5,
+      "functions": [
+        "UART1 RX",
+        "I2C0 SCL",
+        "SPI0 CSn"
+      ],
+      "note": ""
+    },
+    {
+      "id": "34",
+      "name": "GPIO28",
+      "kind": "gpio",
+      "gpio": 28,
+      "functions": [
+        "ADC2"
+      ],
+      "note": ""
+    },
+    {
+      "id": "8",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "33",
+      "name": "AGND",
+      "kind": "ground"
+    },
+    {
+      "id": "9",
+      "name": "GPIO6",
+      "kind": "gpio",
+      "gpio": 6,
+      "functions": [
+        "I2C1 SDA",
+        "SPI0 SCK"
+      ],
+      "note": ""
+    },
+    {
+      "id": "32",
+      "name": "GPIO27",
+      "kind": "gpio",
+      "gpio": 27,
+      "functions": [
+        "ADC1",
+        "I2C1 SCL"
+      ],
+      "note": ""
+    },
+    {
+      "id": "10",
+      "name": "GPIO7",
+      "kind": "gpio",
+      "gpio": 7,
+      "functions": [
+        "I2C1 SCL",
+        "SPI0 TX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "31",
+      "name": "GPIO26",
+      "kind": "gpio",
+      "gpio": 26,
+      "functions": [
+        "ADC0",
+        "I2C1 SDA"
+      ],
+      "note": ""
+    },
+    {
+      "id": "11",
+      "name": "GPIO8",
+      "kind": "gpio",
+      "gpio": 8,
+      "functions": [
+        "UART1 TX",
+        "I2C0 SDA",
+        "SPI1 RX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "30",
+      "name": "RUN",
+      "kind": "special",
+      "gpio": null,
+      "functions": [],
+      "note": "Pull low to reset."
+    },
+    {
+      "id": "12",
+      "name": "GPIO9",
+      "kind": "gpio",
+      "gpio": 9,
+      "functions": [
+        "UART1 RX",
+        "I2C0 SCL",
+        "SPI1 CSn"
+      ],
+      "note": ""
+    },
+    {
+      "id": "29",
+      "name": "GPIO22",
+      "kind": "gpio",
+      "gpio": 22,
+      "functions": [],
+      "note": ""
+    },
+    {
+      "id": "13",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "28",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "14",
+      "name": "GPIO10",
+      "kind": "gpio",
+      "gpio": 10,
+      "functions": [
+        "I2C1 SDA",
+        "SPI1 SCK"
+      ],
+      "note": ""
+    },
+    {
+      "id": "27",
+      "name": "GPIO21",
+      "kind": "gpio",
+      "gpio": 21,
+      "functions": [
+        "I2C0 SCL"
+      ],
+      "note": ""
+    },
+    {
+      "id": "15",
+      "name": "GPIO11",
+      "kind": "gpio",
+      "gpio": 11,
+      "functions": [
+        "I2C1 SCL",
+        "SPI1 TX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "26",
+      "name": "GPIO20",
+      "kind": "gpio",
+      "gpio": 20,
+      "functions": [
+        "I2C0 SDA"
+      ],
+      "note": ""
+    },
+    {
+      "id": "16",
+      "name": "GPIO12",
+      "kind": "gpio",
+      "gpio": 12,
+      "functions": [
+        "UART0 TX",
+        "I2C0 SDA",
+        "SPI1 RX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "25",
+      "name": "GPIO19",
+      "kind": "gpio",
+      "gpio": 19,
+      "functions": [
+        "I2C1 SCL",
+        "SPI0 TX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "17",
+      "name": "GPIO13",
+      "kind": "gpio",
+      "gpio": 13,
+      "functions": [
+        "UART0 RX",
+        "I2C0 SCL",
+        "SPI1 CSn"
+      ],
+      "note": ""
+    },
+    {
+      "id": "24",
+      "name": "GPIO18",
+      "kind": "gpio",
+      "gpio": 18,
+      "functions": [
+        "I2C1 SDA",
+        "SPI0 SCK"
+      ],
+      "note": ""
+    },
+    {
+      "id": "18",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "23",
+      "name": "GND",
+      "kind": "ground"
+    },
+    {
+      "id": "19",
+      "name": "GPIO14",
+      "kind": "gpio",
+      "gpio": 14,
+      "functions": [
+        "I2C1 SDA",
+        "SPI1 SCK"
+      ],
+      "note": ""
+    },
+    {
+      "id": "22",
+      "name": "GPIO17",
+      "kind": "gpio",
+      "gpio": 17,
+      "functions": [
+        "UART0 RX",
+        "I2C0 SCL",
+        "SPI0 CSn"
+      ],
+      "note": ""
+    },
+    {
+      "id": "20",
+      "name": "GPIO15",
+      "kind": "gpio",
+      "gpio": 15,
+      "functions": [
+        "I2C1 SCL",
+        "SPI1 TX"
+      ],
+      "note": ""
+    },
+    {
+      "id": "21",
+      "name": "GPIO16",
+      "kind": "gpio",
+      "gpio": 16,
+      "functions": [
+        "UART0 TX",
+        "I2C0 SDA",
+        "SPI0 RX"
+      ],
+      "note": ""
+    }
+  ],
+  "electrical": {
+    "logic_voltage": 3.3,
+    "output_resistance": 170,
+    "pull_resistance": 50000,
+    "ratings": {
+      "pin_current_max": {
+        "value": 0.012,
+        "unit": "A",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation (highest drive setting; default is 4 mA)"
+      },
+      "pin_voltage_max": {
+        "value": 3.6,
+        "unit": "V",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation"
+      },
+      "pin_negative_voltage_max": {
+        "value": 0.3,
+        "unit": "V",
+        "source": "unconfirmed: drafted from model knowledge; check against the official documentation"
+      }
+    }
+  },
+  "documentation": null,
+  "sources": "unconfirmed: drafted from model knowledge; check against the official documentation",
+  "trust": {
+    "level": "draft",
+    "reviewed_by": null,
+    "reviewed_on": null,
+    "notes": "Draft. Pin order and functions drafted from memory; check against the official Pico pinout. Electrical limits unconfirmed."
+  }
+}

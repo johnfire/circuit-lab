@@ -4,6 +4,7 @@ from mcp.server import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp_types import ToolAnnotations
 
+from backend.board_library import BOARDS, board_summary
 from backend.circuit_catalog import list_circuits
 from backend.component_catalog import component_definitions
 from backend.part_library import LIBRARY, library_summaries, part_summary
@@ -16,6 +17,13 @@ regulators (REG). A library device sets `device` to a library part id of the sam
 and value 0. Terminals: diode 0 anode, 1 cathode; transistor 0 drain/collector, 1 gate/
 base, 2 source/emitter; op-amp 0 output, 1 in+, 2 in-, 3 V+, 4 V- (wire both supply
 pins); regulator 0 output, 1 input, 2 ground (fixed) or adjust (LM317).
+Board pins (kind PIN, one terminal) model one header pin of a Raspberry Pi 4/5, Pico,
+Arduino Uno or ESP32 DevKitC: set board_pin {board, pin, mode}. Call list_boards and
+get_board for pinouts, allowed modes and limits; pin ids are header positions (Pi: "11"
+is GPIO17). Modes: output_high/output_low/pulse (with pulse settings), input,
+input_pull_up/down, or supply for 3V3/5V pins. The board's GND is circuit ground: use a
+GND symbol for ground pins. Runs check pin current, over- and under-voltage and supply
+budgets; tell the user the physical pin number to wire, not only the GPIO name.
 Curated recipes are a separate simulation surface.
 Read list_projects or list_shared_workspaces, ask which target the user means, then
 get_circuit with its revision. Never assume a particular browser tab is active.
@@ -99,6 +107,20 @@ def get_library_part(part_id: str) -> dict[str, object]:
         "trust_notes": part.trust.notes}
 
 
+def list_boards() -> list[dict[str, str]]:
+    """List development boards (Raspberry Pi 4/5, Pico, Arduino Uno, ESP32) with trust level."""
+    return [{"id": board.id, "name": board.name, "description": board.description,
+             "trust": board.trust.level} for board in sorted(BOARDS.values(), key=lambda board: board.name)]
+
+
+def get_board(board_id: str) -> dict[str, object]:
+    """Read a board's full header pinout: pin ids, names, GPIO numbers, functions, modes, limits."""
+    board = BOARDS.get(board_id)
+    if board is None:
+        raise ToolError("Unknown board; call list_boards")
+    return board_summary(board) | {"trust_notes": board.trust.notes}
+
+
 def list_examples() -> list[dict[str, object]]:
     """List actual curated recipes; recipes are not editable schematic graphs."""
     return [circuit.model_dump() for circuit in list_circuits()]
@@ -128,7 +150,7 @@ def register_guide(server: MCPServer[None]) -> None:
     """Make app guidance available even to clients that do not discover prompts."""
     read_only = ToolAnnotations(read_only_hint=True, destructive_hint=False, open_world_hint=False)
     for handler in (get_app_guide, get_capabilities, list_components, get_component,
-                    list_library_parts, get_library_part, list_examples):
+                    list_library_parts, get_library_part, list_boards, get_board, list_examples):
         server.tool(annotations=read_only)(handler)
     server.resource("circuit-lab://guide", mime_type="text/plain")(get_app_guide)
     for prompt in (get_started, explain_circuit, debug_circuit, improve_circuit):

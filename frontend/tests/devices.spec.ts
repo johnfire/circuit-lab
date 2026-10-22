@@ -80,3 +80,39 @@ test('a 7805 dropping 12 V at 0.5 A fails its power rating in the browser', asyn
   await expect(page.getByRole('row', { name: /^U1 OUT 5 V IN 12 V G\/A 0 V/ })).toBeVisible();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
+
+test('5 V into a Raspberry Pi pin is flagged, and the pinout shows where to wire', async ({ page }) => {
+  await page.goto('/?mode=build');
+  const circuit = { version: 2, circuit: { timing: { stop: .001, step: .00001 }, parts: [
+    { id: 'P1', kind: 'PIN', value: 0, x: 4, y: 10, rotation: 0, board_pin: { board: 'raspberry_pi_4', pin: '11', mode: 'input' } },
+    { id: 'R1', kind: 'R', value: 1000, x: 14, y: 8, rotation: 0 },
+    { id: 'VS', kind: 'V', value: 5, x: 24, y: 10, rotation: 90 },
+    { id: 'G1', kind: 'GND', value: 0, x: 16, y: 18, rotation: 0 }],
+  wires: [['P1', 0, 'R1', 0], ['R1', 1, 'VS', 0], ['VS', 1, 'G1', 0]]
+    .map(([a, ta, b, tb]) => ({ a: { part: a, terminal: ta }, b: { part: b, terminal: tb } })) } };
+  await page.getByLabel('Import circuit', { exact: true }).setInputFiles({ name: 'pi.json', mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(circuit)) });
+  await expect(page.getByRole('button', { name: 'Select P1 GPIO17', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Simulate circuit' }).click();
+  const ratings = page.getByRole('region', { name: /Part ratings/ });
+  await expect(ratings.locator('.check.fail')).toContainText('Raspberry Pi 4 Model B · Pin voltage', { timeout: 15000 });
+  await page.getByText('Board pinouts', { exact: true }).click();
+  const header = page.getByRole('list', { name: 'Raspberry Pi 4 Model B header pins' });
+  await expect(header.locator('.pin-used')).toContainText('GPIO17 · P1');
+  await expect(header.getByRole('listitem')).toHaveCount(40);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});
+
+test('placing a board pin lets you choose board, header pin and mode', async ({ page }) => {
+  await page.goto('/?mode=build');
+  await page.getByRole('button', { name: 'Board pin', exact: true }).click();
+  await page.getByRole('button', { name: 'Add to grid', exact: true }).click();
+  await page.getByRole('button', { name: 'Select P1 GPIO17', exact: true }).click();
+  await page.getByLabel(/^Board/).selectOption('raspberry_pi_5');
+  await page.getByLabel(/^Header pin/).selectOption('12');
+  await page.getByLabel(/^Mode/).selectOption('pulse');
+  await expect(page.getByRole('button', { name: 'Select P1 GPIO18', exact: true })).toBeVisible();
+  await expect(page.getByLabel('Pulse period (ms)')).toBeVisible();
+  await page.getByLabel(/^Header pin/).selectOption('1');
+  expect(await page.getByLabel(/^Mode/).locator('option').allTextContents()).toEqual(['Power supply']);
+});

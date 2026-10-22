@@ -117,3 +117,10 @@ def test_cli_verify_rejects_unknown_part() -> None:
 def test_browser_parts_index_matches_the_part_files() -> None:
     assert INDEX_PATH.read_text() == parts_cli.index_text(), \
         "run: python -m backend.parts_cli index"
+
+
+def test_browser_boards_index_matches_the_board_files() -> None:
+    from backend.board_library import BOARDS_INDEX_PATH
+
+    assert BOARDS_INDEX_PATH.read_text() == parts_cli.boards_index_text(), \
+        "run: python -m backend.parts_cli index"

@@ -3,7 +3,7 @@ import { PART_NAMES, snapped } from './schematic-model';
 import type { PartKind } from './schematic-types';
 import type { EditorState } from './use-schematic-editor';
 
-const SHELF_ICONS: Partial<Record<PartKind, string>> = { GND: '⏚', PULSE: '▔▁', D: '▷|', NMOS: 'N', PMOS: 'P', NPN: 'Q', PNP: 'Q', OPAMP: '▷', REG: 'REG' };
+const SHELF_ICONS: Partial<Record<PartKind, string>> = { GND: '⏚', PULSE: '▔▁', D: '▷|', NMOS: 'N', PMOS: 'P', NPN: 'Q', PNP: 'Q', OPAMP: '▷', REG: 'REG', PIN: 'IO' };
 
 export function AnalogPartsPanel({ editor }: { editor: EditorState }) {
   const [x, setX] = useState(10), [y, setY] = useState(6);

@@ -1,15 +1,18 @@
 import { engineering } from './schematic-model';
 import { libraryPart } from './part-library';
+import { boardOf } from './board-library';
 import type { AnalogReport, RatingCheck } from './schematic-types';
 
 const RATING_LABELS: Record<string, string> = {
   if_max: 'Forward current', vr_max: 'Reverse voltage', iz_max: 'Zener current', pd_max: 'Power dissipation',
   vds_max: 'Drain–source voltage', vgs_max: 'Gate–source voltage', id_max: 'Drain current',
-  vceo_max: 'Collector–emitter voltage', ic_max: 'Collector current',
+  vceo_max: 'Collector–emitter voltage', ic_max: 'Collector current', vs_max: 'Supply voltage', iout_max: 'Output current',
+  vin_max: 'Input voltage', pin_current_max: 'Pin current', pin_voltage_max: 'Pin voltage',
+  pin_negative_voltage_max: 'Voltage below ground', supply_current_max: 'Supply current',
 };
 
 function RatingRow({ check }: { check: RatingCheck }) {
-  const name = libraryPart(check.device)?.name ?? check.device;
+  const name = libraryPart(check.device)?.name ?? boardOf(check.device)?.name ?? check.device;
   const percent = check.limit > 0 ? Math.round(check.measured / check.limit * 100) : 0;
   return <article className={'check ' + (check.passed ? 'pass' : 'fail')}>
     <span aria-hidden="true">{check.passed ? '✓' : '×'}</span>

@@ -5,7 +5,9 @@ from pathlib import Path
 from pydantic import BaseModel, ConfigDict, RootModel
 
 DEVICE_KINDS = frozenset({"D", "NMOS", "PMOS", "NPN", "PNP", "OPAMP", "REG"})
-TERMINAL_COUNTS = {"GND": 1, "NMOS": 3, "PMOS": 3, "NPN": 3, "PNP": 3, "REG": 3, "OPAMP": 5}
+TERMINAL_COUNTS = {"GND": 1, "PIN": 1, "NMOS": 3, "PMOS": 3, "NPN": 3, "PNP": 3, "REG": 3,
+                   "OPAMP": 5}
+GROUND_REFERENCED_KINDS = frozenset({"GND", "PIN"})
 
 
 class ComponentDefinition(BaseModel):
@@ -27,7 +29,7 @@ COMPONENTS = ComponentCatalog.model_validate_json(CATALOG_PATH.read_text()).root
 
 
 def terminal_count(kind: str) -> int:
-    """Ground one, transistors and regulators three, op-amps five, everything else two."""
+    """Ground and board pins one, transistors and regulators three, op-amps five, else two."""
     return TERMINAL_COUNTS.get(kind, 2)
 
 
@@ -37,5 +39,7 @@ def component_definitions() -> list[dict[str, object]]:
              "terminals": list(range(terminal_count(kind))),
              "model": ("library part: set `device` to a library part id of this kind; value must be 0"
                        if kind in DEVICE_KINDS
+                       else "board pin: set `board_pin` (board, pin, mode); value must be 0"
+                       if kind == "PIN"
                        else "generic ideal; not a manufacturer rating or hardware approval")}
             for kind, definition in COMPONENTS.items()]

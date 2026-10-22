@@ -1,4 +1,4 @@
-"""Measure every library device's stress on the solver's own timepoints and judge its ratings.
+"""Measure every library device's and board pin's stress on the solver's own timepoints.
 
 Peaks are taken by ngspice `meas` on the raw transient solution, before resampling to output
 frames, so a spike shorter than the frame interval is still caught.
@@ -9,8 +9,9 @@ from dataclasses import dataclass
 from typing import Literal
 
 from backend.part_library import LIBRARY
-from backend.part_library_models import LibraryPart
+from backend.part_library_models import Rating
 from backend.schematic_models import Part, RatingCheck, SchematicRequest
+from backend.schematic_pins import pin_of
 from backend.simulation_engine import SimulationFailure
 
 PRINTED_RATING = re.compile(r"^(?P<name>rating\d+)\s*=\s*(?P<value>[-+0-9.eE]+)\s*$", re.MULTILINE)
@@ -22,8 +23,10 @@ class RatingProbe:
 
     name: str
     part: Part
-    library_part: LibraryPart
+    device: str
     rating: str
+    limit: Rating
+    trust: Literal["draft", "verified"]
     statistic: Literal["peak", "average"]
     expression: str
 
@@ -53,21 +56,49 @@ def stress_expressions(kind: str, v: list[str], current: str) -> dict[str, str]:
             "pd_max": f"abs(({v[1]}-{v[0]})*{current})"}
 
 
+def pin_stress(part: Part, voltage: str, current: str) -> tuple[str, str, dict[str, tuple[Rating, str]]]:
+    """A board pin's limits and expressions: pin current and voltage, or a supply's budget."""
+    board, header_pin = pin_of(part)
+    if header_pin.current_max is not None:
+        return board.id, board.trust.level, {
+            "supply_current_max": (header_pin.current_max, f"abs({current})")}
+    ratings = board.electrical.ratings
+    return board.id, board.trust.level, {
+        "pin_current_max": (ratings["pin_current_max"], f"abs({current})"),
+        "pin_voltage_max": (ratings["pin_voltage_max"], positive(voltage)),
+        "pin_negative_voltage_max": (ratings["pin_negative_voltage_max"], positive(f"-{voltage}"))}
+
+
+def part_limits(part: Part, index: int, nodes: dict[str, str]
+                ) -> tuple[str, str, dict[str, tuple[Rating, str]]] | None:
+    """(device id, trust, {rating: (limit, expression)}) for a rated part, or None."""
+    voltages = ["0" if node == "0" else f"v({node})" for node in
+                (nodes[pin] for pin in sorted(pin for pin in nodes if pin.startswith(f"{part.id}:")))]
+    current = f"i(Vprobe{index})"
+    if part.kind == "PIN":
+        return pin_stress(part, voltages[0], current)
+    if part.device is None:
+        return None
+    library_part = LIBRARY[part.device]
+    expressions = stress_expressions(part.kind, voltages, current)
+    return library_part.id, library_part.trust.level, {
+        name: (rating, expressions[name]) for name, rating in library_part.ratings.items()}
+
+
 def rating_probes(submitted: SchematicRequest, nodes: dict[str, str]) -> list[RatingProbe]:
-    """Every rating of every library device, in a stable order."""
+    """Every rating of every library device and board pin, in a stable order."""
     probes: list[RatingProbe] = []
     for index, part in enumerate(submitted.parts):
-        if part.device is None:
+        limits = part_limits(part, index, nodes)
+        if limits is None:
             continue
-        library_part = LIBRARY[part.device]
-        voltages = ["0" if nodes[pin] == "0" else f"v({nodes[pin]})"
-                    for pin in (f"{part.id}:{terminal}" for terminal in range(len(library_part.terminals)))]
-        expressions = stress_expressions(part.kind, voltages, f"i(Vprobe{index})")
-        for rating in sorted(library_part.ratings):
-            probes.append(RatingProbe(name=f"rating{len(probes)}", part=part,
-                                      library_part=library_part, rating=rating,
+        device, trust, ratings = limits
+        for rating, (limit, expression) in sorted(ratings.items()):
+            probes.append(RatingProbe(name=f"rating{len(probes)}", part=part, device=device,
+                                      rating=rating, limit=limit,
+                                      trust="verified" if trust == "verified" else "draft",
                                       statistic="average" if rating == "pd_max" else "peak",
-                                      expression=expressions[rating]))
+                                      expression=expression))
     return probes
 
 
@@ -87,28 +118,34 @@ def read_ratings(probes: list[RatingProbe], transcript: str) -> list[RatingCheck
     missing = [probe.name for probe in probes if probe.name not in measured]
     if missing:
         raise SimulationFailure("Rating measurements were not produced; the run cannot be checked")
-    return [RatingCheck(part=probe.part.id, device=probe.library_part.id, rating=probe.rating,
+    return [RatingCheck(part=probe.part.id, device=probe.device, rating=probe.rating,
                         statistic=probe.statistic, measured=measured[probe.name],
-                        limit=probe.library_part.ratings[probe.rating].value,
-                        unit=probe.library_part.ratings[probe.rating].unit,
-                        passed=measured[probe.name] <= probe.library_part.ratings[probe.rating].value,
-                        trust=probe.library_part.trust.level)
+                        limit=probe.limit.value, unit=probe.limit.unit,
+                        passed=measured[probe.name] <= probe.limit.value, trust=probe.trust)
             for probe in probes]
 
 
 def rating_warnings(submitted: SchematicRequest) -> list[str]:
     """State exactly what the ratings check covers and how far to trust it."""
     devices = sorted({part.device for part in submitted.parts if part.device is not None})
-    if not devices:
-        return ["Ideal R/C/L and sources only; no component ratings or Pi GPIO protection checks."]
+    boards = sorted({pin_of(part)[0].id: pin_of(part)[0] for part in submitted.parts
+                     if part.kind == "PIN"}.values(), key=lambda board: board.id)
+    if not devices and not boards:
+        return ["Ideal R/C/L and sources only; no component ratings or board pin protection checks."]
+    warnings = ["Library devices and board pins are checked against their absolute maximums: peak "
+                "voltage and current on the solver's own timepoints, and time-averaged power over "
+                "this run. R/C/L and sources stay ideal."]
+    if devices:
+        warnings.append("Device current is measured into terminal 0 (drain, collector or output); "
+                        "BJT power omits the small base term. Op-amps and regulators are behavioral "
+                        "models and do not current-limit: an iout_max failure means the real part "
+                        "would limit or fail.")
+    if boards:
+        warnings.append("Board pins are modelled at their default drive with ESD clamp diodes to the "
+                        "logic rail and ground; firmware behaviour is not simulated. The board's GND "
+                        "is the circuit ground.")
     drafts = [device for device in devices if LIBRARY[device].trust.level == "draft"]
-    warnings = ["Library devices are checked against their absolute-maximum ratings: peak voltage "
-                "and current on the solver's own timepoints, and time-averaged power over this run. "
-                "R/C/L and sources stay ideal.",
-                "Device current is measured into terminal 0 (drain, collector or output); BJT "
-                "power omits the small base term. Op-amps and regulators are behavioral models "
-                "and do not current-limit: an iout_max failure means the real part would limit "
-                "or fail."]
+    drafts += [board.id for board in boards if board.trust.level == "draft"]
     if drafts:
         warnings.append(f"Draft parts ({', '.join(drafts)}): models and ratings are unconfirmed "
                         "against datasheets, so a pass is not hardware approval.")

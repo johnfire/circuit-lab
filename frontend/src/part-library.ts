@@ -19,7 +19,7 @@ const DEFAULT_TERMINALS: Record<DeviceKind, string[]> = {
   NPN: ['collector', 'base', 'emitter'], PNP: ['collector', 'base', 'emitter'],
   OPAMP: ['output', 'in_plus', 'in_minus', 'v_plus', 'v_minus'], REG: ['output', 'input', 'ground_or_adjust'],
 };
-const TERMINAL_COUNTS: Partial<Record<PartKind, 1 | 3 | 5>> = { GND: 1, NMOS: 3, PMOS: 3, NPN: 3, PNP: 3, REG: 3, OPAMP: 5 };
+const TERMINAL_COUNTS: Partial<Record<PartKind, 1 | 3 | 5>> = { GND: 1, PIN: 1, NMOS: 3, PMOS: 3, NPN: 3, PNP: 3, REG: 3, OPAMP: 5 };
 
 export function isDeviceKind(kind: PartKind): kind is DeviceKind {
   return (DEVICE_KINDS as PartKind[]).includes(kind);
@@ -44,7 +44,7 @@ export function isTransistor(kind: PartKind): boolean {
 /** The terminal paired with terminal 0 for a part's main voltage: V0 − V1, Vds / Vce, output vs ground or V−. */
 export function voltageReferenceTerminal(kind: PartKind): 1 | 2 | 4 {
   if (kind === 'OPAMP') return 4;
-  return terminalCount(kind) === 3 ? 2 : 1;
+  return terminalCount(kind) === 3 ? 2 : 1;  // single-terminal parts have no part voltage
 }
 
 /** Columns a measurement table needs: the most terminals any part in the circuit has (at least two). */
@@ -55,11 +55,12 @@ export function terminalColumns(parts: Part[]): number {
 /** A terminal reading, prefixed with its letter (D, G, S, A, K…) only for library devices. */
 export function terminalReading(part: Part, terminal: number, reading: string): string {
   if (terminal >= terminalCount(part.kind)) return '—';
-  return isDeviceKind(part.kind) ? terminalLetter(part, terminal) + ' ' + reading : reading;
+  return isDeviceKind(part.kind) || part.kind === 'PIN' ? terminalLetter(part, terminal) + ' ' + reading : reading;
 }
 
 /** Full terminal name for devices ("gate"), or the terminal number for ideal parts. */
 export function terminalName(part: Part, terminal: number): string {
+  if (part.kind === 'PIN') return 'pin';
   return isDeviceKind(part.kind) ? DEFAULT_TERMINALS[part.kind][terminal] : String(terminal);
 }
 

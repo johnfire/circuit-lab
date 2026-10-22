@@ -1,6 +1,6 @@
 """Pure graph validation and deterministic terminal-to-node assignment."""
 
-from backend.component_catalog import terminal_count
+from backend.component_catalog import GROUND_REFERENCED_KINDS, terminal_count
 from backend.schematic_models import Part, Pin, SchematicRequest
 
 
@@ -40,13 +40,14 @@ def validate_wires(submitted: SchematicRequest, pins: set[str]) -> None:
 def validate_ground_path(submitted: SchematicRequest, nodes: dict[str, str]) -> None:
     """Reject floating islands before invoking the solver."""
     reachable = {"0"}
-    edges = [set(nodes[pin] for pin in part_pins(part)) for part in submitted.parts]
+    edges = [set(nodes[pin] for pin in part_pins(part)) | ({"0"} if part.kind in GROUND_REFERENCED_KINDS else set())
+             for part in submitted.parts]
     for _ in submitted.parts:
         reachable |= set().union(*(edge for edge in edges if edge & reachable))
     if reachable != set(nodes.values()):
         raise ValueError("Every component must have a path to ground; remove floating islands")
     for part in submitted.parts:
-        if part.kind != "GND" and len({nodes[pin] for pin in part_pins(part)}) == 1:
+        if terminal_count(part.kind) > 1 and len({nodes[pin] for pin in part_pins(part)}) == 1:
             raise ValueError(f"{part.id} has shorted terminals; remove the bypass wire")
 
 

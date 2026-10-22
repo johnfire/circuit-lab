@@ -148,16 +148,23 @@ owns; your netlist should use plain relative filenames.
 
 ## Parts library
 
-Real diodes, LEDs, Zeners, MOSFETs and BJTs for the schematic editor and MCP clients live in
-`circuits/parts/<category>/<id>/part.json`: structured model parameters (our code writes the
-`.model` line), absolute-maximum ratings, characterization tests, and a trust record. Every
-transient run checks each library part against its ratings on the solver's own timepoints.
+Real diodes, LEDs, Zeners, MOSFETs, BJTs, op-amps and linear regulators for the schematic editor
+and MCP clients live in `circuits/parts/<category>/<id>/part.json`: structured model parameters
+(our code writes the `.model` line, or a behavioral `.subckt` for op-amps and regulators),
+absolute-maximum ratings, characterization tests, and a trust record. Every transient run checks
+each library part against its ratings on the solver's own timepoints.
+
+Development boards (Raspberry Pi 4 and 5, Pi Pico, Arduino Uno R3, ESP32-DevKitC) live in
+`circuits/boards/<id>/board.json`: the full header pinout plus pin-level electrical limits. A
+"Board pin" part places one header pin as an output, pulse, input or supply. It's modelled with
+drive resistance, pulls and ESD clamp diodes, and checked for pin current, overvoltage (5 V into a
+Pi) and supply budgets. Firmware is not simulated.
 
 ```bash
 uv run python -m backend.parts_cli list                           # parts and trust level
 uv run python -m backend.parts_cli verify [ids...]                # characterization on real ngspice
 uv run python -m backend.parts_cli new mosfet/irf3708 --kind NMOS # scaffold part.draft.json
-uv run python -m backend.parts_cli index                          # regenerate circuits/parts-index.json
+uv run python -m backend.parts_cli index                          # regenerate the parts and boards indexes
 ```
 
 Adding a part:

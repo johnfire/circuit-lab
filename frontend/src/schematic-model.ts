@@ -1,12 +1,13 @@
 import type { Part, PartKind, Pin, Rotation, Schematic, Terminal, Wire } from './schematic-types';
 import componentCatalog from '../../circuits/components.json' with { type: 'json' };
 import { isDeviceKind, isTransistor, libraryPart, partsOfKind, terminalCount } from './part-library.ts';
+import { boardPinOf } from './board-library.ts';
 
 export const GRID = 32;
 export const PART_NAMES: Record<PartKind, string> = {
   R: 'Resistor', C: 'Capacitor', L: 'Inductor', V: 'DC source', PULSE: 'Pulse source', SIN: 'Sine source', GND: 'Ground',
   D: 'Diode / LED', NMOS: 'N-MOSFET', PMOS: 'P-MOSFET', NPN: 'NPN transistor', PNP: 'PNP transistor',
-  OPAMP: 'Op-amp', REG: 'Voltage regulator',
+  OPAMP: 'Op-amp', REG: 'Voltage regulator', PIN: 'Board pin',
 };
 export const STANDARD_VALUES = Object.fromEntries(Object.entries(componentCatalog)
   .map(([kind, definition]) => [kind, definition.standard_values])) as Record<PartKind, number[]>;
@@ -19,6 +20,7 @@ export function engineering(value: number, unit = ''): string {
 }
 
 export function partValue(part: Part): string {
+  if (part.kind === 'PIN') return boardPinOf(part)?.pin.name ?? 'unknown pin';
   if (isDeviceKind(part.kind)) return libraryPart(part.device)?.name ?? 'unknown part';
   const units: Record<string, string> = { R: 'Ω', C: 'F', L: 'H', V: 'V', PULSE: 'V pulse', SIN: 'V peak sine', GND: 'V reference' };
   return engineering(part.value, units[part.kind]);
@@ -32,6 +34,7 @@ export function pinsFor(part: Part): Pin[] {
 
 const OFFSETS: Partial<Record<PartKind, { x: number; y: number }[]>> = {
   GND: [{ x: 0, y: -2 }],
+  PIN: [{ x: 2, y: 0 }],
   NMOS: [{ x: 1, y: -2 }, { x: -2, y: 0 }, { x: 1, y: 2 }],
   OPAMP: [{ x: 3, y: 0 }, { x: -3, y: 1 }, { x: -3, y: -1 }, { x: 0, y: -2 }, { x: 0, y: 2 }],
   REG: [{ x: 2, y: 0 }, { x: -2, y: 0 }, { x: 0, y: 2 }],
@@ -71,11 +74,14 @@ export function addWire(schematic: Schematic, a: Pin, b: Pin): Schematic {
 
 export function makePart(kind: PartKind, parts: Part[], x: number, y: number): Part {
   if (parts.length >= 20) throw new Error('This prototype supports up to 20 parts.');
-  const prefix = kind === 'GND' ? 'G' : kind === 'PULSE' || kind === 'SIN' ? 'V' : isDeviceKind(kind) ? ({ D: 'D', OPAMP: 'U', REG: 'U' } as Record<string, string>)[kind] ?? 'Q' : kind;
+  const prefix = kind === 'GND' ? 'G' : kind === 'PULSE' || kind === 'SIN' ? 'V' : kind === 'PIN' ? 'P' : isDeviceKind(kind) ? ({ D: 'D', OPAMP: 'U', REG: 'U' } as Record<string, string>)[kind] ?? 'Q' : kind;
   let suffix = 1;
   while (parts.some(part => part.id === prefix + suffix)) suffix++;
   if (isDeviceKind(kind)) {
     return { id: prefix + suffix, kind, value: 0, x, y, rotation: 0, device: partsOfKind(kind)[0]?.id ?? null };
+  }
+  if (kind === 'PIN') {
+    return { id: prefix + suffix, kind, value: 0, x, y, rotation: 0, board_pin: { board: 'raspberry_pi_4', pin: '11', mode: 'output_high' } };
   }
   const defaults: Record<string, number> = { R: 1000, C: 10e-6, L: 10e-3, V: 5, PULSE: 5, SIN: 5, GND: 0 };
   return { id: prefix + suffix, kind, value: defaults[kind], x, y, rotation: kind === 'GND' ? 0 : 90,
