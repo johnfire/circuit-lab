@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { exportKicad } from './schematic-api';
+import { exportBringUp, exportKicad } from './schematic-api';
 import { downloadText } from './schematic-files';
 import type { EditorState } from './use-schematic-editor';
 
@@ -18,12 +18,20 @@ export function PcbExport({ editor }: { editor: EditorState }) {
     } catch (error) { editor.setError(error instanceof Error ? error.message : 'PCB export failed.'); setNotes(null); }
     finally { setBusy(false); }
   };
+  const bringUp = async () => {
+    setBusy(true);
+    try { downloadText('circuit-lab-bring-up.md', await exportBringUp(editor.schematic), 'text/markdown'); }
+    catch (error) { editor.setError(error instanceof Error ? error.message : 'Bring-up checklist failed.'); }
+    finally { setBusy(false); }
+  };
   return <section className="editor-card" aria-label="PCB export">
     <h2>Order a PCB</h2>
     <p className="muted">Downloads four files: the KiCad netlist (circuit-lab.net), a JLCPCB-style parts list (circuit-lab-bom.csv),
       JLCPCB design rules to paste into KiCad (circuit-lab-jlcpcb-rules.txt) and the steps from KiCad to an order
       (circuit-lab-pcb-steps.md). Your browser may ask once to allow several downloads.</p>
-    <button disabled={busy || editor.running} onClick={() => { void run(); }}>{busy ? 'Exporting…' : 'Export for PCB (KiCad)'}</button>
+    <div className="button-row"><button disabled={busy || editor.running} onClick={() => { void run(); }}>{busy ? 'Exporting…' : 'Export for PCB (KiCad)'}</button>
+      <button disabled={busy || editor.running} onClick={() => { void bringUp(); }}>Bring-up checklist</button></div>
+    <p className="muted">The bring-up checklist simulates the circuit and lists, pad by pad, what a meter should read when you first power the built board.</p>
     {notes && <><h3>Before you order</h3><ul className="model-warnings">{notes.map(note => <li key={note}>{note}</li>)}</ul></>}
   </section>;
 }

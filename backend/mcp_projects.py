@@ -10,6 +10,7 @@ from mcp.server.mcpserver.exceptions import ResourceError
 from mcp_types import ToolAnnotations
 from pydantic import ValidationError
 
+from backend.bring_up_sheet import bring_up_sheet
 from backend.kicad_export import export_kicad
 from backend.mcp_errors import guard_handler
 from backend.mcp_orientation import register_orientation
@@ -36,7 +37,7 @@ from backend.project_models import (
 from backend.project_runs import RunCommand, get_report, get_run, list_runs, start_run
 from backend.project_runtime import CollaborationRuntime
 from backend.project_views import ObservationCommand, set_view, view_status
-from backend.schematic_models import SchematicRequest
+from backend.schematic_models import SchematicRequest, SchematicResponse
 
 PrincipalProvider = Callable[[], Awaitable[Principal]]
 READ_ONLY = ToolAnnotations(read_only_hint=True, destructive_hint=False, open_world_hint=False)
@@ -166,6 +167,19 @@ def register_restore_tools(server: MCPServer[None], runtime: CollaborationRuntim
             raise ProjectFailure(f"Not ready for PCB export: {error}") from error
         return {"netlist": exported.netlist, "bom_csv": exported.bom_csv, "design_rules": exported.design_rules,
                 "fab_guide": exported.fab_guide, "warnings": exported.warnings}
+
+    @server.tool(annotations=READ_ONLY)
+    @guard_handler
+    async def get_bring_up_sheet(document: UUID, run: UUID) -> dict[str, object]:
+        """Markdown first-power-on checklist from a completed transient run: pads, expected voltages, supply limits."""
+        actor = await principal()
+        saved = await get_run(runtime.database, actor, document, run)
+        report = await get_report(runtime.database, actor, document, run)
+        if not isinstance(report, SchematicResponse):
+            raise ProjectFailure("A bring-up sheet needs a transient run, not an AC sweep", 409)
+        snapshot = await get_document(runtime.database, actor, document, UUID(str(saved["revision"])))
+        circuit = SchematicRequest.model_validate(DocumentContents.model_validate(snapshot["contents"]).circuit.model_dump())
+        return {"run": str(run), "revision": str(saved["revision"]), "sheet": bring_up_sheet(circuit, report)}
 
 
 def register_run_tools(server: MCPServer[None], runtime: CollaborationRuntime, principal: PrincipalProvider) -> None:

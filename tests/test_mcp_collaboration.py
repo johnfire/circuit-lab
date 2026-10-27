@@ -76,6 +76,9 @@ async def run_and_measure(client: Client, runtime: CollaborationRuntime, documen
         "query": {"signal": query["signal"], "limit": 3}})
     assert len(samples.structured_content["real"]) == 3
     assert samples.structured_content["decimated"] is False
+    sheet = await client.call_tool("get_bring_up_sheet", {"document": str(document), "run": run})
+    assert not sheet.is_error and sheet.structured_content["revision"] == revision
+    assert sheet.structured_content["sheet"].startswith("# Bring-up checklist")
 
 
 def test_real_sdk_ac_preserves_complex_samples_and_excitation_relative_phase(project_database_url, analog_request):
@@ -109,4 +112,6 @@ def test_real_sdk_ac_preserves_complex_samples_and_excitation_relative_phase(pro
                 assert evidence["phase_reference"] == "AC excitation" and "rms" not in evidence
                 assert evidence["first_phase_degrees"] == pytest.approx(-32.1419, abs=.001)
                 assert evidence["last_phase_degrees"] == pytest.approx(-89.0882, abs=.001)
+                refused = await client.call_tool("get_bring_up_sheet", {"document": str(document), "run": run})
+                assert refused.is_error and "needs a transient run" in str(refused.content)
     asyncio.run(scenario())

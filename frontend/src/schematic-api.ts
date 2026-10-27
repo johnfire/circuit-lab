@@ -14,6 +14,11 @@ export async function exportKicad(schematic: Schematic): Promise<KicadFiles> {
   return await requestAnalysis('/api/export/kicad', schematic) as KicadFiles;
 }
 
+/** Simulates the circuit in the worker and returns a markdown first-power-on checklist. */
+export async function exportBringUp(schematic: Schematic): Promise<string> {
+  return (await requestAnalysis('/api/export/bring-up', schematic) as { sheet: string }).sheet;
+}
+
 async function requestAnalysis(endpoint: string, circuit: unknown): Promise<unknown> {
   const response = await fetch(endpoint, { method: 'POST',
     headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(circuit),

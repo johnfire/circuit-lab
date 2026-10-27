@@ -152,5 +152,8 @@ test('PCB export downloads a KiCad netlist, JLC parts list, design rules and ste
   expect(downloads['circuit-lab-bom.csv'].split('\n')[0]).toBe('Comment,Designator,Footprint,LCSC Part #');
   expect(downloads['circuit-lab-jlcpcb-rules.txt']).toMatch(/^\(version 1\)/);
   expect(downloads['circuit-lab-pcb-steps.md']).toContain('RaspberryPi-HAT');
+  await page.getByRole('button', { name: 'Bring-up checklist', exact: true }).click();
+  await expect.poll(() => downloads['circuit-lab-bring-up.md'] ?? '').toContain('| /GPIO17 | RG pad 1 |');
+  expect(downloads['circuit-lab-bring-up.md']).toContain('VS on J2 pin 1 (+): set 12V');
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });

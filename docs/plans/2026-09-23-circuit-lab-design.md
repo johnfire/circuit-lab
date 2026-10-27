@@ -207,6 +207,13 @@ real part must meet.
   DRC, 1:1 print check, JLC's Gerber/drill settings, ordering). The Pi header is always `J1`, matching the
   template's socket. TO-92 parts default to `TO-92_Inline_Wide`: the narrow footprint's 0.15 mm annular
   ring is under JLC's 0.18 mm minimum. Not yet tried in a real KiCad install.
+- ✅ **Bring-up checklist** (2026-10-27): a markdown sheet for first power-on, from a transient simulation:
+  polarity checks, bench-supply voltage and current limit per input connector, the expected reading on
+  every net at a named pad (same names as the KiCad export), parts near their power or current limit,
+  and unmet support rules. Browser: "Bring-up checklist" (simulates in the worker, audited; a worker
+  outage fails only this file). MCP: `get_bring_up_sheet(document, run)` from a stored transient run.
+- ⬜ The relay-driver block models the relay coil as RC + LC, so its KiCad export places a resistor and
+  inductor where a relay (or an off-board coil connector) belongs.
 - ⬜ Human review of draft parts and boards against datasheets → `verified`.
 - ⬜ Benchmark 1 (GPIO → MOSFET → relay) simulates correctly in tests; it still needs an AI
   client over MCP to design it end to end once MCP is switched on. Benchmark 2's op-amp option
