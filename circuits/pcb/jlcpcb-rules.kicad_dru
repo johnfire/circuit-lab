@@ -1,0 +1,38 @@
+(version 1)
+# Circuit Lab design rules for a first JLCPCB order: standard 2-layer FR-4, 1 oz copper.
+# Limits from jlcpcb.com/capabilities/pcb-capabilities (checked 2026-10-22), with margin.
+# Paste into KiCad: Board Setup > Design Rules > Custom Rules, then "Check Rule Syntax".
+
+(rule "JLC track width >= 0.15 mm (fab minimum 0.10 mm)"
+	(constraint track_width (min 0.15mm)))
+
+(rule "JLC copper clearance >= 0.15 mm (fab minimum 0.10 mm)"
+	(constraint clearance (min 0.15mm)))
+
+(rule "JLC copper to board edge >= 0.3 mm (fab minimum 0.2 mm)"
+	(constraint edge_clearance (min 0.3mm)))
+
+(rule "JLC drilled holes >= 0.3 mm"
+	(constraint hole_size (min 0.3mm)))
+
+(rule "JLC hole to hole >= 0.5 mm (fab minimum 0.45 mm between pad holes)"
+	(constraint hole_to_hole (min 0.5mm)))
+
+(rule "JLC via annular ring >= 0.15 mm"
+	(condition "A.Type == 'Via'")
+	(constraint annular_width (min 0.15mm)))
+
+(rule "JLC pad annular ring >= 0.18 mm (fab minimum; 0.25 mm recommended)"
+	(condition "A.Type == 'Pad'")
+	(constraint annular_width (min 0.18mm)))
+
+(rule "JLC silkscreen text height >= 1.0 mm"
+	(layer "?.Silkscreen")
+	(constraint text_height (min 1.0mm)))
+
+(rule "JLC silkscreen line width >= 0.15 mm"
+	(layer "?.Silkscreen")
+	(constraint text_thickness (min 0.15mm)))
+
+(rule "JLC silkscreen clear of pads >= 0.15 mm"
+	(constraint silk_clearance (min 0.15mm)))

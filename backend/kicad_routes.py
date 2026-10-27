@@ -10,10 +10,12 @@ router = APIRouter()
 
 
 class KicadFiles(StrictModel):
-    """The two files to download and what the user still needs to do."""
+    """The files to download and what the user still needs to do."""
 
     netlist: str
     bom_csv: str
+    design_rules: str
+    fab_guide: str
     warnings: list[str]
 
 
@@ -24,4 +26,5 @@ def export_for_pcb(submitted: SchematicRequest) -> KicadFiles:
         exported = export_kicad(submitted)
     except ValueError as error:
         raise HTTPException(status_code=422, detail=f"Not ready for PCB export: {error}") from error
-    return KicadFiles(netlist=exported.netlist, bom_csv=exported.bom_csv, warnings=exported.warnings)
+    return KicadFiles(netlist=exported.netlist, bom_csv=exported.bom_csv, design_rules=exported.design_rules,
+                      fab_guide=exported.fab_guide, warnings=exported.warnings)

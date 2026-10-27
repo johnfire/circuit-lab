@@ -11,6 +11,7 @@ from backend.application import app
 from backend.block_library import BLOCKS
 from backend.footprint_catalog import GENERIC, verified_footprints
 from backend.kicad_export import (
+    DESIGN_RULES,
     HEADER_1X1,
     HEADER_1X2,
     PI_SOCKET,
@@ -45,9 +46,9 @@ def test_relay_driver_pads_land_on_the_right_nets() -> None:
     assert netlist.count("(") == netlist.count(")")
     assert ("RG", "2") in net_of(netlist, "Q1", "1"), "IRLZ44N gate (TO-220 pad 1) meets the gate resistor"
     assert ("D1", "2") in net_of(netlist, "Q1", "2"), "drain (pad 2) meets the flyback diode's anode"
-    assert ("J2", "6") in net_of(netlist, "Q1", "3"), "source (pad 3) is ground, like every Pi GND pin"
-    assert ("J1", "1") in net_of(netlist, "D1", "1"), "the diode's cathode goes to the +12 V input"
-    assert ("J2", "11") in nets(netlist)["/GPIO17"], "GPIO17 is physical header pin 11"
+    assert ("J1", "6") in net_of(netlist, "Q1", "3"), "source (pad 3) is ground, like every Pi GND pin"
+    assert ("J2", "1") in net_of(netlist, "D1", "1"), "the diode's cathode goes to the +12 V input"
+    assert ("J1", "11") in nets(netlist)["/GPIO17"], "GPIO17 is physical header pin 11"
     assert f'(footprint "{PI_SOCKET}")' in netlist and f'(footprint "{HEADER_1X2}")' in netlist
     assert any("No LCSC part number" in warning for warning in exported.warnings)
 
@@ -97,6 +98,7 @@ def test_http_export_refuses_incomplete_wiring_and_returns_files() -> None:
         bad = client.post("/api/export/kicad", json=unwired)
     assert good.status_code == 200
     assert good.json()["netlist"].startswith('(export (version "E")')
+    assert good.json()["design_rules"].startswith("(version 1)") and "Gerber" in good.json()["fab_guide"]
     assert bad.status_code == 422 and "Not ready for PCB export" in bad.text
 
 
@@ -112,3 +114,31 @@ def test_lcsc_numbers_are_written_the_way_kicad_writes_component_fields() -> Non
                                       [("1", "0"), ("2", "n1")])], {"0": "GND", "n1": "N1"})
     assert '(fields (field (name "LCSC") "C17414")) (property (name "LCSC") (value "C17414"))' in netlist
     assert '(net (code "1") (name "/GND") (node (ref "R1") (pin "1")))' in netlist
+
+
+def test_pi_header_is_j1_like_the_socket_in_kicads_hat_template() -> None:
+    components = export_kicad(BLOCKS["pi_relay_driver"].circuit).netlist
+    assert f'(ref "J1") (value "Raspberry Pi 4 Model B header") (footprint "{PI_SOCKET}")' in components
+    assert '(ref "J2") (value "VS input")' in components
+
+
+KICAD_CONSTRAINTS = {"annular_width", "clearance", "courtyard_clearance", "edge_clearance", "hole_clearance",
+                     "hole_size", "hole_to_hole", "silk_clearance", "text_height", "text_thickness",
+                     "track_width", "via_diameter"}
+
+
+def test_jlcpcb_rules_are_well_formed_and_use_only_kicad_constraints() -> None:
+    body = "\n".join(line for line in DESIGN_RULES.splitlines() if not line.startswith("#"))
+    assert body.startswith("(version 1)") and body.count("(") == body.count(")")
+    assert set(re.findall(r"\(constraint (\w+)", body)) <= KICAD_CONSTRAINTS
+    names = re.findall(r'\(rule "([^"]+)"', body)
+    assert len(names) == len(set(names)) == body.count("(rule ") >= 8
+    assert all(value.endswith("mm") for value in re.findall(r"\(min ([^)]+)\)", body))
+
+
+def test_narrow_to92_pads_are_never_the_default_footprint() -> None:
+    """KiCad's TO-92_Inline leaves a 0.15 mm annular ring, under JLCPCB's 0.18 mm minimum."""
+    for part in LIBRARY.values():
+        kicad = [footprint.kicad for footprint in part.footprints]
+        if "Package_TO_SOT_THT:TO-92_Inline" in kicad:
+            assert kicad[0] == "Package_TO_SOT_THT:TO-92_Inline_Wide", part.id

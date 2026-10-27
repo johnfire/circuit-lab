@@ -10,6 +10,7 @@ import io
 import uuid
 from collections import defaultdict
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from backend.block_library import free_identifier
 from backend.board_library import BOARDS
@@ -25,6 +26,9 @@ HEADER_1X1 = "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
 PI_SOCKET = "Connector_PinSocket_2.54mm:PinSocket_2x20_P2.54mm_Vertical"
 PI_BOARDS = frozenset({"raspberry_pi_4", "raspberry_pi_5"})
 SOURCE_KINDS = frozenset({"V", "PULSE", "SIN"})
+PCB_ROOT = Path(__file__).resolve().parent.parent / "circuits" / "pcb"
+DESIGN_RULES = (PCB_ROOT / "jlcpcb-rules.kicad_dru").read_text()
+FAB_GUIDE = (PCB_ROOT / "fab-guide.md").read_text()
 
 
 @dataclass
@@ -45,6 +49,8 @@ class KicadExport:
     netlist: str
     bom_csv: str
     warnings: list[str]
+    design_rules: str = DESIGN_RULES
+    fab_guide: str = FAB_GUIDE
 
 
 def quote(text: str) -> str:
@@ -91,8 +97,13 @@ def board_connectors(parts: list[Part], nodes: dict[str, str], taken: set[str]) 
 
 
 def components_for(circuit: SchematicRequest, nodes: dict[str, str]) -> tuple[list[Component], list[str]]:
-    """Every footprint the board needs, plus notes about off-board connections."""
+    """Every footprint the board needs, plus notes about off-board connections.
+
+    Board headers are numbered first, so a Pi's 40-pin socket is J1 like the socket already
+    placed in KiCad's RaspberryPi-HAT template.
+    """
     taken = {part.id for part in circuit.parts}
+    boards, board_notes = board_connectors(list(circuit.parts), nodes, taken)
     components: list[Component] = []
     warnings: list[str] = []
     for part in circuit.parts:
@@ -107,7 +118,6 @@ def components_for(circuit: SchematicRequest, nodes: dict[str, str]) -> tuple[li
             components.append(Component(ref, f"{part.id} input", HEADER_1X2, None,
                                         [("1", nodes[f"{part.id}:0"]), ("2", nodes[f"{part.id}:1"])]))
             warnings.append(f"{part.id} is off-board: connect that supply or signal to {ref} (pin 1 = +).")
-    boards, board_notes = board_connectors(list(circuit.parts), nodes, taken)
     return components + boards, warnings + board_notes
 
 
@@ -176,5 +186,6 @@ def export_kicad(circuit: SchematicRequest) -> KicadExport:
         warnings.append(f"No LCSC part number yet for: {', '.join(missing)}. Bare boards are fine; JLC assembly needs them.")
     if drafts:
         warnings.append(f"Draft parts ({', '.join(drafts)}): check each pad map against the datasheet's package drawing before ordering.")
-    warnings.append("Import the netlist in KiCad's PCB editor, then place, route, run DRC and plot Gerbers and drill files.")
+    warnings.append("Next: follow circuit-lab-pcb-steps.md — KiCad template, paste the JLCPCB rules, import the netlist "
+                    "by reference, place, route, DRC, print 1:1 to check footprints, then Gerbers and drill files.")
     return KicadExport(netlist_text(components, net_names(circuit, nodes)), bom_csv(components), warnings)

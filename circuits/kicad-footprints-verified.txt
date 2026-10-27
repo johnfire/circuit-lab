@@ -17,6 +17,7 @@ Diode_SMD:D_SMA
 LED_THT:LED_D5.0mm
 LED_SMD:LED_0805_2012Metric
 Package_TO_SOT_THT:TO-92_Inline
+Package_TO_SOT_THT:TO-92_Inline_Wide
 Package_TO_SOT_THT:TO-220-3_Vertical
 Package_TO_SOT_SMD:SOT-23
 Package_TO_SOT_SMD:SOT-223-3_TabPin2

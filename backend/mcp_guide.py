@@ -37,7 +37,8 @@ Prefer a curated block over hand-building a common circuit, then adapt and re-si
 For a PCB, set each part's footprint (put_part with footprint: an option id from
 get_library_part, or for R/C/L: axial (1/4 W)/axial_half/axial_1w/r0805, disc/radial/c0805/c1206,
 axial/l1210) and each capacitor's voltage_rating (V), then call
-export_kicad_files: it returns a KiCad netlist and JLCPCB BOM plus what's left to check
+export_kicad_files: it returns a KiCad netlist, JLCPCB BOM, design rules to paste into KiCad and a
+step-by-step fab guide (fab_guide; give it to the user), plus what's left to check
 (draft pad maps, missing LCSC numbers, unmet support rules). Layout, routing and Gerbers happen in KiCad.
 validate_circuit returns design_checks: capacitors a part's datasheet requires or recommends (regulator
 input/output, op-amp bypass) that the wiring lacks. Fix every Required one; the models cannot oscillate,

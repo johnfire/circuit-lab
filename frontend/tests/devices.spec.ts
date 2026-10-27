@@ -133,7 +133,7 @@ test('circuit library: insert a block beside the circuit, or open one and simula
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 
-test('PCB export downloads a KiCad netlist and a JLC parts list, honouring footprint choices', async ({ page }) => {
+test('PCB export downloads a KiCad netlist, JLC parts list, design rules and steps, honouring footprint choices', async ({ page }) => {
   await page.goto('/?mode=build');
   await page.getByText(/^Circuit library/).click();
   page.once('dialog', dialog => { void dialog.accept(); });
@@ -145,8 +145,12 @@ test('PCB export downloads a KiCad netlist and a JLC parts list, honouring footp
     .then(chunks => Buffer.concat(chunks).toString()); });
   await page.getByRole('button', { name: 'Export for PCB (KiCad)', exact: true }).click();
   await expect(page.getByRole('region', { name: 'PCB export' })).toContainText('No LCSC part number yet');
-  await expect.poll(() => Object.keys(downloads).sort()).toEqual(['circuit-lab-bom.csv', 'circuit-lab.net']);
+  await expect.poll(() => Object.keys(downloads).sort()).toEqual(
+    ['circuit-lab-bom.csv', 'circuit-lab-jlcpcb-rules.txt', 'circuit-lab-pcb-steps.md', 'circuit-lab.net']);
   expect(downloads['circuit-lab.net']).toContain('(ref "D1") (value "1N5819") (footprint "Diode_SMD:D_SMA")');
+  expect(downloads['circuit-lab.net']).toContain('(ref "J1") (value "Raspberry Pi 4 Model B header")');
   expect(downloads['circuit-lab-bom.csv'].split('\n')[0]).toBe('Comment,Designator,Footprint,LCSC Part #');
+  expect(downloads['circuit-lab-jlcpcb-rules.txt']).toMatch(/^\(version 1\)/);
+  expect(downloads['circuit-lab-pcb-steps.md']).toContain('RaspberryPi-HAT');
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });

@@ -5,11 +5,18 @@
   "description": "General-purpose NPN transistor, up to ~600 mA",
   "footprints": [
    {
+    "id": "to92_wide",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline_Wide",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "Pinout matches datasheet p.2. PN2222A TO-92 order; the metal-can 2N2222A differs; same pin order on a 2.54 mm pitch: bend the legs out; 0.35 mm annular ring"
+   },
+   {
     "id": "to92",
     "kicad": "Package_TO_SOT_THT:TO-92_Inline",
     "lcsc": null,
     "mount": "tht",
-    "note": "Pinout matches datasheet p.2. PN2222A TO-92 order; the metal-can 2N2222A differs"
+    "note": "1.27 mm pitch as moulded, but its pads leave a 0.15 mm annular ring, below JLCPCB's 0.18 mm minimum (DRC flags it). Pinout matches datasheet p.2. PN2222A TO-92 order; the metal-can 2N2222A differs"
    }
   ],
   "id": "2n2222a",
@@ -43,11 +50,18 @@
   "description": "General-purpose small-signal NPN transistor",
   "footprints": [
    {
+    "id": "to92_wide",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline_Wide",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "Pinout matches datasheet p.1; same pin order on a 2.54 mm pitch: bend the legs out; 0.35 mm annular ring"
+   },
+   {
     "id": "to92",
     "kicad": "Package_TO_SOT_THT:TO-92_Inline",
     "lcsc": null,
     "mount": "tht",
-    "note": "Pinout matches datasheet p.1"
+    "note": "1.27 mm pitch as moulded, but its pads leave a 0.15 mm annular ring, below JLCPCB's 0.18 mm minimum (DRC flags it). Pinout matches datasheet p.1"
    }
   ],
   "id": "2n3904",
@@ -81,11 +95,18 @@
   "description": "General-purpose small-signal PNP transistor",
   "footprints": [
    {
+    "id": "to92_wide",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline_Wide",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "Pinout matches datasheet p.1; same pin order on a 2.54 mm pitch: bend the legs out; 0.35 mm annular ring"
+   },
+   {
     "id": "to92",
     "kicad": "Package_TO_SOT_THT:TO-92_Inline",
     "lcsc": null,
     "mount": "tht",
-    "note": "Pinout matches datasheet p.1"
+    "note": "1.27 mm pitch as moulded, but its pads leave a 0.15 mm annular ring, below JLCPCB's 0.18 mm minimum (DRC flags it). Pinout matches datasheet p.1"
    }
   ],
   "id": "2n3906",
@@ -119,11 +140,18 @@
   "description": "Small-signal NPN transistor, gain group B",
   "footprints": [
    {
+    "id": "to92_wide",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline_Wide",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "Pinout matches datasheet p.1; same pin order on a 2.54 mm pitch: bend the legs out; 0.35 mm annular ring"
+   },
+   {
     "id": "to92",
     "kicad": "Package_TO_SOT_THT:TO-92_Inline",
     "lcsc": null,
     "mount": "tht",
-    "note": "Pinout matches datasheet p.1"
+    "note": "1.27 mm pitch as moulded, but its pads leave a 0.15 mm annular ring, below JLCPCB's 0.18 mm minimum (DRC flags it). Pinout matches datasheet p.1"
    }
   ],
   "id": "bc547b",
@@ -157,11 +185,18 @@
   "description": "Small-signal PNP transistor, gain group B",
   "footprints": [
    {
+    "id": "to92_wide",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline_Wide",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "Pinout matches datasheet p.1; same pin order on a 2.54 mm pitch: bend the legs out; 0.35 mm annular ring"
+   },
+   {
     "id": "to92",
     "kicad": "Package_TO_SOT_THT:TO-92_Inline",
     "lcsc": null,
     "mount": "tht",
-    "note": "Pinout matches datasheet p.1"
+    "note": "1.27 mm pitch as moulded, but its pads leave a 0.15 mm annular ring, below JLCPCB's 0.18 mm minimum (DRC flags it). Pinout matches datasheet p.1"
    }
   ],
   "id": "bc557b",
@@ -479,11 +514,18 @@
   "description": "Small-signal N-channel MOSFET, 60 V",
   "footprints": [
    {
+    "id": "to92_wide",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline_Wide",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "Pinout matches datasheet p.1; same pin order on a 2.54 mm pitch: bend the legs out; 0.35 mm annular ring"
+   },
+   {
     "id": "to92",
     "kicad": "Package_TO_SOT_THT:TO-92_Inline",
     "lcsc": null,
     "mount": "tht",
-    "note": "Pinout matches datasheet p.1"
+    "note": "1.27 mm pitch as moulded, but its pads leave a 0.15 mm annular ring, below JLCPCB's 0.18 mm minimum (DRC flags it). Pinout matches datasheet p.1"
    }
   ],
   "id": "2n7000",
@@ -605,11 +647,18 @@
   "description": "Small-signal N-channel MOSFET, 60 V, 500 mA",
   "footprints": [
    {
+    "id": "to92_wide",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline_Wide",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "Pinout matches datasheet p.1; same pin order on a 2.54 mm pitch: bend the legs out; 0.35 mm annular ring"
+   },
+   {
     "id": "to92",
     "kicad": "Package_TO_SOT_THT:TO-92_Inline",
     "lcsc": null,
     "mount": "tht",
-    "note": "Pinout matches datasheet p.1"
+    "note": "1.27 mm pitch as moulded, but its pads leave a 0.15 mm annular ring, below JLCPCB's 0.18 mm minimum (DRC flags it). Pinout matches datasheet p.1"
    }
   ],
   "id": "bs170",
@@ -1048,11 +1097,18 @@
   "description": "3.3 V micropower LDO, 250 mA, 1.6 \u00b5A quiescent; for battery projects",
   "footprints": [
    {
+    "id": "to92_wide",
+    "kicad": "Package_TO_SOT_THT:TO-92_Inline_Wide",
+    "lcsc": null,
+    "mount": "tht",
+    "note": "Pinout matches datasheet p.1; same pin order on a 2.54 mm pitch: bend the legs out; 0.35 mm annular ring"
+   },
+   {
     "id": "to92",
     "kicad": "Package_TO_SOT_THT:TO-92_Inline",
     "lcsc": null,
     "mount": "tht",
-    "note": "Pinout matches datasheet p.1"
+    "note": "1.27 mm pitch as moulded, but its pads leave a 0.15 mm annular ring, below JLCPCB's 0.18 mm minimum (DRC flags it). Pinout matches datasheet p.1"
    },
    {
     "id": "sot23",

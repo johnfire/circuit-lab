@@ -157,14 +157,15 @@ def register_restore_tools(server: MCPServer[None], runtime: CollaborationRuntim
     @server.tool(annotations=READ_ONLY)
     @guard_handler
     async def export_kicad_files(document: UUID, revision: UUID | None = None) -> dict[str, object]:
-        """Export a fully wired circuit as a KiCad netlist and JLCPCB BOM, plus what's left to check."""
+        """Export a fully wired circuit: KiCad netlist, JLCPCB BOM, JLCPCB design rules and PCB steps, plus what's left to check."""
         snapshot = await get_document(runtime.database, await principal(), document, revision)
         circuit = DocumentContents.model_validate(snapshot["contents"]).circuit
         try:
             exported = export_kicad(SchematicRequest.model_validate(circuit.model_dump()))
         except ValueError as error:
             raise ProjectFailure(f"Not ready for PCB export: {error}") from error
-        return {"netlist": exported.netlist, "bom_csv": exported.bom_csv, "warnings": exported.warnings}
+        return {"netlist": exported.netlist, "bom_csv": exported.bom_csv, "design_rules": exported.design_rules,
+                "fab_guide": exported.fab_guide, "warnings": exported.warnings}
 
 
 def register_run_tools(server: MCPServer[None], runtime: CollaborationRuntime, principal: PrincipalProvider) -> None:

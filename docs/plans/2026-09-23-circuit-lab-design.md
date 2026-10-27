@@ -201,6 +201,12 @@ real part must meet.
   (input/output capacitors, ESR window, supply bypass) checked on the wiring and reported in
   simulation, `validate_circuit` (`design_checks`) and the KiCad export. The rules caught the LM1117
   block's ceramic output capacitor, which would oscillate on a real board.
+- ✅ **Fab path** (2026-10-22): every KiCad export also carries JLCPCB design rules
+  (`circuits/pcb/jlcpcb-rules.kicad_dru`, JLC's 2-layer limits with margin) and step-by-step PCB
+  instructions (`circuits/pcb/fab-guide.md`: KiCad's RaspberryPi-HAT template, rules, import by reference,
+  DRC, 1:1 print check, JLC's Gerber/drill settings, ordering). The Pi header is always `J1`, matching the
+  template's socket. TO-92 parts default to `TO-92_Inline_Wide`: the narrow footprint's 0.15 mm annular
+  ring is under JLC's 0.18 mm minimum. Not yet tried in a real KiCad install.
 - ⬜ Human review of draft parts and boards against datasheets → `verified`.
 - ⬜ Benchmark 1 (GPIO → MOSFET → relay) simulates correctly in tests; it still needs an AI
   client over MCP to design it end to end once MCP is switched on. Benchmark 2's op-amp option

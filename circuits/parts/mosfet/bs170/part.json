@@ -70,6 +70,24 @@
   },
   "footprints": [
     {
+      "id": "to92_wide",
+      "mount": "tht",
+      "kicad": "Package_TO_SOT_THT:TO-92_Inline_Wide",
+      "pads": {
+        "drain": [
+          "1"
+        ],
+        "gate": [
+          "2"
+        ],
+        "source": [
+          "3"
+        ]
+      },
+      "lcsc": null,
+      "note": "Pinout matches datasheet p.1; same pin order on a 2.54 mm pitch: bend the legs out; 0.35 mm annular ring"
+    },
+    {
       "id": "to92",
       "mount": "tht",
       "kicad": "Package_TO_SOT_THT:TO-92_Inline",
@@ -85,7 +103,7 @@
         ]
       },
       "lcsc": null,
-      "note": "Pinout matches datasheet p.1"
+      "note": "1.27 mm pitch as moulded, but its pads leave a 0.15 mm annular ring, below JLCPCB's 0.18 mm minimum (DRC flags it). Pinout matches datasheet p.1"
     }
   ]
 }
