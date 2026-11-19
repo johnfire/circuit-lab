@@ -10,7 +10,11 @@ site-specific Apache reload hook. Existing certificates remain untouched.
 Pushes to main run lint, strict types, Python unit/integration tests (70% minimum
 coverage), browser/mobile/accessibility regressions, dependency vulnerability
 audits, and real simulations of all nine recipes in restricted containers.
-Only after these checks pass does GitHub send the exact Git archive to the VPS.
+After these checks pass, GitHub sends the exact Git archive to the restricted
+VPS receiver. It builds the API and worker once and deploys them to private
+staging. GitHub runs the live browser gate, then promotes those same image IDs
+to production. The receiver rejects promotion if staging is running a different
+revision or its image IDs have changed.
 Dependabot auto-PRs are intentionally not configured because this project uses
 main-only development; dependency audits are mandatory on every push.
 
@@ -21,7 +25,9 @@ deployment authority: trusted source builds necessarily execute on the host.
 The deploy key must not be reused for another repository.
 
 GitHub secrets DEPLOY_SSH_KEY and DEPLOY_HOST_KEY contain the dedicated key and
-the already-verified VPS host key. No app or email secrets enter GitHub.
+the already-verified VPS host key. The production GitHub environment also
+holds STAGING_TLS_CERT and STAGING_TLS_KEY for a staging-only client identity.
+Application, identity, and SMTP credentials stay on the VPS.
 /opt/circuit-lab/.env is root-only; do not print it or run compose config in logs.
 
 Releases are retained under /opt/circuit-lab/releases/FULL_SHA. The current and
@@ -35,6 +41,45 @@ For manual rollback, on the VPS resolve /opt/circuit-lab/previous, then use its
 compose.yaml and its revision as CIRCUIT_IMAGE_TAG with project circuit-lab and
 --env-file /opt/circuit-lab/.env. Run up -d --wait, verify health plus simulation,
 and update current only after success. Do not delete identity/database volumes.
+
+## Private staging and agent tests
+
+Staging runs at https://staging.circuit-lab.christopherrehm.de on the same VPS.
+Apache requires a staging client certificate on every HTTPS route. The API,
+OAuth2 Proxy and Keycloak bind to loopback ports 8112, 8113 and 8114.
+The application database, Keycloak database, worker socket and audit log
+belong to separate staging Compose projects and Docker volumes. Keycloak
+delivers only to the staging Mailpit instance on loopback port 8056. Its
+search and message endpoints are available through the certificate gate.
+
+To bootstrap on a new VPS, point the staging DNS record at the VPS and install
+the staging HTTP vhost. Issue the public certificate with the Apache webroot,
+then install the staging HTTPS vhost and a dedicated staging client CA.
+Issue separate client certificates to CI and authorized agents. Keep the CA
+private key off the VPS. Install the root-owned receiver and forced command
+from `deploy_release.py` and `ssh_gateway.py` after validating and backing up
+any existing receiver.
+
+Run `sudo python3 -m deploy.prepare_staging environment` from the repository
+on the VPS to create staging credentials. Send the initial release archive to
+the receiver with `stage FULL_SHA` to create the application network, then
+run `sudo python3 -m deploy.prepare_staging identity` from the extracted staging
+release. This starts staging Keycloak, OAuth2 Proxy, and Mailpit and configures
+the staged OAuth clients and lifecycle roles. Identity administration follows
+the existing separate release process.
+
+Agents with certificates in `~/.local/share/circuit-lab/staging-tls/` can run
+the same browser gate with the following command. Use `agent.pem` and
+`agent.key`, or override their paths with `STAGING_TLS_CERT_PATH` and
+`STAGING_TLS_KEY_PATH`.
+
+```bash
+npm run test:staging --prefix frontend
+```
+
+The gate registers a synthetic account, verifies email through Mailpit,
+runs a real ngspice simulation, saves a private circuit and checks the account
+export. CI also checks the running revision against the commit being promoted.
 
 ## Isolation and model boundaries
 

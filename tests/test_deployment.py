@@ -1,6 +1,7 @@
 """The release receiver rejects unsafe transport before touching service state."""
 
 import io
+import json
 import re
 import tarfile
 from pathlib import Path
@@ -19,6 +20,50 @@ def test_ci_builds_frontend_before_real_database_browser_suite() -> None:
     python_step = configuration.index('- name: Python lint, strict types, and unit/integration tests')
     assert build_step < python_step
     assert 'npm run build' in configuration[build_step:python_step]
+
+
+def test_ci_runs_staging_browser_gate_before_promotion() -> None:
+    workflow = Path('.github/workflows/ci.yml').read_text()
+    stage = workflow.index('"stage $GITHUB_SHA"')
+    browser = workflow.index('npm run test:staging')
+    promote = workflow.index('"promote $GITHUB_SHA"')
+    assert stage < browser < promote
+    assert 'continue-on-error' not in workflow[stage:promote]
+
+
+def test_promotion_requires_the_current_staging_release(tmp_path: Path,
+                                                         monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(deploy_release, 'ROOT', tmp_path)
+    monkeypatch.setattr(deploy_release, 'STAGING_ROOT', tmp_path / 'staging')
+    with pytest.raises(ValueError, match='current staging release'):
+        deploy_release.promote_release('b' * 40)
+
+
+@pytest.mark.parametrize('changed_images', [True, False])
+def test_promotion_uses_the_staged_image_ids(tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+                                            changed_images: bool) -> None:
+    staging = tmp_path / 'staging'
+    staging.mkdir()
+    revision = 'a' * 40
+    release = tmp_path / 'releases' / revision
+    release.mkdir(parents=True)
+    (staging / 'current').symlink_to(release)
+    image_ids = ['sha256:' + 'a' * 64, 'sha256:' + 'b' * 64]
+    (release / '.staged-images.json').write_text(json.dumps(image_ids))
+    monkeypatch.setattr(deploy_release, 'ROOT', tmp_path)
+    monkeypatch.setattr(deploy_release, 'STAGING_ROOT', staging)
+    monkeypatch.setattr(deploy_release, 'release_image_ids',
+                        lambda _: image_ids[::-1] if changed_images else image_ids)
+    deployments: list[tuple[Path, str]] = []
+    monkeypatch.setattr(deploy_release, 'deploy',
+                        lambda path, target: deployments.append((path, target.project)))
+    if changed_images:
+        with pytest.raises(ValueError, match='staged images'):
+            deploy_release.promote_release(revision)
+        assert not deployments
+    else:
+        deploy_release.promote_release(revision)
+        assert deployments == [(release, 'circuit-lab')]
 
 
 def test_favicon_is_self_contained_brand_svg() -> None:

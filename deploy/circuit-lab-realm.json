@@ -46,7 +46,7 @@
     "fromDisplayName": "Circuit Lab",
     "auth": "true",
     "ssl": "false",
-    "starttls": "true",
+    "starttls": "${CIRCUIT_SMTP_STARTTLS}",
     "user": "${CIRCUIT_SMTP_USER}",
     "password": "${CIRCUIT_SMTP_PASSWORD}"
   },

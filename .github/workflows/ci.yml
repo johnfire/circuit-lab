@@ -116,25 +116,61 @@ jobs:
     needs: containers
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     concurrency:
       group: circuit-lab-production
       cancel-in-progress: false
     environment: production
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - name: Send exact verified revision to restricted VPS receiver
+      - name: Configure restricted VPS receiver
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           DEPLOY_HOST_KEY: ${{ secrets.DEPLOY_HOST_KEY }}
         run: |
           test -n "$DEPLOY_SSH_KEY"
           test -n "$DEPLOY_HOST_KEY"
+          umask 077
           install -d -m 700 "$HOME/.ssh"
           printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/circuit-lab"
-          chmod 600 "$HOME/.ssh/circuit-lab"
-          printf '%s\n' "$DEPLOY_HOST_KEY" > "$HOME/.ssh/known_hosts"
-          git archive "$GITHUB_SHA" | ssh -F /dev/null -i "$HOME/.ssh/circuit-lab" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 circuit-deploy@82.165.32.162 "deploy $GITHUB_SHA"
+          printf '%s\n' "$DEPLOY_HOST_KEY" > "$HOME/.ssh/circuit-lab-known-hosts"
+          cat > "$HOME/.ssh/circuit-lab-config" <<'SSH'
+          Host circuit-lab-vps
+              HostName 82.165.32.162
+              User circuit-deploy
+              IdentityFile ~/.ssh/circuit-lab
+              UserKnownHostsFile ~/.ssh/circuit-lab-known-hosts
+              IdentitiesOnly yes
+              BatchMode yes
+              StrictHostKeyChecking yes
+              ConnectTimeout 15
+          SSH
+      - name: Build the verified revision and deploy staging
+        run: git archive "$GITHUB_SHA" | ssh -F "$HOME/.ssh/circuit-lab-config" circuit-lab-vps "stage $GITHUB_SHA"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "26"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install staging test dependencies
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Gate production on the live staging browser
+        working-directory: frontend
+        env:
+          STAGING_TLS_CERT: ${{ secrets.STAGING_TLS_CERT }}
+          STAGING_TLS_KEY: ${{ secrets.STAGING_TLS_KEY }}
+          CIRCUIT_EXPECTED_BUILD: ${{ github.sha }}
+        run: |
+          if curl --fail --silent --max-time 10 https://staging.circuit-lab.christopherrehm.de/ >/dev/null; then
+            echo 'Staging requires a TLS client certificate'
+            exit 1
+          fi
+          npm run test:staging
+      - name: Promote the same images to production
+        run: ssh -n -F "$HOME/.ssh/circuit-lab-config" circuit-lab-vps "promote $GITHUB_SHA"
       - name: Verify public landing and protected workbench
         run: |
           test "$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' https://circuit-lab.christopherrehm.de/)" = 200

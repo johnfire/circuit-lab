@@ -1,0 +1,16 @@
+services:
+  identity:
+    image: circuit-lab-staging-identity:26.8.0
+    mem_limit: 1g
+    depends_on:
+      test-mail: {condition: service_started}
+  test-mail:
+    image: ghcr.io/axllent/mailpit:v1.33.1@sha256:aef2aacc11f075ec0fb6874275ee4a421e688e11a96ebb296134d1735c7761ce
+    environment:
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+      MP_SMTP_AUTH: ${CIRCUIT_SMTP_USER}:${CIRCUIT_SMTP_PASSWORD}
+      MP_MAX_MESSAGES: 100
+      MP_MAX_AGE: 1h
+    ports: ["127.0.0.1:8056:8025"]
+    mem_limit: 96m
+    restart: unless-stopped
