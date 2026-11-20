@@ -2,6 +2,7 @@
 
 from uuid import UUID, uuid4
 
+from backend.localization import text
 from backend.project_access import audit_action, authorize
 from backend.project_database import ProjectDatabase, decode_record, encode_json
 from backend.project_models import NewGrant, Principal, ProjectFailure
@@ -10,7 +11,7 @@ from backend.project_models import NewGrant, Principal, ProjectFailure
 def require_browser(principal: Principal) -> None:
     """Permission changes belong to a human, not a circuit-editing tool."""
     if principal.client is not None:
-        raise ProjectFailure("Only the signed-in browser can change sharing", 403)
+        raise ProjectFailure(text('project_grants.errors.only_the_signed_in_browser'), 403)
 
 
 async def create_grant(database: ProjectDatabase, principal: Principal,
@@ -19,13 +20,13 @@ async def create_grant(database: ProjectDatabase, principal: Principal,
     """Require explicit target, verified OAuth client and short permissions lifetime."""
     require_browser(principal)
     if command.mode != "oauth" or command.client not in approved_clients:
-        raise ProjectFailure("Choose a registered OAuth client; manual connection tokens are not enabled")
+        raise ProjectFailure(text('project_grants.errors.choose_a_registered_oauth_client'))
     async with database.available_pool().acquire() as connection, connection.transaction():
         await authorize(connection, principal, document, "edit")
         live = await connection.fetchval("SELECT count(*) FROM collaboration_grants WHERE document=$1 "
                                          "AND revoked_at IS NULL AND expires_at>clock_timestamp()", document)
         if int(str(live)) >= 10:
-            raise ProjectFailure("Sharing quota reached; revoke an existing connection", 429)
+            raise ProjectFailure(text('project_grants.errors.sharing_quota_reached_revoke_an'), 429)
         grant = uuid4()
         row = await connection.fetchrow(
             "INSERT INTO collaboration_grants(id,document,owner,client,scopes,mode,expires_at) "
@@ -33,7 +34,7 @@ async def create_grant(database: ProjectDatabase, principal: Principal,
             "RETURNING id,client,scopes,expires_at", grant, document, principal.owner,
             command.client, command.scopes, command.lifetime_minutes)
         if row is None:
-            raise ProjectFailure("Sharing could not be saved", 503)
+            raise ProjectFailure(text('project_grants.errors.sharing_could_not_be_saved'), 503)
         await audit_action(connection, principal, document, "sharing.grant")
         return decode_record(encode_json(dict(row)))
 

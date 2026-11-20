@@ -3,7 +3,7 @@ import { engineering } from './schematic-model';
 
 export interface PlotSeries { label: string; coefficients: (number | null)[]; color: string }
 interface PlotProps {
-  title: string; unit: string; axis: number[]; series: PlotSeries[]; index: number;
+  title: string; seekLabel: string; unit: string; axis: number[]; series: PlotSeries[]; index: number;
   logarithmic: boolean; bounds: [number, number]; onSeek: (index: number) => void; phaseWrapped?: boolean;
 }
 
@@ -40,7 +40,7 @@ export function ObservationChart(props: PlotProps) {
   const range = plotRange(props);
   const cursor = 54 + 660 * axisFraction(props.axis[props.index], props.bounds, props.logarithmic);
   return <div className="observation-plot"><h3>{props.title} · {props.unit}</h3>
-    <svg viewBox="0 0 760 164" role="slider" tabIndex={0} aria-label={'Seek ' + props.title.toLowerCase() + ' plot'}
+    <svg viewBox="0 0 760 164" role="slider" tabIndex={0} aria-label={props.seekLabel}
       aria-valuemin={0} aria-valuemax={props.axis.length - 1} aria-valuenow={props.index}
       aria-valuetext={engineering(props.axis[props.index], props.logarithmic ? 'Hz' : '')}
       onKeyDown={event => { const moves: Record<string, number> = { ArrowLeft: props.index - 1, ArrowRight: props.index + 1, Home: 0, End: props.axis.length - 1 };

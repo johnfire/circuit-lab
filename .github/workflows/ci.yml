@@ -38,6 +38,7 @@ jobs:
         run: |
           npm run lint
           npm run test:unit
+          npm run test:locale-mutations
           npm run build
       - name: Python lint, strict types, and unit/integration tests
         run: |
@@ -66,7 +67,7 @@ jobs:
   containers:
     needs: verify
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     env:
       CIRCUIT_PUBLIC_URL: https://circuit-lab.christopherrehm.de
       CIRCUIT_PROXY_TOKEN: container-check-token-not-for-production-123
@@ -90,6 +91,33 @@ jobs:
         run: |
           uv sync --frozen
           uv run python -m deploy.mcp_identity_checks
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "26"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Native German and English account screens and emails
+        env:
+          CIRCUIT_PUBLIC_URL: https://127.0.0.1:8447
+          CIRCUIT_APP_NETWORK: circuit-lab-ci_default
+          CIRCUIT_SMTP_HOST: test-mail
+          CIRCUIT_SMTP_PORT: "1025"
+          CIRCUIT_SMTP_STARTTLS: "false"
+        run: |
+          docker compose -p circuit-lab-ci --env-file deploy/identity-test.env --env-file deploy/identity-language-test.env -f compose.yaml -f compose.projects.yaml up -d --wait --wait-timeout 90
+          docker compose -p circuit-lab-identity-ci --env-file deploy/identity-test.env --env-file deploy/identity-language-test.env -f compose.identity.yaml -f compose.staging-identity.yaml up -d --build --wait --wait-timeout 180
+          python3 -m deploy.prepare_identity_language_tests
+          npm ci --prefix frontend
+          cd frontend
+          npx playwright install --with-deps chromium
+          npm run test:identity-languages
+      - name: Retain native account browser diagnostics
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: identity-language-failures
+          path: frontend/test-results/identity
+          if-no-files-found: ignore
       - name: Verify worker isolation
         run: |
           worker=$(docker compose -p circuit-lab-ci ps -q worker)
@@ -109,8 +137,8 @@ jobs:
         env:
           CIRCUIT_APP_NETWORK: circuit-lab-ci_default
         run: |
-          docker compose -p circuit-lab-identity-ci --env-file deploy/identity-test.env -f compose.identity.yaml down
-          docker compose -p circuit-lab-ci down
+          docker compose -p circuit-lab-identity-ci --env-file deploy/identity-test.env -f compose.identity.yaml -f compose.staging-identity.yaml down
+          docker compose -p circuit-lab-ci --env-file deploy/identity-test.env --env-file deploy/identity-language-test.env -f compose.yaml -f compose.projects.yaml down
 
   deploy:
     needs: containers

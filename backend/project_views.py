@@ -5,6 +5,7 @@ from uuid import UUID, uuid4
 from pydantic import Field
 
 from backend.component_catalog import terminal_count
+from backend.localization import text
 from backend.model_primitives import Finite, StrictModel
 from backend.project_access import audit_action, authorize
 from backend.project_database import ProjectDatabase, decode_record
@@ -26,21 +27,21 @@ async def set_view(database: ProjectDatabase, principal: Principal, document: UU
                    command: ObservationCommand) -> dict[str, object]:
     """Queue for one granted workspace; queued is not a claim that the UI moved."""
     if not principal.client:
-        raise ProjectFailure("Observation commands require a verified AI connection", 403)
+        raise ProjectFailure(text('project_views.errors.observation_commands_require_a_verified'), 403)
     async with database.available_pool().acquire() as connection, connection.transaction():
         owned = await authorize(connection, principal, document, "view")
         if owned["kind"] != "workspace" or str(owned["head"]) != str(command.revision):
-            raise ProjectFailure("Select a live shared workspace at its current revision", 409)
+            raise ProjectFailure(text('project_views.errors.select_a_live_shared_workspace'), 409)
         snapshot = await read_snapshot(connection, document, command.revision)
         contents = DocumentContents.model_validate(snapshot["contents"])
         pins = {f"{part.id}:{terminal}" for part in contents.circuit.parts
                 for terminal in range(terminal_count(part.kind))}
         if any(f"{pin.part}:{pin.terminal}" not in pins for pin in command.pins) or (
                 command.time is not None and command.frequency is not None):
-            raise ProjectFailure("Choose existing pins and only one physical cursor axis")
+            raise ProjectFailure(text('project_views.errors.choose_existing_pins_and_only'))
         count = await connection.fetchval("SELECT count(*) FROM collaboration_view_commands")
         if int(str(count)) >= 2000:
-            raise ProjectFailure("Observation command quota reached", 429)
+            raise ProjectFailure(text('project_views.errors.observation_command_quota_reached'), 429)
         grant = await connection.fetchval("SELECT id FROM collaboration_grants WHERE document=$1 AND client=$2 "
             "AND owner=$3 AND mode='oauth' AND revoked_at IS NULL AND expires_at>clock_timestamp() AND 'view'=ANY(scopes) "
             "ORDER BY created_at DESC LIMIT 1", document, principal.client, principal.owner)
@@ -66,7 +67,7 @@ async def acknowledge_view(database: ProjectDatabase, principal: Principal,
                            document: UUID, command: UUID) -> dict[str, object]:
     """A human browser acknowledges only a live command on this exact workspace head."""
     if principal.client:
-        raise ProjectFailure("Only the browser can acknowledge a displayed view", 403)
+        raise ProjectFailure(text('project_views.errors.only_the_browser_can_acknowledge'), 403)
     async with database.available_pool().acquire() as connection, connection.transaction():
         owned = await authorize(connection, principal, document, "read")
         identifier = await connection.fetchval("UPDATE collaboration_view_commands v SET acknowledged_at=clock_timestamp() "
@@ -74,7 +75,7 @@ async def acknowledge_view(database: ProjectDatabase, principal: Principal,
             "AND g.id=v.grant_id AND v.expires_at>clock_timestamp() AND g.revoked_at IS NULL "
             "AND g.expires_at>clock_timestamp() RETURNING v.id", command, document, owned["head"])
         if identifier is None:
-            raise ProjectFailure("Observation command expired or the circuit changed", 409)
+            raise ProjectFailure(text('project_views.errors.observation_command_expired_or_the'), 409)
         await audit_action(connection, principal, document, "view.acknowledged")
         return {"status": "acknowledged", "command": str(identifier)}
 
@@ -87,6 +88,6 @@ async def view_status(database: ProjectDatabase, principal: Principal, document:
             "FROM collaboration_view_commands v JOIN collaboration_grants g ON v.grant_id=g.id "
             "WHERE v.id=$1 AND v.document=$2", command, document)
         if row is None or (principal.client and row["client"] != principal.client):
-            raise ProjectFailure("Observation command not found", 404)
+            raise ProjectFailure(text('project_views.errors.observation_command_not_found'), 404)
         status = "acknowledged" if row["acknowledged_at"] else "pending_browser_acknowledgement" if row["live"] else "expired"
         return {"command": str(command), "status": status}

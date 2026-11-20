@@ -2,9 +2,10 @@
 
 from typing import cast
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Request
 
 from backend.audit_log import record_simulation
+from backend.localized_http import http_failure
 from backend.schematic_ac_engine import compile_ac
 from backend.schematic_ac_gateway import launch_ac
 from backend.schematic_ac_models import ACRequest, ACResponse
@@ -24,7 +25,7 @@ def run_frequency_sweep(submitted: ACRequest, request: Request) -> ACResponse:
     try:
         compile_ac(submitted)
     except ValueError as error:
-        raise HTTPException(status_code=422, detail=str(error)) from error
+        raise http_failure(422, error) from error
     try:
         record_simulation("schematic_ac", correlation_id, "started", actor)
         report = launch_ac(submitted, correlation_id)
@@ -35,7 +36,7 @@ def run_frequency_sweep(submitted: ACRequest, request: Request) -> ACResponse:
             record_simulation("schematic_ac", correlation_id, "error", actor)
         except SimulationFailure:
             pass  # Audit storage failures already have their own logger.
-        raise HTTPException(status_code=503, detail=str(error)) from error
+        raise http_failure(503, error) from error
 
 
 @router.post("/api/schematic/simulate", response_model=SchematicResponse)
@@ -46,7 +47,7 @@ def run_analog(submitted: SchematicRequest, request: Request) -> SchematicRespon
     try:
         compile_schematic(submitted)
     except ValueError as error:
-        raise HTTPException(status_code=422, detail=str(error)) from error
+        raise http_failure(422, error) from error
     try:
         record_simulation("schematic", correlation_id, "started", actor)
         report = launch_schematic(submitted, correlation_id)
@@ -57,4 +58,4 @@ def run_analog(submitted: SchematicRequest, request: Request) -> SchematicRespon
             record_simulation("schematic", correlation_id, "error", actor)
         except SimulationFailure:
             pass  # The audit writer already records its own storage failure.
-        raise HTTPException(status_code=503, detail=str(error)) from error
+        raise http_failure(503, error) from error

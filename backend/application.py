@@ -11,15 +11,25 @@ from uuid import uuid4
 
 import asyncpg
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.responses import Response
 
 from backend.account_export import export_account
+from backend.account_language import router as account_language_router
 from backend.audit_log import record_simulation
 from backend.circuit_catalog import ROOT, Circuit, list_circuits, read_circuit
 from backend.kicad_routes import router as kicad_router
+from backend.localization import LocalizedString
+from backend.localized_http import (
+    fallback_reference,
+    http_exception_response,
+    http_failure,
+    validation_exception_response,
+)
 from backend.mcp_http import MCPResponse, create_authenticated_server, create_http_app
 from backend.project_lifecycle import export_projects
 from backend.project_models import ProjectFailure
@@ -54,7 +64,17 @@ app.state.mcp_http = mcp_http
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts())
 app.include_router(schematic_router)
 app.include_router(kicad_router)
+app.include_router(account_language_router)
 app.include_router(create_project_router(collaboration))
+
+@app.exception_handler(StarletteHTTPException)
+async def localized_http_error(request: Request, failure: StarletteHTTPException) -> JSONResponse:
+    return await http_exception_response(request, failure)
+
+
+@app.exception_handler(RequestValidationError)
+async def localized_validation_error(request: Request, failure: RequestValidationError) -> JSONResponse:
+    return await validation_exception_response(request, failure)
 
 
 @app.exception_handler(ProjectFailure)
@@ -62,7 +82,8 @@ async def project_failure(request: Request, failure: ProjectFailure) -> JSONResp
     """Safe domain errors preserve the local browser draft and correlation evidence."""
     logging.getLogger("circuit-lab.collaboration").warning("Operation denied correlation=%s status=%s",
         getattr(request.state, "correlation_id", "unknown"), failure.status)
-    return JSONResponse({"detail": failure.message}, status_code=failure.status)
+    reference = failure.message.reference if isinstance(failure.message, LocalizedString) else fallback_reference(failure.status)
+    return JSONResponse({"detail": failure.message, "message": reference.model_dump()}, status_code=failure.status)
 
 
 @app.exception_handler(asyncpg.PostgresError)
@@ -70,7 +91,8 @@ async def project_storage_failure(request: Request, failure: asyncpg.PostgresErr
     """A database outage fails one saved-circuit request without exposing SQL or submitted input."""
     logging.getLogger("circuit-lab.collaboration").error("Storage unavailable correlation=%s kind=%s",
         getattr(request.state, "correlation_id", "unknown"), type(failure).__name__)
-    return JSONResponse({"detail": "Saved circuits unavailable. Your unsent draft remains local."}, status_code=503)
+    return JSONResponse({"detail": "Saved circuits unavailable. Your unsent draft remains local.",
+                         "message": fallback_reference(503).model_dump()}, status_code=503)
 
 
 @app.api_route("/mcp", methods=["GET", "POST", "DELETE"], include_in_schema=False)
@@ -154,6 +176,14 @@ def workbench_page() -> FileResponse:
     return FileResponse(frontend_path / 'index.html')
 
 
+@app.get("/locales/{language}/{catalogue}.json")
+def public_messages(language: str, catalogue: str) -> FileResponse:
+    """Expose only public presentation catalogues, never arbitrary locale files."""
+    if language not in {"de", "en"} or catalogue not in {"landing", "identity"}:
+        raise HTTPException(status_code=404, detail="Unsupported language")
+    return FileResponse(ROOT / "locales" / language / (catalogue + ".json"))
+
+
 @app.post("/api/circuits/{circuit_id}/simulate", response_model=SimulationResponse)
 def run_simulation(circuit_id: str, submitted: SimulationRequest,
                    request: Request) -> SimulationResponse:
@@ -167,7 +197,7 @@ def run_simulation(circuit_id: str, submitted: SimulationRequest,
     try:
         prepare_simulation(circuit_id, submitted)
     except ValueError as error:
-        raise HTTPException(status_code=422, detail=str(error)) from error
+        raise http_failure(422, error) from error
     try:
         record_simulation(circuit_id, correlation_id, "started", actor)
         report = launch_simulation(circuit_id, submitted, correlation_id)
@@ -177,7 +207,7 @@ def run_simulation(circuit_id: str, submitted: SimulationRequest,
             record_simulation(circuit_id, correlation_id, "error", actor)
         except SimulationFailure:
             pass  # The audit writer already logs its own failure.
-        raise HTTPException(status_code=503, detail=str(error)) from error
+        raise http_failure(503, error) from error
     return report
 
 

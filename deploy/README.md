@@ -96,7 +96,8 @@ recipes, so it is deliberately not used. Failures are not ignored.
 ## Public landing and account service
 
 Apache serves only landing.html, landing.css, theme.css, favicon.svg, and
-landing-analytics.js publicly. The workbench, API,
+landing-analytics.js, landing-language.js, language-preference.js, and the
+de/en public landing and identity catalogues publicly. The workbench, API,
 and application assets pass through OAuth2 Proxy, which replaces incoming
 identity headers. Keycloak provides open registration, required email
 verification, password reset, account management, optional TOTP, and confirmed
@@ -147,3 +148,43 @@ execution is a separate operational check, not a compliance guarantee.
 
 View visits at https://stats.christopherrehm.de/websites/c85d3632-ce92-4753-9505-5be8c9ca13c4.
 Counts start after deployment and can be reduced by DNT settings or blockers.
+
+## First localized release: separate identity migration
+
+App staging/promotion does not release Keycloak. Before pushing this feature,
+bootstrap the updated root-owned `deploy_release.py` receiver on the VPS through
+the normal administrator route, retaining its previous version. The new receiver
+publishes `landing-language.js`, `language-preference.js` and only the de/en
+landing/identity JSON catalogues. Protected `messages.json` stays bundled in the
+workbench. Existing Apache DocumentRoot/CSP rules require no widening.
+
+Apply identity changes to private staging first. Retain a fresh custom-format
+`pg_dump` of its identity database (header PGDMP), build/start its identity image
+from this revision and update the login proxy's mounted configuration. Use
+`deploy.prepare_staging identity` for the existing staging stack; realm import
+alone does not change an existing realm. Then run the narrow locale migration:
+
+```bash
+sudo python3 -m deploy.identity_localization --endpoint http://127.0.0.1:8114 --settings /opt/circuit-lab-staging/.identity.env --snapshot /opt/circuit-lab-staging/locale-before.json --database-backup /ABSOLUTE/PRIVATE/identity.dump
+```
+
+Use a unique snapshot path per rollout. The migration preserves customers,
+clients, SMTP and security settings; changes only localization and theme fields;
+verifies the response; retains a private settings snapshot; and safely retries an
+interrupted write when that snapshot still matches the previous settings.
+
+Run the private staging browser gate in both languages before applying the same
+backed-up migration to production with endpoint 8104 and production `.identity.env`.
+Build/start the production identity stack from the reviewed revision and recreate
+the login proxy to load its locale-hint allowlist. Retain the previous identity
+image and proxy configuration. Do not replace an existing realm with an import
+or remove identity volumes. Production app promotion remains gated by CI and the
+exact staged API/worker images. Chris authorizes the push separately.
+
+Rollback: restore the previous app via the retained release, revert the five
+locale/theme fields using the private snapshot, and restart the retained identity
+image and proxy configuration. A whole database restore is recovery from an
+actual database failure, not a routine language rollback. Preserve newer users.
+The source implementation and local tests do not establish that this migration
+or the production release has happened. See `docs/localization.md` for behavior,
+the isolated test fixture and how to add further languages.

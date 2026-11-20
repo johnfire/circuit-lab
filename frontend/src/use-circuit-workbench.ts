@@ -1,16 +1,19 @@
+import type { DisplayMessage } from './display-message.ts';
+import { message, failureMessage } from './display-message.ts';
+import { translate } from './localization.ts';
 import { useEffect, useState } from 'react';
 import { fetchCircuits, requestSimulation } from './circuit-api';
 import type { Circuit, SimulationReport } from './circuit-types';
 
 function useCatalog() {
   const [circuits, setCircuits] = useState<Circuit[]>([]);
-  const [loadError, setLoadError] = useState('');
+  const [loadError, setLoadError] = useState<DisplayMessage>('');
   useEffect(() => {
     let isActive = true;
     void fetchCircuits().then(catalog => {
       if (isActive) setCircuits(catalog);
     }).catch(failure => {
-      if (isActive) setLoadError(failure instanceof Error ? failure.message : 'Could not load circuit library.');
+      if (isActive) setLoadError(failure instanceof Error ? failureMessage(failure) : message("circuit-workbench.could_not_load_circuit_library"));
     });
     return () => { isActive = false; };
   }, []);
@@ -28,7 +31,7 @@ export function useCircuitWorkbench() {
   const [report, setReport] = useState<SimulationReport | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [isStale, setIsStale] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<DisplayMessage>('');
   function selectCircuit(circuit: Circuit) {
     setSelectedId(circuit.id);
     setOverrides({});
@@ -49,7 +52,7 @@ interface RunState {
   rippleLimit: number;
   setIsRunning: (value: boolean) => void;
   setIsStale: (value: boolean) => void;
-  setError: (value: string) => void;
+  setError: (value: DisplayMessage) => void;
   setReport: (value: SimulationReport) => void;
 }
 
@@ -63,7 +66,7 @@ function createRunHandler(state: RunState) {
       state.setReport(await requestSimulation(state.selected.id, state.values, state.rippleLimit));
       state.setIsStale(false);
     } catch (failure) {
-      state.setError(failure instanceof Error ? failure.message : 'Simulation failed. Please retry.');
+      state.setError(failure instanceof Error ? failureMessage(failure) : translate("circuit-workbench.simulation_failed_please_retry"));
     } finally {
       state.setIsRunning(false);
     }

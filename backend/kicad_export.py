@@ -16,6 +16,7 @@ from backend.block_library import free_identifier
 from backend.board_library import BOARDS
 from backend.engineering_notation import engineering_value
 from backend.footprint_catalog import FootprintOption, chosen_footprint
+from backend.localization import catalogue_value, text
 from backend.part_library import LIBRARY
 from backend.schematic_models import Part, SchematicRequest
 from backend.schematic_topology import assign_nodes
@@ -77,7 +78,8 @@ def board_connectors(parts: list[Part], nodes: dict[str, str], taken: set[str]) 
     for part in parts:
         if part.board_pin is not None:
             by_board[part.board_pin.board].append(part)
-    components, warnings = [], []
+    components: list[Component] = []
+    warnings: list[str] = []
     for board_id, pins in sorted(by_board.items()):
         board = BOARDS[board_id]
         if board_id in PI_BOARDS:
@@ -86,13 +88,13 @@ def board_connectors(parts: list[Part], nodes: dict[str, str], taken: set[str]) 
             pads = [(part.board_pin.pin, nodes[f"{part.id}:0"]) for part in pins if part.board_pin]
             pads += [(pin.id, "0") for pin in board.pins if pin.kind == "ground"]
             components.append(Component(ref, f"{board.name} header", PI_SOCKET, None, pads))
-            warnings.append(f"{ref} is the {board.name} 40-pin header: the board plugs in here; all its GND pins are circuit ground.")
+            warnings.append(text("export.pi_header", reference=ref, board=board.name))
             continue
         for label, node in [(part.board_pin.pin, nodes[f"{part.id}:0"]) for part in pins if part.board_pin] + [("GND", "0")]:
             ref = free_identifier("TP1", taken)
             taken.add(ref)
             components.append(Component(ref, f"{board.name} {label}", HEADER_1X1, None, [("1", node)]))
-        warnings.append(f"{board.name} pins are single wire pads (TP...); wire each to the board, including GND.")
+        warnings.append(text("export.board_pads", board=board.name))
     return components, warnings
 
 
@@ -111,13 +113,13 @@ def components_for(circuit: SchematicRequest, nodes: dict[str, str]) -> tuple[li
         if option is not None:
             components.append(part_component(part, nodes, option))
             if option.note and part.device is not None:
-                warnings.append(f"{part.id} ({option.kicad.split(':')[1]}): {option.note}")
+                warnings.append(text('kicad_export.components_for.', part=part.id, footprint=option.kicad.split(':')[1], note=catalogue_value(f"catalogue.parts.{part.device}.footprints.{option.id}.note" if part.device else f"catalogue.footprints.{part.kind}.{option.id}.note", option.note)))
         elif part.kind in SOURCE_KINDS:
             ref = free_identifier("J1", taken)
             taken.add(ref)
             components.append(Component(ref, f"{part.id} input", HEADER_1X2, None,
                                         [("1", nodes[f"{part.id}:0"]), ("2", nodes[f"{part.id}:1"])]))
-            warnings.append(f"{part.id} is off-board: connect that supply or signal to {ref} (pin 1 = +).")
+            warnings.append(text('kicad_export.components_for.is_off_board_connect_that', part=part.id, connector=ref))
     return components + boards, warnings + board_notes
 
 
@@ -178,14 +180,12 @@ def export_kicad(circuit: SchematicRequest) -> KicadExport:
     unrated = sorted(part.id for part in circuit.parts if part.kind == "C" and part.voltage_rating is None)
     warnings = [*support_findings(circuit, nodes), *part_notes]
     if unrated:
-        warnings.append(f"No voltage rating on {', '.join(unrated)}: the BOM cannot say which capacitor to buy. "
-                        "Simulate to get a suggested rating.")
+        warnings.append(text('kicad_export.export_kicad.no_voltage_rating_on_the', capacitors=', '.join(unrated)))
     missing = sorted(component.ref for component in components if not component.lcsc)
     drafts = sorted({part.device for part in circuit.parts if part.device and LIBRARY[part.device].trust.level == "draft"})
     if missing:
-        warnings.append(f"No LCSC part number yet for: {', '.join(missing)}. Bare boards are fine; JLC assembly needs them.")
+        warnings.append(text('kicad_export.export_kicad.no_lcsc_part_number_yet', parts=', '.join(missing)))
     if drafts:
-        warnings.append(f"Draft parts ({', '.join(drafts)}): check each pad map against the datasheet's package drawing before ordering.")
-    warnings.append("Next: follow circuit-lab-pcb-steps.md — KiCad template, paste the JLCPCB rules, import the netlist "
-                    "by reference, place, route, DRC, print 1:1 to check footprints, then Gerbers and drill files.")
+        warnings.append(text('kicad_export.export_kicad.draft_parts_check_each_pad', parts=', '.join(drafts)))
+    warnings.append(text('kicad_export.export_kicad.next_follow_circuit_lab_pcb'))
     return KicadExport(netlist_text(components, net_names(circuit, nodes)), bom_csv(components), warnings)

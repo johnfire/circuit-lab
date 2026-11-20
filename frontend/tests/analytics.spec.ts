@@ -46,7 +46,7 @@ test('signup links remain usable when analytics is blocked', async ({ page }) =>
   await page.goto('/landing.html');
   await expect(page.getByRole('heading', { name: /Good circuits start/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Create your account' })).toHaveAttribute(
-    'href', '/oauth2/start?rd=%2Fworkbench&prompt=create',
+    'href', '/oauth2/start?rd=%2Fworkbench&prompt=create&ui_locales=en&kc_locale=en',
   );
 });
 

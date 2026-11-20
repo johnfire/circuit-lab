@@ -1,3 +1,4 @@
+import { translate } from './localization.ts';
 import type { ObservationReport, Pin, Probe, Schematic } from './schematic-types';
 import { terminalCount, voltageReferenceTerminal } from './part-library.ts';
 
@@ -17,7 +18,7 @@ export function probeKey(probe: Probe): string {
 function nodeSignal(report: ObservationReport, pin: Pin): Signal | null {
   const node = report.pin_nodes[pin.part + ':' + pin.terminal];
   if (node === undefined) return null;
-  if (node === '0') return { key: 'V:0', label: 'Ground', unit: 'V', real: reportAxis(report).map(() => 0),
+  if (node === '0') return { key: 'V:0', label: translate("observation-signals.ground"), unit: 'V', real: reportAxis(report).map(() => 0),
     ...(report.analysis === 'ac' ? { imaginary: report.frequencies.map(() => 0) } : {}) };
   return namedSignal(report, 'V:' + node);
 }

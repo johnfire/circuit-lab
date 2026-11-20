@@ -1,17 +1,18 @@
+import { catalogueRecord } from './catalogue-localization.ts';
+import { analysisFailure } from './schematic-api.ts';
 import type { Circuit, SimulationReport } from './circuit-types';
 
 async function readResponse<ResponseType>(response: Response): Promise<ResponseType> {
   if (!response.ok) {
     const failure: unknown = await response.json();
-    const detail = typeof failure === 'object' && failure !== null && 'detail' in failure
-      ? failure.detail : undefined;
-    throw new Error(typeof detail === 'string' ? detail : 'Check component values and try again.');
+    throw analysisFailure(failure);
   }
   return response.json() as Promise<ResponseType>;
 }
 
 export async function fetchCircuits(): Promise<Circuit[]> {
-  return readResponse<Circuit[]>(await fetch('/api/circuits'));
+  return (await readResponse<Circuit[]>(await fetch('/api/circuits'))).map(circuit =>
+    catalogueRecord(circuit, 'catalogue.examples.' + circuit.id, ['title', 'description']));
 }
 
 export async function requestSimulation(

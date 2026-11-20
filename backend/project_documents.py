@@ -6,6 +6,7 @@ from uuid import UUID, uuid4
 
 import asyncpg
 
+from backend.localization import text
 from backend.project_access import audit_action, authorize, lock_owner
 from backend.project_database import ProjectDatabase, decode_record, encode_json
 from backend.project_models import (
@@ -26,11 +27,11 @@ async def list_documents(database: ProjectDatabase, principal: Principal,
                          kind: str, offset: int = 0) -> list[dict[str, object]]:
     """List only owned documents or the verified client's explicitly live grants."""
     if not 0 <= offset <= 1000 or kind not in {"project", "workspace"}:
-        raise ProjectFailure("Invalid list window")
+        raise ProjectFailure(text('project_documents.errors.invalid_list_window'))
     async with database.available_pool().acquire() as connection, connection.transaction():
         await lock_owner(connection, principal)
         if "read" not in principal.scopes:
-            raise ProjectFailure("Read permission required", 403)
+            raise ProjectFailure(text('project_documents.errors.read_permission_required'), 403)
         rows = await connection.fetch(
             "SELECT d.id,d.name,d.kind,d.head AS revision,d.updated_at FROM collaboration_documents d "
             "WHERE d.owner=$1 AND d.kind=$2 AND ($3::text IS NULL OR EXISTS (SELECT 1 FROM "
@@ -48,7 +49,7 @@ async def read_snapshot(connection: asyncpg.Connection, document: UUID,
         "SELECT r.*,d.name,d.kind FROM collaboration_revisions r JOIN collaboration_documents d "
         "ON d.id=r.document WHERE r.document=$1 AND r.id=$2", document, revision)
     if row is None:
-        raise ProjectFailure("Revision not found", 404)
+        raise ProjectFailure(text('project_documents.errors.revision_not_found'), 404)
     snapshot = decode_record(encode_json(dict(row)))
     snapshot["contents"] = decode_record(row["contents"])
     snapshot["revision"] = str(revision)
@@ -69,7 +70,7 @@ async def check_document_budget(connection: asyncpg.Connection, principal: Princ
     owned = await connection.fetchval("SELECT count(*) FROM collaboration_documents WHERE owner=$1", principal.owner)
     total = await connection.fetchval("SELECT count(*) FROM collaboration_documents")
     if int(str(owned)) >= 20 or int(str(total)) >= 2000:
-        raise ProjectFailure("Saved circuit quota reached; export your work locally", 429)
+        raise ProjectFailure(text('project_documents.errors.saved_circuit_quota_reached_export'), 429)
 
 
 async def insert_revision(connection: asyncpg.Connection, principal: Principal,
@@ -97,7 +98,7 @@ async def replay(connection: asyncpg.Connection, principal: Principal,
     if row is None:
         return None
     if row["request_hash"] != fingerprint:
-        raise ProjectFailure("Idempotency key already used for a different request", 409)
+        raise ProjectFailure(text('project_documents.errors.idempotency_key_already_used_for'), 409)
     return decode_record(row["response"])
 
 
@@ -114,7 +115,7 @@ async def create_document(database: ProjectDatabase, principal: Principal,
                           command: NewDocument) -> dict[str, object]:
     """Only the signed-in browser can create unshared account content."""
     if principal.client or "edit" not in principal.scopes:
-        raise ProjectFailure("Create a private project in the browser, then share it explicitly", 403)
+        raise ProjectFailure(text('project_documents.errors.create_a_private_project_in'), 403)
     fingerprint = retry_hash(None, command.model_dump(mode="json"))
     async with database.available_pool().acquire() as connection, connection.transaction():
         await lock_owner(connection, principal)
@@ -149,7 +150,7 @@ async def replacement_contents(connection: asyncpg.Connection, document: UUID,
         return DocumentContents.model_validate(restored["contents"])
     parent = current["parent"]
     if parent is None:
-        raise ProjectFailure("There is no previous revision to undo", 409)
+        raise ProjectFailure(text('project_documents.errors.there_is_no_previous_revision'), 409)
     restored = await read_snapshot(connection, document, UUID(str(parent)))
     return DocumentContents.model_validate(restored["contents"])
 
@@ -164,14 +165,14 @@ async def mutate_document(database: ProjectDatabase, principal: Principal,
         if replayed is not None:
             return replayed
         if str(owned["head"]) != str(command.expected_revision):
-            raise ProjectFailure(f"Revision conflict; reread current head {owned['head']}", 409)
+            raise ProjectFailure(text('project_documents.errors.revision_conflict_reread_current_head', revision=str(owned['head'])), 409)
         count = await connection.fetchval("SELECT count(*) FROM collaboration_revisions WHERE document=$1", document)
         if int(str(count)) >= 250:
-            raise ProjectFailure("Revision quota reached; export this project", 429)
+            raise ProjectFailure(text('project_documents.errors.revision_quota_reached_export_this'), 429)
         await check_revision_budget(connection)
         current = await connection.fetchrow("SELECT * FROM collaboration_revisions WHERE id=$1", command.expected_revision)
         if current is None:
-            raise ProjectFailure("Current revision unavailable", 503)
+            raise ProjectFailure(text('project_documents.errors.current_revision_unavailable'), 503)
         snapshot = await replacement_contents(connection, document, current, command)
         revision = uuid4()
         await insert_revision(connection, principal, document, snapshot,
@@ -189,7 +190,7 @@ async def list_revisions(database: ProjectDatabase, principal: Principal,
                          document: UUID, offset: int = 0) -> list[dict[str, object]]:
     """Bounded immutable history with human/AI authors and reasons, not secret credentials."""
     if not 0 <= offset <= 250:
-        raise ProjectFailure("Invalid history window")
+        raise ProjectFailure(text('project_documents.errors.invalid_history_window'))
     async with database.available_pool().acquire() as connection, connection.transaction():
         await authorize(connection, principal, document, "read")
         rows = await connection.fetch(
@@ -203,4 +204,4 @@ async def check_revision_budget(connection: asyncpg.Connection) -> None:
     await connection.execute("SELECT pg_advisory_xact_lock(582349107)")
     count = await connection.fetchval("SELECT count(*) FROM collaboration_revisions")
     if int(str(count)) >= 10000:
-        raise ProjectFailure("Application history storage quota reached; contact the operator", 429)
+        raise ProjectFailure(text('project_documents.errors.application_history_storage_quota_reached'), 429)

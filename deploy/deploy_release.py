@@ -137,12 +137,21 @@ def publish_landing(release: Path, target: DeploymentTarget | None = None) -> No
         return
     destination = target.pages / release.name
     destination.mkdir(parents=True, mode=0o755, exist_ok=True)
-    optional_assets = ('favicon.svg', 'theme.css', 'landing-analytics.js')
+    optional_assets = ('favicon.svg', 'theme.css', 'landing-analytics.js',
+                       'landing-language.js', 'language-preference.js')
     for name in ('landing.html', 'landing.css', *optional_assets):
         if name in optional_assets and not (source / name).is_file():
             continue  # Older immutable releases predate these optional assets.
         shutil.copyfile(source / name, destination / name)
         (destination / name).chmod(0o644)
+    for language in ('de', 'en'):
+        for name in ('landing', 'identity'):
+            catalogue = release / 'locales' / language / (name + '.json')
+            if catalogue.is_file():
+                localized = destination / 'locales' / language
+                localized.mkdir(parents=True, exist_ok=True, mode=0o755)
+                shutil.copyfile(catalogue, localized / (name + '.json'))
+                (localized / (name + '.json')).chmod(0o644)
     temporary = target.public_link.with_name(target.public_link.name + '.next')
     temporary.unlink(missing_ok=True)
     temporary.symlink_to(destination)

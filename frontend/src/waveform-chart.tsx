@@ -1,3 +1,4 @@
+import { translate } from './localization.ts';
 import { useState } from 'react';
 import type { Signal } from './circuit-types';
 
@@ -19,17 +20,16 @@ export function WaveformChart({ signals, isDc }: Props) {
   const xLabel = (value: number) => isDc ? value.toFixed(2) + ' V' : (value * 1000).toPrecision(3) + ' ms';
   const range = { maximumX, startX, minimumY, maximumY, ySpan, xSpan };
   return <section aria-labelledby="waveform-heading">
-    <div className="section-heading"><h2 id="waveform-heading">Waveforms</h2>
-      <label className="zoom-label">View
-        <select aria-label="Waveform zoom" value={zoom} onChange={event => setZoom(Number(event.target.value))}>
-          <option value={1}>Full trace</option><option value={4}>Last quarter</option>
-          <option value={16}>Last 1/16</option>
+    <div className="section-heading"><h2 id="waveform-heading">{translate("waveform-chart.waveforms")}</h2>
+      <label className="zoom-label">{translate("waveform-chart.view")}<select aria-label={translate("waveform-chart.waveform_zoom")} value={zoom} onChange={event => setZoom(Number(event.target.value))}>
+          <option value={1}>{translate("waveform-chart.full_trace")}</option><option value={4}>{translate("waveform-chart.last_quarter")}</option>
+          <option value={16}>{translate("waveform-chart.last_116")}</option>
         </select></label></div>
     <WaveformPlot signals={signals} range={range} cursor={cursor} xLabel={xLabel} />
     <div className="signal-legend">{signals.map((signal, index) => <span key={signal.name}>
       <i className={'signal-color color-' + index % COLORS.length} />{signal.name}
     </span>)}</div>
-    <label className="cursor-control">Measurement cursor · {xLabel(cursorX)}
+    <label className="cursor-control">{translate("waveform-chart.measurement_cursor")}{xLabel(cursorX)}
       <input type="range" min="0" max="1" step="0.001" value={cursor}
         onChange={event => setCursor(Number(event.target.value))} />
     </label>
@@ -45,7 +45,7 @@ function WaveformPlot({ signals, range, cursor, xLabel }: {
     .map(([time, voltage], index) => (index === 0 ? 'M' : 'L') +
       (60 + (time - startX) / xSpan * 670) + ',' + (250 - (voltage - minimumY) / ySpan * 210))
     .join(' ');
-  return <svg className="waveform" viewBox="0 0 780 300" role="img" aria-label="Voltage waveforms from ngspice">
+  return <svg className="waveform" viewBox="0 0 780 300" role="img" aria-label={translate("waveform-chart.voltage_waveforms")}>
       {[0, 1, 2, 3, 4].map(index => <g key={index}>
         <line x1="60" x2="730" y1={40 + index * 52.5} y2={40 + index * 52.5} className="chart-grid" />
         <text x="48" y={44 + index * 52.5} textAnchor="end">
@@ -65,6 +65,6 @@ function CursorMeasurements({ signals, cursorX }: { signals: Signal[]; cursorX: 
       const nearest = signal.points.reduce((closest, point) =>
         Math.abs(point[0] - cursorX) < Math.abs(closest[0] - cursorX) ? point : closest);
       return <div key={signal.name}><span>{signal.name}</span><strong>{nearest[1].toFixed(4)} V</strong>
-        <small>at nearest plotted sample</small></div>;
+        <small>{translate("waveform-chart.at_nearest_plotted_sample")}</small></div>;
     })}</div>;
 }

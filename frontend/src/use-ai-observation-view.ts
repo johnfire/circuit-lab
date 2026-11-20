@@ -1,3 +1,4 @@
+import { message } from './display-message.ts';
 import { useEffect, useRef } from 'react';
 import { frameAt } from './schematic-playback';
 import { projectRequest } from './project-api';
@@ -29,7 +30,7 @@ export function useAIObservationView(editor: EditorState, report: ObservationRep
     requestAnimationFrame(() => { requestAnimationFrame(() => {
       if (rendered.current?.id !== view.id || rendered.current.correlation !== report.correlation_id || rendered.current.frame !== desiredFrame) return;
       void projectRequest('/' + view.document + '/view/' + view.id + '/acknowledge', {}).catch(() => {
-        editor.setError('AI observation changed, but acknowledgement expired. The AI must request the current revision again.');
+        editor.setError(message("ai-observation-view.ai_observation_changed_but_acknowledgement"));
       });
     }); });
   }, [editor, report, frame, seek, replace]);

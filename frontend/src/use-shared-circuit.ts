@@ -1,3 +1,6 @@
+import type { DisplayMessage } from './display-message.ts';
+import { message, LocalizedFailure, failureMessage } from './display-message.ts';
+import { translate } from './localization.ts';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { contentsFingerprint, parseSnapshot, projectRequest, revisionCommand, syncDecision } from './project-api';
 import type { CircuitContents, CircuitSnapshot, ProjectSummary, RevisionSummary, SharingStatus } from './project-api';
@@ -7,10 +10,10 @@ import { synchronizeObservation } from './shared-observation';
 interface CollaborationState {
   status: SharingStatus; projects: ProjectSummary[]; workspaces: ProjectSummary[]; saved: CircuitSnapshot | null;
   workspace: CircuitSnapshot | null; incoming: CircuitSnapshot | null; history: RevisionSummary[];
-  message: string; busy: boolean; connected: boolean;
+  message: DisplayMessage; busy: boolean; connected: boolean;
 }
 const INITIAL: CollaborationState = { status: { enabled: false, clients: [], endpoint: '' }, projects: [], workspaces: [],
-  saved: null, workspace: null, incoming: null, history: [], message: 'Checking saved-circuit service…', busy: false, connected: false };
+  saved: null, workspace: null, incoming: null, history: [], message: message("shared-circuit.checking_savedcircuit_service"), busy: false, connected: false };
 
 function editorContents(editor: EditorState): CircuitContents { return { circuit: editor.schematic, sweep: editor.persistedSweep }; }
 
@@ -23,7 +26,7 @@ export function useSharedCircuit(editor: EditorState) {
     if (latest.current.state.busy) return;
     update({ busy: true });
     try { await operation(); }
-    catch (failure) { update({ message: failure instanceof Error ? failure.message : 'Saved circuits unavailable. Your draft stays local.' }); }
+    catch (failure) { update({ message: failure instanceof Error ? failureMessage(failure) : message("shared-circuit.saved_circuits_unavailable_your_draft") }); }
     finally { update({ busy: false }); }
   };
   useInitialStatus(update);
@@ -39,9 +42,9 @@ function useInitialStatus(update: Update) {
         const status = await projectRequest<SharingStatus>('/status', undefined, controller.signal);
         const projects = status.enabled ? await projectRequest<ProjectSummary[]>('', undefined, controller.signal) : [];
         const workspaces = status.enabled ? await projectRequest<ProjectSummary[]>('?kind=workspace', undefined, controller.signal) : [];
-        if (!controller.signal.aborted) update({ status, projects, workspaces, message: status.enabled ? 'Private until you explicitly share.'
-          : 'Saved circuits are not configured. Local editing and file export still work.' });
-      } catch { if (!controller.signal.aborted) update({ message: 'Saved circuits unavailable. Local editing and file export still work.' }); }
+        if (!controller.signal.aborted) update({ status, projects, workspaces, message: status.enabled ? message("shared-circuit.private_until_you_explicitly_share")
+          : message("shared-circuit.saved_circuits_are_not_configured") });
+      } catch { if (!controller.signal.aborted) update({ message: message("shared-circuit.saved_circuits_unavailable_local_editing") }); }
     };
     void load();
     return () => controller.abort();
@@ -65,11 +68,11 @@ function sharingActions(context: SharedContext) {
 async function simulateShared(context: SharedContext) {
   const captured = context.latest.current, binding = captured.state.workspace ?? captured.state.saved;
   if (!binding || contentsFingerprint(editorContents(captured.editor)) !== contentsFingerprint(binding.contents)) {
-    throw new Error('Save or synchronize your edits before running the shared revision.');
+    throw new LocalizedFailure("shared-circuit.save_or_synchronize_your_edits");
   }
   await projectRequest('/' + binding.document + '/runs', { revision: binding.revision, analysis: captured.editor.analysis,
     idempotency_key: crypto.randomUUID() });
-  context.update({ message: 'Shared revision is running. Its result will appear only if the grid still matches.' });
+  context.update({ message: message("shared-circuit.shared_revision_is_running_its") });
 }
 
 async function saveCircuit(context: SharedContext, name: string, isNew: boolean) {
@@ -78,13 +81,13 @@ async function saveCircuit(context: SharedContext, name: string, isNew: boolean)
       ? await projectRequest<CircuitSnapshot>('/' + captured.state.saved.document + '/replace', {
         ...revisionCommand(captured.state.saved, 'Saved browser circuit'), contents })
       : await projectRequest<CircuitSnapshot>('', { name, kind: 'project', contents, idempotency_key: crypto.randomUUID() }));
-    context.update({ saved, projects: await projectRequest<ProjectSummary[]>(''), message: 'Project saved privately. Sharing requires your explicit choice.' });
+    context.update({ saved, projects: await projectRequest<ProjectSummary[]>(''), message: message("shared-circuit.project_saved_privately_sharing_requires") });
 }
 
 async function openCircuit(context: SharedContext, document: string) {
     const { latest, update } = context;
-    if (latest.current.state.workspace) throw new Error('Stop sharing before opening another saved project.');
-    if (!window.confirm('Load this project onto the grid? Export your current draft first if you want to keep it.')) return;
+    if (latest.current.state.workspace) throw new LocalizedFailure("shared-circuit.stop_sharing_before_opening_another");
+    if (!window.confirm(translate("shared-circuit.load_this_project_onto_the"))) return;
     const captured = contentsFingerprint(editorContents(latest.current.editor));
     const saved = parseSnapshot(await projectRequest<CircuitSnapshot>('/' + document));
     adoptIfUnchanged(saved, captured, latest, update);
@@ -94,21 +97,21 @@ async function openCircuit(context: SharedContext, document: string) {
 async function shareCircuit(context: SharedContext, choice: { client: string; name: string; target: 'workspace' | 'project' }) {
     const { latest, update } = context, { client, name, target } = choice;
     const captured = latest.current, contents = editorContents(captured.editor);
-    if (target === 'project' && !captured.state.saved) throw new Error('Save a private project first.');
+    if (target === 'project' && !captured.state.saved) throw new LocalizedFailure("shared-circuit.save_a_private_project_first");
     const shared = target === 'project' ? captured.state.saved! : captured.state.workspace
       ?? parseSnapshot(await projectRequest<CircuitSnapshot>('', { name: name.slice(0, 80), kind: 'workspace', contents, idempotency_key: crypto.randomUUID() }));
-    if (target === 'workspace' && contentsFingerprint(contents) !== contentsFingerprint(shared.contents)) throw new Error('Wait for workspace synchronization before sharing.');
+    if (target === 'workspace' && contentsFingerprint(contents) !== contentsFingerprint(shared.contents)) throw new LocalizedFailure("shared-circuit.wait_for_workspace_synchronization_before");
     await projectRequest('/' + shared.document + '/grants', { client, scopes: ['read', 'edit', 'simulate', 'view'], lifetime_minutes: 30 });
     const workspaces = await projectRequest<ProjectSummary[]>('?kind=workspace');
     update({ workspaces, ...(target === 'workspace' ? { workspace: shared, connected: true } : {}),
-      message: 'Shared for 30 minutes. The chosen AI provider can receive this circuit; revocation cannot erase copies already received.' });
+      message: message("shared-circuit.shared_for_30_minutes_the") });
 }
 
 async function stopSharing(context: SharedContext) {
     const { latest, update } = context;
     const circuits = [latest.current.state.workspace, latest.current.state.saved].filter(snapshot => snapshot !== null);
     for (const shared of circuits) await projectRequest('/' + shared.document + '/stop-sharing', {});
-    update({ workspace: null, connected: false, incoming: null, message: 'Sharing stopped for this circuit. The draft stays on your grid.' });
+    update({ workspace: null, connected: false, incoming: null, message: message("shared-circuit.sharing_stopped_for_this_circuit") });
 }
 
 async function undoCircuit(context: SharedContext) {
@@ -125,10 +128,10 @@ function acceptIncoming(context: SharedContext) {
     const { latest, update } = context;
     const state = latest.current.state;
     const incoming = latest.current.state.incoming;
-    if (!incoming || !window.confirm('Use the server revision? Export your unsent local draft first to keep it.')) return;
+    if (!incoming || !window.confirm(translate("shared-circuit.use_the_server_revision_export"))) return;
     latest.current.editor.applyRemote(incoming.contents.circuit, incoming.contents.sweep, incoming.actor);
     update({ workspace: incoming.kind === 'workspace' ? incoming : state.workspace,
-      saved: incoming.kind === 'project' ? incoming : state.saved, incoming: null, message: 'Server revision loaded; history remains available.' });
+      saved: incoming.kind === 'project' ? incoming : state.saved, incoming: null, message: message("shared-circuit.server_revision_loaded_history_remains") });
 }
 
 type Latest = React.RefObject<{ editor: EditorState; state: CollaborationState }>;
@@ -136,11 +139,11 @@ type Update = (patch: Partial<CollaborationState>) => void;
 
 function adoptIfUnchanged(snapshot: CircuitSnapshot, fingerprint: string, latest: Latest, update: Update) {
   if (contentsFingerprint(editorContents(latest.current.editor)) !== fingerprint || latest.current.editor.running) {
-    update({ incoming: snapshot, message: 'The server changed while you edited locally. Your draft was kept; export it before choosing a revision.' });
+    update({ incoming: snapshot, message: message("shared-circuit.the_server_changed_while_you") });
     return;
   }
   latest.current.editor.applyRemote(snapshot.contents.circuit, snapshot.contents.sweep, snapshot.actor);
-  update({ incoming: null, message: 'Acknowledged revision loaded from ' + snapshot.actor });
+  update({ incoming: null, message: message("shared-circuit.acknowledged_revision_loaded_from", { actor: snapshot.actor }) });
 }
 
 function useWorkspacePolling(workspace: string | undefined, latest: Latest, update: Update) {
@@ -150,7 +153,7 @@ function useWorkspacePolling(workspace: string | undefined, latest: Latest, upda
     let timer: ReturnType<typeof setTimeout>;
     const poll = async () => {
       try { await synchronizeWorkspace(workspace, latest, update, controller.signal); }
-      catch (failure) { if (!controller.signal.aborted) update({ message: 'Unsent edits remain local. ' + (failure instanceof Error ? failure.message : 'Connection unavailable.') }); }
+      catch (failure) { if (!controller.signal.aborted) update({ message: message("shared-circuit.unsent_edits_remain_local", { reason: failure instanceof Error ? failureMessage(failure) : message("shared-circuit.connection_unavailable") }) }); }
       if (!controller.signal.aborted) timer = setTimeout(() => { void poll(); }, 1500);
     };
     void poll();
@@ -166,7 +169,7 @@ async function synchronizeWorkspace(document: string, latest: Latest, update: Up
   const currentBinding = current.state.workspace ?? current.state.saved;
   if (signal.aborted || currentBinding?.document !== document || currentBinding.revision !== binding.revision) return;
   const decision = syncDecision(binding, editorContents(current.editor), server, current.editor.running);
-  if (decision === 'conflict') { update({ incoming: server, message: 'Revision conflict. Your unsent draft is preserved; choose the server revision or save your local work separately.' }); return; }
+  if (decision === 'conflict') { update({ incoming: server, message: message("shared-circuit.revision_conflict_your_unsent_draft") }); return; }
   if (decision === 'adopt') {
     adoptIfUnchanged(server, contentsFingerprint(editorContents(current.editor)), latest, update);
     update(server.kind === 'workspace' ? { workspace: server } : { saved: server });
@@ -174,7 +177,7 @@ async function synchronizeWorkspace(document: string, latest: Latest, update: Up
   if (decision === 'push' && binding.kind === 'workspace') {
     const acknowledged = parseSnapshot(await projectRequest<CircuitSnapshot>('/' + document + '/replace', {
       ...revisionCommand(binding, 'Synchronized browser draft'), contents: editorContents(current.editor) }, signal));
-    if (!signal.aborted) update({ workspace: acknowledged, message: 'Browser edits acknowledged by the server.' });
+    if (!signal.aborted) update({ workspace: acknowledged, message: message("shared-circuit.browser_edits_acknowledged_by_the") });
   }
   await synchronizeMetadata(document, latest, update, signal);
   if (decision === 'none') await synchronizeObservation(binding, () => latest.current.editor, signal);

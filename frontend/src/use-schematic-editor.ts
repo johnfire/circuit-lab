@@ -1,3 +1,5 @@
+import type { DisplayMessage } from './display-message.ts';
+import { message, failureMessage } from './display-message.ts';
 import { useRef, useState } from 'react';
 import { useAnalogAnalysis } from './use-analog-analysis';
 import { useRemoteObservation } from './use-remote-observation';
@@ -6,8 +8,8 @@ import { addWire, makePart, starterCircuit } from './schematic-model';
 import type { EditorAction, Part, PartKind, Pin, Schematic, Sweep } from './schematic-types';
 
 function initialDraft(scope: string | null) {
-  try { return { schematic: readDraft(scope) ?? starterCircuit(), error: scope ? '' : 'Account draft storage unavailable. Export a file to keep this circuit.' }; }
-  catch { return { schematic: starterCircuit(), error: 'Browser draft unavailable. The RC example is loaded; export a file to keep your work.' }; }
+  try { return { schematic: readDraft(scope) ?? starterCircuit(), error: scope ? '' : message("schematic-editor.account_draft_storage_unavailable_export") }; }
+  catch { return { schematic: starterCircuit(), error: message("schematic-editor.browser_draft_unavailable_the_rc") }; }
 }
 
 export function useSchematicEditor(scope: string | null) {
@@ -23,7 +25,7 @@ export function useSchematicEditor(scope: string | null) {
   const commit = (next: Schematic, action: string, electrical = true) => {
     if (running) return;
     setSchematic(next); observation.receiveView(null); if (electrical) simulation.invalidate(action === 'timing.update' ? 'transient' : 'both'); audit(action); setError('');
-    try { saveDraft(next, scope); } catch { setError('Browser storage unavailable. Export your circuit before leaving.'); }
+    try { saveDraft(next, scope); } catch { setError(message("schematic-editor.browser_storage_unavailable_export_your")); }
   };
   const attempt = guardedEditorOperation(setError);
   const update = (part: Part, electrical = true) => commit({ ...schematic,
@@ -68,9 +70,9 @@ function useStoredSweep() {
   return { hasStoredSweep, setHasStoredSweep, updateSweep };
 }
 
-function guardedEditorOperation(setError: (message: string) => void) {
+function guardedEditorOperation(setError: (message: DisplayMessage) => void) {
   return (operation: () => void) => {
-    try { operation(); } catch (failure) { setError(failure instanceof Error ? failure.message : 'Circuit edit failed.'); }
+    try { operation(); } catch (failure) { setError(failure instanceof Error ? failureMessage(failure) : message("schematic-editor.circuit_edit_failed")); }
   };
 }
 
@@ -100,7 +102,7 @@ function remoteSnapshotReceiver(context: RemoteContext) {
     context.history.current.push({ timestamp: new Date().toISOString(), actor, action: 'collaboration.received',
       correlation_id: crypto.randomUUID(), outcome: 'success' });
     try { saveDraft(next, context.scope); }
-    catch { context.simulation.setError('Server revision loaded, but browser storage failed. Export a file.'); }
+    catch { context.simulation.setError(message("schematic-editor.server_revision_loaded_but_browser")); }
   };
 }
 
@@ -108,7 +110,7 @@ function runAnalysis(simulation: ReturnType<typeof useAnalogAnalysis>, hasStored
   audit: (action: string, correlation?: string) => void, clearTools: () => void) {
   clearTools();
   if (!hasStoredSweep && simulation.analysis === 'ac') {
-    simulation.setError('Set an AC excitation before running this revision.'); return;
+    simulation.setError(message("schematic-editor.set_an_ac_excitation_before")); return;
   }
   return simulation.run(audit);
 }

@@ -1,8 +1,8 @@
 # Circuit Lab localization plan
 
-Date: 2026-11-20. Status: investigation complete; implementation proposed.
+Date: 2026-11-20. Status: implemented locally; verification and rollout tracked in `docs/localization.md`.
 Target: a verified German/English release before Monday morning, 2026-11-23,
-Europe/Berlin. This document does not claim implementation or deployment.
+Europe/Berlin. This plan records the agreed scope; it does not claim a live deployment.
 
 ## Confirmed behavior
 
@@ -13,7 +13,7 @@ Europe/Berlin. This document does not claim implementation or deployment.
   with a translated Language/Sprache label. Use language names rather than flags.
 - Chris's clarification supersedes an unconditional German first visit:
   use the browser's ordered language preferences on first visit, match regional
-  variants such as de-DE/en-GB to supported base languages, and fall back to German
+  variants such as de-DE/en-GB to supported base languages, and fall back to English
   when none match. Remember an explicit manual choice ahead of browser detection.
 - Switching language updates the current workbench without reloading, resetting
   a circuit, clearing results, changing sharing, or creating a circuit revision.
@@ -48,14 +48,14 @@ Local Git inspection: `main`, one local commit ahead of `origin/main`
 No production revision, account-console contents or live email behavior was
 verified during this read-only browser inspection.
 
-## Proposed structure
+## Agreed structure
 
 ### 1. Shared messages and language selection
 
 Adopt i18next with react-i18next for the workbench. Use stable semantic keys,
 typed access, whole-message interpolation and plural rules. Avoid English
 sentences as identifiers, sentence fragments and per-component language branches.
-Set supported languages and German fallback explicitly; audit and lock package
+Set supported languages and English fallback explicitly; audit and lock package
 versions before adoption.
 
 Keep version-controlled UTF-8 JSON catalogues under `locales/de/` and
@@ -64,7 +64,7 @@ projects, catalogue, diagnostics and documents. Frontend and Python readers
 consume the same app-owned messages instead of maintaining duplicate translations.
 Keep Keycloak's own account/email bundles native to Keycloak.
 
-A single locale resolver defines manual preference > browser preferences > de.
+A single locale resolver defines manual preference > browser preferences > en.
 Store the manual preference in a bounded, same-origin language cookie, with a
 memory fallback when storage is blocked. Reject unsupported values. On HTTPS,
 use Secure and SameSite=Lax, Path=/, and no parent-domain cookie. This is a
@@ -79,8 +79,8 @@ adding Arabic must not mirror circuit geometry or reverse a current arrow.
 
 ### 2. Public landing and React integration
 
-Keep a complete German static landing as the no-JavaScript fallback. Generate its
-translated text from the landing catalogue at build time, and ship a small local
+Keep a complete English static landing as the no-JavaScript fallback, consistent
+with the later English-fallback decision, and ship a small local
 external script for browser detection and switching, using the shared locale
 rules. Bundle only the public messages it needs. Keep translations text-safe;
 translate structured rich content with approved markup rather than arbitrary HTML.
@@ -126,7 +126,7 @@ German and English browsers rather than passing localized strings to Number().
 
 ### 4. Accounts and mail
 
-Enable realm internationalization for de/en, with de as the realm fallback, using
+Enable realm internationalization for de/en, with en as the realm fallback, using
 Keycloak's shipped translations first. Supply small versioned theme overrides
 only where Circuit Lab wording or locale synchronization requires them.
 
@@ -173,7 +173,7 @@ Do not quietly reduce the agreed account/email/document scope to meet the date.
 ## Acceptance and regression gates
 
 - Fresh de-DE browser sees German; en-GB sees English; unmatched languages fall
-  back to German; ordered language preferences and invalid stored values work.
+  back to English; ordered language preferences and invalid stored values work.
 - Manual choice overrides browser preferences and survives navigation, reload,
   login, logout and direct workbench/account access. Blocked storage is graceful.
 - Switching with an unsaved circuit and current transient/AC results changes all

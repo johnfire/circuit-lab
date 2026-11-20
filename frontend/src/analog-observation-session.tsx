@@ -1,3 +1,4 @@
+import { translate } from './localization.ts';
 import { useMemo, useState } from 'react';
 import { voltageScale } from './observation-signals';
 import { AnalogMeasurements } from './analog-measurements';
@@ -35,7 +36,7 @@ function ObservationGridAndScope({ editor, report, controls, clock }: SessionPro
   return <><div className={'observation-split ' + (display.beside ? 'scope-beside' : '')}>
     <SchematicCanvas editor={editor} report={report} frame={clock.frame} observation={observation} />
     <ObservationScope report={report} schematic={editor.schematic} probes={probes.probes} frame={clock.frame} bounds={clock.bounds} onSeek={clock.onSeek} /></div>
-    <section className="editor-card"><h2>Observation tools</h2><ObservationProbesPanel schematic={editor.schematic} controller={probes} />
+    <section className="editor-card"><h2>{translate("analog-observation-session.observation_tools")}</h2><ObservationProbesPanel schematic={editor.schematic} controller={probes} />
       <ObservationDisplayControls controls={display} frequency={report.analysis === 'ac'} voltageLimit={voltageLimit} /></section>
   </>;
 }
@@ -47,7 +48,7 @@ function TransientSession({ editor, report, controls }: SessionProps & { report:
   return <><ObservationToolbar editor={editor} controls={controls}><TimePlaybackControls playback={playback} report={report} /></ObservationToolbar>
     <ObservationGridAndScope editor={editor} report={report} controls={controls} clock={clock} />
     <AnalogRatings report={report} />
-    <AnalogTimeline playback={playback} report={report} /><section className="editor-card"><h2>AC cycle window</h2>
+    <AnalogTimeline playback={playback} report={report} /><section className="editor-card"><h2>{translate("analog-observation-session.ac_cycle_window")}</h2>
       <ObservationCycleControls schematic={editor.schematic} playback={playback} /></section>
     <AnalogMeasurements schematic={editor.schematic} report={report} frame={playback.index} /></>;
 }

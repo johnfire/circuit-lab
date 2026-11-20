@@ -10,6 +10,7 @@ from pydantic import Field, model_validator
 
 from backend.block_library import BLOCKS, merge_block
 from backend.component_catalog import terminal_count
+from backend.localization import text
 from backend.model_primitives import Identifier, StrictModel
 from backend.part_library_models import PartId
 from backend.schematic_ac_models import Sweep
@@ -48,7 +49,7 @@ class EditorCircuit(StrictModel):
     def validate_connections(self) -> Self:
         """Reject duplicate identities, dangling connections and invalid terminals."""
         if len({part.id for part in self.parts}) != len(self.parts):
-            raise ValueError("Part IDs must be unique")
+            raise ValueError(text('project_models.errors.part_ids_must_be_unique'))
         pins = {f"{part.id}:{terminal}" for part in self.parts
                 for terminal in range(terminal_count(part.kind))}
         edges: set[frozenset[str]] = set()
@@ -56,10 +57,10 @@ class EditorCircuit(StrictModel):
             edge = frozenset((f"{wire.a.part}:{wire.a.terminal}",
                               f"{wire.b.part}:{wire.b.terminal}"))
             if len(edge) != 2 or not edge <= pins or edge in edges:
-                raise ValueError("Wires must connect distinct existing pins without duplicates")
+                raise ValueError(text('project_models.errors.wires_must_connect_distinct_existing'))
             edges.add(edge)
         if len(self.model_dump_json().encode()) > 8192:
-            raise ValueError("Circuit exceeds the 8 KB graph budget")
+            raise ValueError(text('project_models.errors.circuit_exceeds_the_8_kb'))
         return self
 
 
@@ -174,7 +175,7 @@ class NewGrant(StrictModel):
     def require_read_scope(self) -> Self:
         """Every connection must be able to reread its revision before editing."""
         if "read" not in self.scopes or len(set(self.scopes)) != len(self.scopes):
-            raise ValueError("Include read and do not duplicate permissions")
+            raise ValueError(text('project_models.errors.include_read_and_do_not'))
         return self
 
 
@@ -195,7 +196,7 @@ def apply_edits(contents: DocumentContents, edits: list[Edit]) -> DocumentConten
                 graph["parts"].append(part.model_dump())
             case RemovePart(part=part_id):
                 if not any(part["id"] == part_id for part in graph["parts"]):
-                    raise ProjectFailure("Unknown part")
+                    raise ProjectFailure(text('project_models.errors.unknown_part'))
                 graph["parts"] = [part for part in graph["parts"] if part["id"] != part_id]
                 graph["wires"] = [wire for wire in graph["wires"]
                                   if wire["a"]["part"] != part_id and wire["b"]["part"] != part_id]
@@ -209,7 +210,7 @@ def apply_edits(contents: DocumentContents, edits: list[Edit]) -> DocumentConten
             case InsertBlock(block=block_id, x=column, y=row):
                 block = BLOCKS.get(block_id)
                 if block is None:
-                    raise ProjectFailure("Unknown circuit block; call list_circuit_blocks")
+                    raise ProjectFailure(text('project_models.errors.unknown_circuit_block_call_list'))
                 try:
                     graph["parts"], graph["wires"] = merge_block(graph["parts"], graph["wires"],
                                                                  block, column, row)

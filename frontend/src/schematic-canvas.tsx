@@ -1,3 +1,4 @@
+import { translate } from './localization.ts';
 import { useMemo, useState } from 'react';
 import { voltageScale } from './observation-signals';
 import { SchematicPart } from './schematic-part';
@@ -16,17 +17,17 @@ export function SchematicCanvas({ editor, report, frame, observation }: {
   const voltageLimit = useMemo(() => report ? voltageScale(report) : 0, [report]);
   const drag = useGridDrag(part => editor.update(part, false));
   const parts = editor.schematic.parts.map(part => drag.drag?.part.id === part.id ? drag.drag.preview : part);
-  return <section className="grid-panel" aria-label="Schematic editor">
-    <div className="grid-toolbar"><span>{editor.armed ? 'Click the grid to place ' + editor.armed
-      : observation?.observing ? 'Observe: terminals pin voltage probes; symbols pin branch current. No wiring or dragging.'
-        : editor.wireStart ? 'Choose the second terminal · Esc cancels' : 'Drag to move · click two terminals to wire'}</span>
-      <label>Zoom <select value={zoom} onChange={event => setZoom(event.target.value)}>
-        <option value="fit">Fit</option><option value="100">100%</option><option value="150">150%</option></select></label>
-      {(editor.armed || editor.wireStart) && <button onClick={() => { editor.setArmed(null); editor.setWireStart(null); }}>Cancel</button>}
+  return <section className="grid-panel" aria-label={translate("schematic-canvas.schematic_editor")}>
+    <div className="grid-toolbar"><span>{editor.armed ? translate("schematic-canvas.click_the_grid_to_place") + editor.armed
+      : observation?.observing ? translate("schematic-canvas.observe_terminals_pin_voltage_probes")
+        : editor.wireStart ? translate("schematic-canvas.choose_the_second_terminal_esc") : translate("schematic-canvas.drag_to_move_click_two")}</span>
+      <label>{translate("schematic-canvas.zoom")}<select value={zoom} onChange={event => setZoom(event.target.value)}>
+        <option value="fit">{translate("schematic-canvas.fit")}</option><option value="100">100%</option><option value="150">150%</option></select></label>
+      {(editor.armed || editor.wireStart) && <button onClick={() => { editor.setArmed(null); editor.setWireStart(null); }}>{translate("schematic-canvas.cancel")}</button>}
     </div>
-    <div className="grid-scroll" tabIndex={0} aria-label="Scrollable circuit grid">
+    <div className="grid-scroll" tabIndex={0} aria-label={translate("schematic-canvas.scrollable_circuit_grid")}>
       <svg className={'schematic-grid zoom-' + zoom + (observation?.observing ? ' observing-grid' : '')}
-        viewBox={observation?.observing && report ? observationViewBox(parts, nodeLabels(parts, report, editor.schematic.wires)) : '0 0 1280 768'} aria-label="Analog circuit grid"
+        viewBox={observation?.observing && report ? observationViewBox(parts, nodeLabels(parts, report, editor.schematic.wires)) : '0 0 1280 768'} aria-label={translate("schematic-canvas.analog_circuit_grid")}
         onPointerMove={drag.move} onPointerUp={drag.finish} onPointerCancel={drag.cancel}
         onClick={event => { if (event.target === event.currentTarget || (event.target as Element).classList.contains('grid-background')) {
           if (!observation?.observing) { const point = gridPoint(event); editor.place(point.x, point.y); } } }}
@@ -43,6 +44,6 @@ export function SchematicCanvas({ editor, report, frame, observation }: {
         {observation?.observing && report && <NodeReadings parts={parts} wires={editor.schematic.wires} report={report} frame={frame} />}
       </svg>
     </div>
-    <p className="grid-footnote">Crossings are not junctions. Only explicit terminal connections conduct. Current signs: into terminal 0 (0 → 1 for two-terminal parts).</p>
+    <p className="grid-footnote">{translate("schematic-canvas.crossings_are_not_junctions_only")}</p>
   </section>;
 }

@@ -382,3 +382,8 @@ h2,
 .text-link {
   color: var(--color-heading);
 }
+
+.language-selector { display: inline-flex; align-items: center; gap: .5rem; font-size: .875rem; }
+.language-selector select { color: var(--text, #d8b592); background: #150505; border: 1px solid #9c7355; border-radius: .25rem; padding: .45rem; font: inherit; }
+.site-header nav { flex-wrap: wrap; }
+@media (max-width: 600px) { .site-header { align-items: flex-start; gap: .75rem; } .site-header nav { justify-content: flex-end; gap: .75rem; } }

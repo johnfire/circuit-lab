@@ -9,12 +9,13 @@ from dataclasses import dataclass
 
 from backend.engineering_notation import engineering_value
 from backend.footprint_catalog import chosen_footprint
+from backend.localization import catalogue_value, text
 from backend.part_library import LIBRARY
 from backend.part_library_models import TERMINAL_NAMES, SupportRule
 from backend.schematic_models import Part, SchematicRequest
 
 TERMINAL_LABELS = {"output": "OUT", "input": "IN", "ground_or_adjust": "GND/ADJ", "v_plus": "V+",
-                   "v_minus": "V-", "GND": "ground"}
+                   "v_minus": "V-", "GND": text("support.ground")}
 
 
 @dataclass(frozen=True)
@@ -56,13 +57,14 @@ def rule_finding(part: Part, rule: SupportRule, nodes: dict[str, str], capacitor
     if counted >= rule.capacitance_min * 0.999:
         return None
     first, second = (TERMINAL_LABELS.get(terminal, terminal) for terminal in rule.between)
-    need = (f"{rule.level.capitalize()}: {part.id} ({LIBRARY[str(part.device)].name}) needs "
-            f"≥ {engineering_value(rule.capacitance_min, 'F')} between {first} and {second}: {rule.purpose} ({rule.source}).")
+    purpose_index = LIBRARY[str(part.device)].support.index(rule)
+    purpose = catalogue_value(f"catalogue.support.{part.device}.{purpose_index}.purpose", rule.purpose)
+    need = (text('support_checks.rule_finding.needs_between_and', level=text("support." + rule.level), part=part.id, device=LIBRARY[str(part.device)].name, capacitance=engineering_value(rule.capacitance_min, 'F'), first=first, second=second, purpose=purpose, source=rule.source))
     ceramics = [capacitor.id for capacitor in present if capacitor.is_ceramic and not rule.ceramic]
     if ceramics:
-        return need + f" {', '.join(ceramics)} is ceramic, which this part cannot use here; choose an electrolytic (radial) or tantalum."
-    found = engineering_value(counted, "F") if present else "none"
-    return need + f" Found {found}."
+        return need + text('support_checks.rule_finding.is_ceramic_which_this_part', capacitors=', '.join(ceramics))
+    found = engineering_value(counted, "F") if present else text("common.none")
+    return need + text('support_checks.rule_finding.found', found=found)
 
 
 def support_findings(circuit: SchematicRequest, nodes: dict[str, str]) -> list[str]:

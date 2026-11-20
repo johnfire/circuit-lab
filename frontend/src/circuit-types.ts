@@ -39,8 +39,9 @@ export interface SimulationReport {
   model_trust: string;
   parameters: Record<string, number>;
   signals: Signal[];
-  checks: { name: string; passed: boolean; detail: string }[];
+  checks: { name: string; passed: boolean; detail: string; name_message?: unknown; detail_message?: unknown }[];
   warnings: string[];
+  warning_messages?: unknown[];
   netlist: string;
   duration_ms: number;
 }

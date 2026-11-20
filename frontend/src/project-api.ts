@@ -1,5 +1,6 @@
+import { LocalizedFailure } from './display-message.ts';
 import { parseSchematic } from './schematic-files.ts';
-import { analysisFailureMessage } from './schematic-api.ts';
+import { analysisFailure } from './schematic-api.ts';
 import type { Schematic, Sweep } from './schematic-types';
 
 export interface CircuitContents { circuit: Schematic; sweep: Sweep | null }
@@ -33,13 +34,13 @@ export async function projectRequest<T>(path: string, submitted?: unknown, signa
     body: submitted === undefined ? undefined : JSON.stringify(submitted), cache: 'no-store',
     signal: signal ?? AbortSignal.timeout(10000) });
   const decoded: unknown = await response.json();
-  if (!response.ok) throw new Error(analysisFailureMessage(decoded));
+  if (!response.ok) throw analysisFailure(decoded);
   return decoded as T;
 }
 
 export function parseSnapshot(snapshot: CircuitSnapshot): CircuitSnapshot {
   if (!snapshot || !snapshot.contents || typeof snapshot.revision !== 'string' || typeof snapshot.document !== 'string') {
-    throw new Error('Invalid server snapshot; your local draft is unchanged.');
+    throw new LocalizedFailure("project-api.invalid_server_snapshot_your_local");
   }
   return { ...snapshot, contents: { circuit: parseSchematic(JSON.stringify(snapshot.contents.circuit)), sweep: snapshot.contents.sweep } };
 }

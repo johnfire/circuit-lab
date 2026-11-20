@@ -9,6 +9,7 @@ from backend.board_library import BOARDS
 from backend.board_models import PinId, PinMode, allowed_modes
 from backend.component_catalog import COMPONENTS, DEVICE_KINDS
 from backend.footprint_catalog import footprint_options
+from backend.localization import LocalizationMetadata, text
 from backend.model_primitives import Finite, Identifier, StrictModel
 from backend.part_library import LIBRARY
 from backend.part_library_models import PartId
@@ -25,7 +26,7 @@ class PulseSettings(StrictModel):
     def validate_width(self) -> Self:
         """Leave nonzero time for both pulse states."""
         if not 0.01 * self.period <= self.width <= 0.99 * self.period:
-            raise ValueError("Pulse width must be 1–99% of its period")
+            raise ValueError(text('schematic_models.errors.pulse_width_must_be_1'))
         return self
 
 
@@ -66,21 +67,20 @@ class Part(StrictModel):
     def validate_voltage_rating(self) -> Self:
         """Only a capacitor carries a chosen voltage rating; a resistor's limits come from its package."""
         if self.voltage_rating is not None and self.kind != "C":
-            raise ValueError("Set voltage_rating on capacitors only")
+            raise ValueError(text('schematic_models.errors.set_voltage_rating_on_capacitors'))
         return self
 
     @model_validator(mode="after")
     def validate_device(self) -> Self:
         """Device kinds name an existing library part of the same kind; others name none."""
         if (self.kind in DEVICE_KINDS) != (self.device is not None):
-            raise ValueError("Set device to a library part only for library device kinds "
-                             "(diodes, transistors, op-amps, regulators)")
+            raise ValueError(text('schematic_models.errors.set_device_to_a_library'))
         if self.device is not None:
             library_part = LIBRARY.get(self.device)
             if library_part is None:
-                raise ValueError(f"Unknown library part {self.device}; call list_library_parts")
+                raise ValueError(text('schematic_models.errors.unknown_library_part_call_list', device=self.device))
             if library_part.kind != self.kind:
-                raise ValueError(f"{self.device} is a {library_part.kind}, not a {self.kind}")
+                raise ValueError(text('schematic_models.errors.is_a_not_a', device=self.device, actual=library_part.kind, expected=self.kind))
         return self
 
     @model_validator(mode="after")
@@ -90,29 +90,28 @@ class Part(StrictModel):
             return self
         options = [option.id for option in footprint_options(self.kind, self.device)]
         if self.footprint not in options:
-            raise ValueError(f"{self.id} has no footprint {self.footprint}; options: {', '.join(options) or 'none'}")
+            raise ValueError(text('schematic_models.errors.has_no_footprint_options', part=self.id, footprint=self.footprint, options=', '.join(options) or 'none'))
         return self
 
     @model_validator(mode="after")
     def validate_board_pin(self) -> Self:
         """A board pin names a real pin of a real board, in a mode that pin supports."""
         if (self.kind == "PIN") != (self.board_pin is not None):
-            raise ValueError("Set board_pin for board pins (kind PIN) only")
+            raise ValueError(text('schematic_models.errors.set_board_pin_for_board'))
         if self.board_pin is None:
             return self
         board = BOARDS.get(self.board_pin.board)
         if board is None:
-            raise ValueError(f"Unknown board {self.board_pin.board}; call list_boards")
+            raise ValueError(text('schematic_models.errors.unknown_board_call_list_boards', board=self.board_pin.board))
         header_pin = board.pin(self.board_pin.pin)
         if header_pin is None:
-            raise ValueError(f"{board.name} has no pin {self.board_pin.pin}; call get_board")
+            raise ValueError(text('schematic_models.errors.has_no_pin_call_get', board=board.name, pin=self.board_pin.pin))
         if header_pin.kind == "ground":
-            raise ValueError(f"Pin {header_pin.id} is ground: use the Ground symbol instead")
+            raise ValueError(text('schematic_models.errors.pin_is_ground_use_the', pin=header_pin.id))
         if self.board_pin.mode not in allowed_modes(header_pin):
-            raise ValueError(f"Pin {header_pin.id} ({header_pin.name}) cannot be {self.board_pin.mode}; "
-                             f"allowed: {', '.join(sorted(allowed_modes(header_pin))) or 'none'}")
+            raise ValueError(text('schematic_models.errors.pin_cannot_be_allowed', pin=header_pin.id, name=header_pin.name, mode=self.board_pin.mode, allowed=', '.join(sorted(allowed_modes(header_pin))) or 'none'))
         if (self.board_pin.mode == "pulse") != (self.pulse is not None):
-            raise ValueError("Pulse settings are required only for pins in pulse mode")
+            raise ValueError(text('schematic_models.errors.pulse_settings_are_required_only'))
         return self
 
     @model_validator(mode="after")
@@ -121,13 +120,13 @@ class Part(StrictModel):
         definition = COMPONENTS[self.kind]
         minimum, maximum = definition.minimum, definition.maximum
         if not minimum <= self.value <= maximum:
-            raise ValueError(f"{self.kind} value must be between {minimum:g} and {maximum:g}")
+            raise ValueError(text('schematic_models.errors.value_must_be_between_and', kind=self.kind, minimum=f'{minimum:g}', maximum=f'{maximum:g}'))
         if self.kind != "PIN" and (self.kind == "PULSE") != (self.pulse is not None):
-            raise ValueError("Pulse settings are required only for pulse sources")
+            raise ValueError(text('schematic_models.errors.pulse_settings_are_required_only__2'))
         if (self.kind == "SIN") != (self.sine is not None):
-            raise ValueError("Sine settings are required only for sine sources")
+            raise ValueError(text('schematic_models.errors.sine_settings_are_required_only'))
         if self.sine and abs(self.sine.offset) + self.value > 100:
-            raise ValueError("Sine offset plus peak amplitude must stay within ±100 V")
+            raise ValueError(text('schematic_models.errors.sine_offset_plus_peak_amplitude'))
         return self
 
 
@@ -155,7 +154,7 @@ class Timing(StrictModel):
     def validate_sample_budget(self) -> Self:
         """Bound both computation and synchronized response size."""
         if not 10 <= self.stop / self.step <= 2000:
-            raise ValueError("Choose 10–2000 time intervals (duration divided by sample interval)")
+            raise ValueError(text('schematic_models.errors.choose_10_2000_time_intervals'))
         return self
 
 
@@ -171,9 +170,9 @@ class SchematicRequest(StrictModel):
         """Prevent excessive switching events within the simulation window."""
         for part in self.parts:
             if part.pulse and self.timing.stop / part.pulse.period > 1000:
-                raise ValueError("At most 1000 pulse periods may be simulated")
+                raise ValueError(text('schematic_models.errors.at_most_1000_pulse_periods'))
             if part.sine and self.timing.stop * part.sine.frequency > 1000:
-                raise ValueError("At most 1000 sine periods may be simulated")
+                raise ValueError(text('schematic_models.errors.at_most_1000_sine_periods'))
         return self
 
 
@@ -199,7 +198,7 @@ class RatingCheck(StrictModel):
     trust: Literal["draft", "verified"]
 
 
-class SchematicResponse(StrictModel):
+class SchematicResponse(StrictModel, LocalizationMetadata):
     """Every trace has one value per uniformly sampled frame."""
 
     correlation_id: str
@@ -216,17 +215,17 @@ class SchematicResponse(StrictModel):
     def validate_frames(self) -> Self:
         """Reject mismatched, non-increasing or non-finite worker frames."""
         if any(b <= a for a, b in zip(self.times, self.times[1:], strict=False)):
-            raise ValueError("Frame times must increase")
+            raise ValueError(text('schematic_models.errors.frame_times_must_increase'))
         interval = self.times[1] - self.times[0]
         if any(not math.isclose(b - a, interval, rel_tol=1e-6, abs_tol=1e-14)
                for a, b in zip(self.times, self.times[1:], strict=False)):
-            raise ValueError("Frame times must be uniform")
+            raise ValueError(text('schematic_models.errors.frame_times_must_be_uniform'))
         if any(len(trace.values) != len(self.times) for trace in self.traces):
-            raise ValueError("All signals must share the same time axis")
+            raise ValueError(text('schematic_models.errors.all_signals_must_share_the'))
         if len({trace.name for trace in self.traces}) != len(self.traces):
-            raise ValueError("Signal names must be unique")
+            raise ValueError(text('schematic_models.errors.signal_names_must_be_unique'))
         if not math.isclose(self.times[0], 0, abs_tol=1e-12):
-            raise ValueError("Playback must start at zero")
+            raise ValueError(text('schematic_models.errors.playback_must_start_at_zero'))
         return self
 
 

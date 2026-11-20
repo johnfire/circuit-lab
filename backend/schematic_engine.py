@@ -5,6 +5,7 @@ import tempfile
 from pathlib import Path
 
 from backend.component_catalog import DEVICE_KINDS
+from backend.localization import text
 from backend.part_ratings import (
     RatingProbe,
     rating_control_lines,
@@ -96,7 +97,7 @@ def simulate_schematic(submitted: SchematicRequest, correlation_id: str) -> Sche
         status, transcript, stderr = run_ngspice(netlist, workdir, timeout=10)
         failure = simulation_error(status, transcript, stderr)
         if failure:
-            raise SimulationFailure("Analog solver failed to converge. Check sources and connections.")
+            raise SimulationFailure(text('schematic_engine.simulate_schematic.analog_solver_failed_to_converge'))
         times, traces = read_frames(Path(workdir) / "frames.csv", names)
         ratings = read_ratings(probes, transcript)
     return SchematicResponse(correlation_id=correlation_id, times=times, traces=traces,
@@ -105,5 +106,5 @@ def simulate_schematic(submitted: SchematicRequest, correlation_id: str) -> Sche
                              warnings=[*support_findings(submitted, nodes),
                                        *capacitor_advice(list(submitted.parts), nodes, traces),
                                        *rating_warnings(submitted),
-                                       "Uniform frames are interpolated by ngspice; use a smaller interval for fast changes.",
-                                       "Initial state is the DC operating point, not an uncharged capacitor."])
+                                       text('schematic_engine.simulate_schematic.uniform_frames_are_interpolated_by'),
+                                       text('schematic_engine.simulate_schematic.initial_state_is_the_dc')])

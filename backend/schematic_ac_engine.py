@@ -5,6 +5,7 @@ import tempfile
 from pathlib import Path
 
 from backend.component_catalog import DEVICE_KINDS
+from backend.localization import text
 from backend.schematic_ac_models import ACRequest, ACResponse, ComplexTrace
 from backend.schematic_devices import device_lines, model_cards
 from backend.schematic_models import Part
@@ -85,13 +86,12 @@ def simulate_ac(submitted: ACRequest, correlation_id: str) -> ACResponse:
     with tempfile.TemporaryDirectory(prefix="circuit-lab-ac-") as workdir:
         status, transcript, stderr = run_ngspice(netlist, workdir, timeout=10)
         if simulation_error(status, transcript, stderr):
-            raise SimulationFailure("AC solver failed. Check sources and connections.")
+            raise SimulationFailure(text('schematic_ac_engine.simulate_ac.ac_solver_failed_check_sources'))
         frequencies, traces = read_complex_frames(Path(workdir) / "frequencies.csv", names)
     biases = {part.id: dc_bias(part) for part in submitted.circuit.parts
               if part.kind in {"V", "PULSE", "SIN"}}
     return ACResponse(correlation_id=correlation_id, frequencies=frequencies, traces=traces,
                       pin_nodes=nodes, excitation=submitted.sweep, dc_biases=biases, netlist=netlist,
-                      warnings=["Small-signal AC about the DC operating point; not time playback.",
-                                "Amplitudes are peak phasor magnitudes, phase relative to excitation.",
-                                "Library devices are linearized at the DC operating point; ratings are checked only "
-                                "by transient runs. Not a hardware safety check."])
+                      warnings=[text('schematic_ac_engine.simulate_ac.small_signal_ac_about_the'),
+                                text('schematic_ac_engine.simulate_ac.amplitudes_are_peak_phasor_magnitudes'),
+                                text('schematic_ac_engine.simulate_ac.library_devices_are_linearized_at')])

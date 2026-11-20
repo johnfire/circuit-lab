@@ -1,3 +1,4 @@
+import { translate } from './localization.ts';
 import { engineering, GRID } from './schematic-model';
 import { namedSignal, probeSignal, sampleSignal, tintedVoltage } from './observation-signals';
 import { signalReading } from './observation-readings';
@@ -32,9 +33,9 @@ export function BranchDirection({ part, report, frame, observation }: {
   if (report.analysis === 'ac' || part.kind === 'GND') return null;
   const current = sampleSignal(namedSignal(report, 'I:' + part.id), frame)?.real;
   if (current === undefined || Math.abs(current) < 1e-12) return null;
-  const direction = terminalCount(part.kind) > 2 || part.kind === 'PIN' ? (current < 0 ? 'out of terminal 0' : 'into terminal 0') : current < 0 ? '1 → 0' : '0 → 1';
+  const direction = terminalCount(part.kind) > 2 || part.kind === 'PIN' ? (current < 0 ? translate("observation-grid.out_of_terminal_0") : translate("observation-grid.into_terminal_0")) : current < 0 ? '1 → 0' : '0 → 1';
   const duration = Math.max(.4, Math.min(3, 1 / (1 + Math.abs(current) * 1000)));
-  return <g className="branch-direction" role="img" aria-label={part.id + ' current ' + engineering(current, 'A') + ', direction ' + direction}
+  return <g className="branch-direction" role="img" aria-label={part.id + translate("observation-grid.current") + engineering(current, 'A') + translate("observation-grid.direction") + direction}
     data-direction={direction} transform={'translate(' + part.x * GRID + ' ' + part.y * GRID + ') rotate(' + part.rotation + ')'}>
     {terminalCount(part.kind) > 2 || part.kind === 'PIN'
       ? <g transform={terminalZeroArrow(part) + (current < 0 ? ' rotate(180)' : '')}><path d="M-18 0 H18 M8 -8 L18 0 L8 8" /></g>

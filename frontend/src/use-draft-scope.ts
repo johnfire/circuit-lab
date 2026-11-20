@@ -1,3 +1,4 @@
+import { LocalizedFailure } from './display-message.ts';
 import { useEffect, useState } from 'react';
 
 export function useDraftScope() {
@@ -9,7 +10,7 @@ export function useDraftScope() {
         const response = await fetch('/api/session', { signal: controller.signal, cache: 'no-store' });
         const payload: unknown = await response.json();
         if (!response.ok || typeof payload !== 'object' || payload === null || !('draft_scope' in payload)
-          || typeof payload.draft_scope !== 'string' || !/^[a-f0-9]{64}$/.test(payload.draft_scope)) throw new Error('Invalid storage scope');
+          || typeof payload.draft_scope !== 'string' || !/^[a-f0-9]{64}$/.test(payload.draft_scope)) throw new LocalizedFailure("draft-scope.invalid_storage_scope");
         setSession({ ready: true, scope: payload.draft_scope });
       } catch { if (!controller.signal.aborted) setSession({ ready: true, scope: null }); }
     };

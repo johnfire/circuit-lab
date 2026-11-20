@@ -1,3 +1,5 @@
+import type { DisplayMessage } from './display-message.ts';
+import { message, failureMessage } from './display-message.ts';
 import { useState } from 'react';
 import { simulateAnalog, simulateAC } from './schematic-api';
 import type { ACReport, AnalogReport, ObservationReport, Schematic, Sweep } from './schematic-types';
@@ -5,12 +7,12 @@ import type { ACReport, AnalogReport, ObservationReport, Schematic, Sweep } from
 export const DEFAULT_SWEEP: Sweep = { source: 'V1', amplitude: 1, phase: 0, start: 1, stop: 1000, spacing: 'log', points: 50 };
 
 /** Keep independent valid reports; failed or electrical edits never leave stale readings. */
-export function useAnalogAnalysis(schematic: Schematic, initialError: string) {
+export function useAnalogAnalysis(schematic: Schematic, initialError: DisplayMessage) {
   const [report, setReport] = useState<AnalogReport | null>(null);
   const [acReport, setACReport] = useState<ACReport | null>(null);
   const [sweep, setSweep] = useState(DEFAULT_SWEEP);
   const [analysis, setAnalysis] = useState<'transient' | 'ac'>('transient');
-  const [error, setError] = useState(initialError);
+  const [error, setError] = useState<DisplayMessage>(initialError);
   const [running, setRunning] = useState(false);
   const [stale, setStale] = useState(false);
   const [failedAnalysis, setFailedAnalysis] = useState<'transient' | 'ac' | null>(null);
@@ -29,7 +31,7 @@ export function useAnalogAnalysis(schematic: Schematic, initialError: string) {
       setStale(false); audit('simulation.' + analysis + '.completed', completed.correlation_id);
     } catch (failure) {
       setFailedAnalysis(analysis);
-      setError(failure instanceof Error ? failure.message : 'Simulation unavailable.');
+      setError(failure instanceof Error ? failureMessage(failure) : message("analog-analysis.simulation_unavailable"));
       audit('simulation.' + analysis + '.failed');
     } finally { setRunning(false); }
   };

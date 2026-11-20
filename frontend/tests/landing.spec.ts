@@ -16,10 +16,10 @@ test('public landing explains the preview and links to account creation', async 
   expect(await favicon.text()).toContain('<title>Circuit Lab</title>');
   await expect(page.getByRole('heading', { name: /Good circuits start/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Create your account' })).toHaveAttribute(
-    'href', '/oauth2/start?rd=%2Fworkbench&prompt=create',
+    'href', '/oauth2/start?rd=%2Fworkbench&prompt=create&ui_locales=en&kc_locale=en',
   );
   await expect(page.getByRole('link', { name: 'Sign in' })).toHaveAttribute(
-    'href', '/oauth2/start?rd=%2Fworkbench',
+    'href', '/oauth2/start?rd=%2Fworkbench&ui_locales=en&kc_locale=en',
   );
   await expect(page.getByText('Early preview · No paid plans yet')).toBeVisible();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);

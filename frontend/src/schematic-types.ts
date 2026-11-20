@@ -22,7 +22,7 @@ export interface RatingCheck {
 export interface AnalogReport {
   analysis?: 'transient';
   status: 'completed'; correlation_id: string; times: number[]; traces: AnalogTrace[];
-  pin_nodes: Record<string, string>; warnings: string[]; netlist: string; ratings?: RatingCheck[];
+  pin_nodes: Record<string, string>; warnings: string[]; warning_messages?: unknown[]; netlist: string; ratings?: RatingCheck[];
 }
 export interface Sweep {
   source: string; amplitude: number; phase: number; start: number; stop: number;
@@ -32,7 +32,7 @@ export interface ComplexTrace { name: string; unit: 'V' | 'A'; real: number[]; i
 export interface ACReport {
   analysis: 'ac'; status: 'completed'; correlation_id: string; frequencies: number[];
   traces: ComplexTrace[]; pin_nodes: Record<string, string>; excitation: Sweep;
-  dc_biases: Record<string, number>; warnings: string[]; netlist: string;
+  dc_biases: Record<string, number>; warnings: string[]; warning_messages?: unknown[]; netlist: string;
 }
 export type ObservationReport = AnalogReport | ACReport;
 export type Probe = { kind: 'node'; pin: Pin } | { kind: 'current'; part: string }

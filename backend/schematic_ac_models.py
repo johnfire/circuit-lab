@@ -5,6 +5,7 @@ from typing import Literal, Self
 
 from pydantic import Field, model_validator
 
+from backend.localization import LocalizationMetadata, text
 from backend.model_primitives import Finite, Identifier, StrictModel
 from backend.schematic_models import SchematicRequest
 
@@ -33,11 +34,11 @@ class Sweep(StrictModel):
     def validate_budget(self) -> Self:
         """Reject excessive sweeps before allocating vectors or launching jobs."""
         if self.stop <= self.start:
-            raise ValueError("Sweep end must exceed start")
+            raise ValueError(text('schematic_ac_models.errors.sweep_end_must_exceed_start'))
         count = (self.points if self.spacing == "linear" else
                  math.floor(math.log10(self.stop / self.start) * self.points + 1e-8) + 1)
         if not 2 <= count <= 1000:
-            raise ValueError("Choose a sweep with 2–1000 frequency points")
+            raise ValueError(text('schematic_ac_models.errors.choose_a_sweep_with_2'))
         return self
 
 
@@ -52,7 +53,7 @@ class ACRequest(StrictModel):
         """Only independent voltage sources can excite the AC analysis."""
         if not any(part.id == self.sweep.source and part.kind in {"V", "PULSE", "SIN"}
                    for part in self.circuit.parts):
-            raise ValueError("Select a voltage source for AC excitation")
+            raise ValueError(text('schematic_ac_models.errors.select_a_voltage_source_for'))
         return self
 
 
@@ -65,7 +66,7 @@ class ComplexTrace(StrictModel):
     imaginary: list[Finite] = Field(min_length=2, max_length=1000)
 
 
-class ACResponse(StrictModel):
+class ACResponse(StrictModel, LocalizationMetadata):
     """Small-signal response about declared DC biases; not transient animation."""
 
     analysis: Literal["ac"] = "ac"
@@ -84,12 +85,12 @@ class ACResponse(StrictModel):
         """Refuse mismatched, non-positive, duplicated or unordered signals."""
         if self.frequencies[0] <= 0 or any(second <= first for first, second in
                                           zip(self.frequencies, self.frequencies[1:])):
-            raise ValueError("Frequencies must be positive and increasing")
+            raise ValueError(text('schematic_ac_models.errors.frequencies_must_be_positive_and'))
         if any(len(trace.real) != len(self.frequencies) or
                len(trace.imaginary) != len(self.frequencies) for trace in self.traces):
-            raise ValueError("Complex signals must share one frequency axis")
+            raise ValueError(text('schematic_ac_models.errors.complex_signals_must_share_one'))
         if len({trace.name for trace in self.traces}) != len(self.traces):
-            raise ValueError("Signal names must be unique")
+            raise ValueError(text('schematic_ac_models.errors.signal_names_must_be_unique'))
         return self
 
 

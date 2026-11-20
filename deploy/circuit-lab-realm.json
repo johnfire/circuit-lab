@@ -1,6 +1,11 @@
 {
   "realm": "circuit-lab",
   "displayName": "Circuit Lab",
+  "internationalizationEnabled": true,
+  "supportedLocales": ["de", "en"],
+  "defaultLocale": "en",
+  "loginTheme": "circuit-lab",
+  "accountTheme": "circuit-lab",
   "enabled": true,
   "sslRequired": "external",
   "registrationAllowed": true,

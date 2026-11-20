@@ -9,6 +9,7 @@ from uuid import UUID, uuid4
 import asyncpg
 from pydantic import ValidationError
 
+from backend.localization import text
 from backend.model_primitives import StrictModel
 from backend.project_access import audit_action, authorize
 from backend.project_database import ProjectDatabase, decode_record, encode_json
@@ -51,7 +52,7 @@ def run_snapshot(contents: DocumentContents, command: RunCommand, correlation: s
     circuit = SchematicRequest.model_validate(contents.circuit.model_dump())
     if command.analysis == "ac":
         if contents.sweep is None:
-            raise ProjectFailure("Set an AC excitation before running a sweep")
+            raise ProjectFailure(text('project_runs.errors.set_an_ac_excitation_before'))
         return launch_ac(ACRequest(circuit=circuit, sweep=contents.sweep), correlation)
     return launch_schematic(circuit, correlation)
 
@@ -65,9 +66,9 @@ async def run_budget(connection: asyncpg.Connection, principal: Principal) -> No
             "count(*) AS total FROM collaboration_runs r JOIN collaboration_documents d ON d.id=r.document",
         principal.owner)
     if counts is None or int(str(counts["active"])) >= 2 or int(str(counts["own_active"])) >= 1:
-        raise ProjectFailure("Simulation busy; wait for the current run", 429)
+        raise ProjectFailure(text('project_runs.errors.simulation_busy_wait_for_the'), 429)
     if int(str(counts["recent"])) >= 10 or int(str(counts["total"])) >= 2000:
-        raise ProjectFailure("Simulation rate/storage quota reached", 429)
+        raise ProjectFailure(text('project_runs.errors.simulation_rate_storage_quota_reached'), 429)
 
 
 async def start_run(jobs: RunJobs, principal: Principal, document: UUID,
@@ -77,7 +78,7 @@ async def start_run(jobs: RunJobs, principal: Principal, document: UUID,
     contents = DocumentContents.model_validate(snapshot["contents"])
     SchematicRequest.model_validate(contents.circuit.model_dump())
     if command.analysis == "ac" and contents.sweep is None:
-        raise ProjectFailure("Choose a valid AC excitation before simulation")
+        raise ProjectFailure(text('project_runs.errors.choose_a_valid_ac_excitation'))
     fingerprint = retry_hash(document, command.model_dump(mode="json"))
     async with jobs.database.available_pool().acquire() as connection, connection.transaction():
         await authorize(connection, principal, document, "simulate")
@@ -141,7 +142,7 @@ async def get_run(database: ProjectDatabase, principal: Principal,
         await authorize(connection, principal, document, "read")
         row = await connection.fetchrow("SELECT * FROM collaboration_runs WHERE document=$1 AND id=$2", document, run)
         if row is None:
-            raise ProjectFailure("Simulation not found", 404)
+            raise ProjectFailure(text('project_runs.errors.simulation_not_found'), 404)
         response = decode_record(encode_json(dict(row)))
         response.pop("settings", None)
         response["report"] = decode_record(row["report"]) if row["report"] is not None else None
@@ -153,7 +154,7 @@ async def get_report(database: ProjectDatabase, principal: Principal, document: 
     """Only completed validated solver evidence can feed numerical measurements."""
     saved = await get_run(database, principal, document, run)
     if saved["status"] != "completed":
-        raise ProjectFailure("Simulation is not completed", 409)
+        raise ProjectFailure(text('project_runs.errors.simulation_is_not_completed'), 409)
     return (ACResponse.model_validate(saved["report"]) if saved["analysis"] == "ac"
             else SchematicResponse.model_validate(saved["report"]))
 

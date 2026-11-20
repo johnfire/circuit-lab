@@ -1,6 +1,7 @@
 """Pure graph validation and deterministic terminal-to-node assignment."""
 
 from backend.component_catalog import GROUND_REFERENCED_KINDS, terminal_count
+from backend.localization import text
 from backend.schematic_models import Part, Pin, SchematicRequest
 
 
@@ -27,14 +28,14 @@ def validate_wires(submitted: SchematicRequest, pins: set[str]) -> None:
     for wire in submitted.wires:
         first, second = pin_key(wire.a), pin_key(wire.b)
         if first not in pins or second not in pins:
-            raise ValueError("A wire references a missing terminal")
+            raise ValueError(text('schematic_topology.errors.a_wire_references_a_missing'))
         edge = frozenset((first, second))
         if len(edge) != 2 or edge in edges:
-            raise ValueError("Remove self-links or duplicate wires")
+            raise ValueError(text('schematic_topology.errors.remove_self_links_or_duplicate'))
         edges.add(edge)
         connected.update(edge)
     if connected != pins:
-        raise ValueError("Connect every terminal explicitly, including ground")
+        raise ValueError(text('schematic_topology.errors.connect_every_terminal_explicitly_including'))
 
 
 def validate_ground_path(submitted: SchematicRequest, nodes: dict[str, str]) -> None:
@@ -45,20 +46,20 @@ def validate_ground_path(submitted: SchematicRequest, nodes: dict[str, str]) -> 
     for _ in submitted.parts:
         reachable |= set().union(*(edge for edge in edges if edge & reachable))
     if reachable != set(nodes.values()):
-        raise ValueError("Every component must have a path to ground; remove floating islands")
+        raise ValueError(text('schematic_topology.errors.every_component_must_have_a'))
     for part in submitted.parts:
         if terminal_count(part.kind) > 1 and len({nodes[pin] for pin in part_pins(part)}) == 1:
-            raise ValueError(f"{part.id} has shorted terminals; remove the bypass wire")
+            raise ValueError(text('schematic_topology.errors.has_shorted_terminals_remove_the', part=part.id))
 
 
 def assign_nodes(submitted: SchematicRequest) -> dict[str, str]:
     """Validate topology and assign safe generated node names, with ground as 0."""
     if len({part.id for part in submitted.parts}) != len(submitted.parts):
-        raise ValueError("Component identifiers must be unique")
+        raise ValueError(text('schematic_topology.errors.component_identifiers_must_be_unique'))
     pins = {pin for part in submitted.parts for pin in part_pins(part)}
     grounds = {f"{part.id}:0" for part in submitted.parts if part.kind == "GND"}
     if not grounds:
-        raise ValueError("Add and connect a ground symbol")
+        raise ValueError(text('schematic_topology.errors.add_and_connect_a_ground'))
     validate_wires(submitted, pins)
     groups = [{pin} for pin in sorted(pins)]
     for wire in submitted.wires:

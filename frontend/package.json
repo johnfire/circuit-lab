@@ -7,15 +7,20 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src public/landing-analytics.js",
+    "lint": "eslint src scripts/*.mjs public/landing-analytics.js public/landing-language.js public/language-preference.js && npm run lint:identity",
+    "test:locale-mutations": "node scripts/localization-mutations.mjs",
     "test:unit": "node --test tests/*.test.cjs tests/*.test.ts",
     "test:e2e": "playwright test",
     "test:projects": "playwright test --config playwright.projects.config.ts",
-    "test:staging": "playwright test --config playwright.staging.config.ts"
+    "test:staging": "playwright test --config playwright.staging.config.ts",
+    "test:identity-languages": "playwright test --config playwright.identity.config.ts",
+    "lint:identity": "cd .. && frontend/node_modules/.bin/eslint --config frontend/eslint.config.js deploy/identity-language.js"
   },
   "dependencies": {
+    "i18next": "27.2.2",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "react-i18next": "18.0.3"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

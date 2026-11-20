@@ -1,11 +1,15 @@
+import { message, failureMessage } from './display-message.ts';
+import { translate } from './localization.ts';
 import { useState } from 'react';
+import { parseMessage } from './report-localization.ts';
+import { displayMessage, type DisplayMessage } from './display-message.ts';
 import { exportBringUp, exportKicad } from './schematic-api';
 import { downloadText } from './schematic-files';
 import type { EditorState } from './use-schematic-editor';
 
 /** Download a KiCad netlist, JLCPCB BOM, design rules and step-by-step guide, then list what still needs checking. */
 export function PcbExport({ editor }: { editor: EditorState }) {
-  const [notes, setNotes] = useState<string[] | null>(null), [busy, setBusy] = useState(false);
+  const [notes, setNotes] = useState<DisplayMessage[] | null>(null), [busy, setBusy] = useState(false);
   const run = async () => {
     setBusy(true);
     try {
@@ -14,24 +18,22 @@ export function PcbExport({ editor }: { editor: EditorState }) {
       downloadText('circuit-lab-bom.csv', files.bom_csv, 'text/csv');
       downloadText('circuit-lab-jlcpcb-rules.txt', files.design_rules, 'text/plain');
       downloadText('circuit-lab-pcb-steps.md', files.fab_guide, 'text/markdown');
-      setNotes(files.warnings);
-    } catch (error) { editor.setError(error instanceof Error ? error.message : 'PCB export failed.'); setNotes(null); }
+      setNotes(files.warnings.map((warning, index) => parseMessage(files.warning_messages?.[index]) ?? warning));
+    } catch (error) { editor.setError(error instanceof Error ? failureMessage(error) : message("pcb-export.pcb_export_failed")); setNotes(null); }
     finally { setBusy(false); }
   };
   const bringUp = async () => {
     setBusy(true);
     try { downloadText('circuit-lab-bring-up.md', await exportBringUp(editor.schematic), 'text/markdown'); }
-    catch (error) { editor.setError(error instanceof Error ? error.message : 'Bring-up checklist failed.'); }
+    catch (error) { editor.setError(error instanceof Error ? failureMessage(error) : message("pcb-export.bringup_checklist_failed")); }
     finally { setBusy(false); }
   };
-  return <section className="editor-card" aria-label="PCB export">
-    <h2>Order a PCB</h2>
-    <p className="muted">Downloads four files: the KiCad netlist (circuit-lab.net), a JLCPCB-style parts list (circuit-lab-bom.csv),
-      JLCPCB design rules to paste into KiCad (circuit-lab-jlcpcb-rules.txt) and the steps from KiCad to an order
-      (circuit-lab-pcb-steps.md). Your browser may ask once to allow several downloads.</p>
-    <div className="button-row"><button disabled={busy || editor.running} onClick={() => { void run(); }}>{busy ? 'Exporting…' : 'Export for PCB (KiCad)'}</button>
-      <button disabled={busy || editor.running} onClick={() => { void bringUp(); }}>Bring-up checklist</button></div>
-    <p className="muted">The bring-up checklist simulates the circuit and lists, pad by pad, what a meter should read when you first power the built board.</p>
-    {notes && <><h3>Before you order</h3><ul className="model-warnings">{notes.map(note => <li key={note}>{note}</li>)}</ul></>}
+  return <section className="editor-card" aria-label={translate("pcb-export.pcb_export")}>
+    <h2>{translate("pcb-export.order_a_pcb")}</h2>
+    <p className="muted">{translate("pcb-export.downloads_four_files_the_kicad")}</p>
+    <div className="button-row"><button disabled={busy || editor.running} onClick={() => { void run(); }}>{busy ? translate('common.exporting') : translate("pcb-export.export_for_pcb_kicad")}</button>
+      <button disabled={busy || editor.running} onClick={() => { void bringUp(); }}>{translate("pcb-export.bringup_checklist")}</button></div>
+    <p className="muted">{translate("pcb-export.the_bringup_checklist_simulates_the")}</p>
+    {notes && <><h3>{translate("pcb-export.before_you_order")}</h3><ul className="model-warnings">{notes.map((note, index) => <li key={index}>{displayMessage(note)}</li>)}</ul></>}
   </section>;
 }

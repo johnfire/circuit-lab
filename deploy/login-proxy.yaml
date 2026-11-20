@@ -17,6 +17,10 @@ providers:
     code_challenge_method: S256
     scope: openid email profile
     loginURLParameters:
+      - name: ui_locales
+        allow: [{value: de}, {value: en}]
+      - name: kc_locale
+        allow: [{value: de}, {value: en}]
       - name: prompt
         allow: [{value: create}, {value: login}]
     oidcConfig:

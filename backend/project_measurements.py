@@ -5,6 +5,7 @@ from typing import Literal, Self
 
 from pydantic import Field, model_validator
 
+from backend.localization import text
 from backend.model_primitives import Finite, StrictModel
 from backend.project_models import ProjectFailure
 from backend.schematic_ac_models import ACResponse
@@ -24,7 +25,7 @@ class SignalQuery(StrictModel):
     def validate_second_pin(self) -> Self:
         """Differential voltage needs two terminals and nothing else does."""
         if (self.kind == "differential") != (self.second is not None):
-            raise ValueError("A second pin is required only for differential voltage")
+            raise ValueError(text('project_measurements.errors.a_second_pin_is_required'))
         return self
 
 
@@ -47,7 +48,7 @@ class MeasurementQuery(StrictModel):
     def validate_interval(self) -> Self:
         """Reject reversed or empty viewing windows before reading samples."""
         if self.stop <= self.start:
-            raise ValueError("Measurement window end must exceed start")
+            raise ValueError(text('project_measurements.errors.measurement_window_end_must_exceed'))
         return self
 
 
@@ -70,7 +71,7 @@ def pin_voltage(report: Report, pin: Pin) -> tuple[list[float], list[float]]:
     """Resolve a stable pin against this exact report's revision-local net map."""
     node = report.pin_nodes.get(f"{pin.part}:{pin.terminal}")
     if node is None:
-        raise ProjectFailure("Pin is absent from this simulation")
+        raise ProjectFailure(text('project_measurements.errors.pin_is_absent_from_this'))
     if node == "0":
         zeros = [0.0] * len(axis(report))
         return zeros, zeros
@@ -81,7 +82,7 @@ def named_signal(report: Report, name: str) -> tuple[str, list[float], list[floa
     """Do not invent a missing current or voltage trace."""
     matches = [trace for trace in report.traces if trace.name == name]
     if not matches:
-        raise ProjectFailure("Signal is absent from this simulation")
+        raise ProjectFailure(text('project_measurements.errors.signal_is_absent_from_this'))
     trace = matches[0]
     if isinstance(report, ACResponse):
         trace = next(signal for signal in report.traces if signal.name == name)
@@ -138,11 +139,11 @@ def time_statistics(times: list[float], values: list[float]) -> dict[str, float]
 def validate_time_samples(times: list[float], values: list[float]) -> None:
     """Reject truncated, non-finite or unordered evidence instead of calculating it."""
     if len(times) < 2 or len(times) != len(values):
-        raise ProjectFailure("Statistics require matching arrays with at least two samples")
+        raise ProjectFailure(text('project_measurements.errors.statistics_require_matching_arrays_with'))
     if not all(math.isfinite(value) for value in [*times, *values]):
-        raise ProjectFailure("Statistics require finite samples")
+        raise ProjectFailure(text('project_measurements.errors.statistics_require_finite_samples'))
     if any(second <= first for first, second in zip(times, times[1:])):
-        raise ProjectFailure("Statistics require strictly increasing times")
+        raise ProjectFailure(text('project_measurements.errors.statistics_require_strictly_increasing_times'))
 
 
 def measure(report: Report, query: MeasurementQuery) -> dict[str, object]:
@@ -177,10 +178,10 @@ def evaluate_check(report: Report, check: IntentCheck) -> dict[str, object]:
     if measurement.get("status") != "completed" or isinstance(report, ACResponse):
         return {"status": "unavailable", "reason": "This metric requires a sampled transient window"}
     if check.unit != measurement["unit"]:
-        raise ProjectFailure("Check unit does not match the signal's physical unit")
+        raise ProjectFailure(text('project_measurements.errors.check_unit_does_not_match'))
     coefficient = measurement[check.metric]
     if not isinstance(coefficient, (int, float)):
-        raise ProjectFailure("Metric is unavailable")
+        raise ProjectFailure(text('project_measurements.errors.metric_is_unavailable'))
     passed = coefficient <= check.threshold if check.comparison == "less_equal" else coefficient >= check.threshold
     return {"status": "pass" if passed else "fail", "measured": coefficient,
             "threshold": check.threshold, "comparison": check.comparison, "unit": check.unit,

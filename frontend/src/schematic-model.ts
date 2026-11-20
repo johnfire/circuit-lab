@@ -1,14 +1,17 @@
+import { formatMeasurement } from './display-numbers.ts';
+import { LocalizedFailure } from './display-message.ts';
+import { translate, translatedLabels } from './localization.ts';
 import type { Part, PartKind, Pin, Rotation, Schematic, Terminal, Wire } from './schematic-types';
 import componentCatalog from '../../circuits/components.json' with { type: 'json' };
 import { isDeviceKind, isTransistor, libraryPart, partsOfKind, terminalCount } from './part-library.ts';
 import { boardPinOf } from './board-library.ts';
 
 export const GRID = 32;
-export const PART_NAMES: Record<PartKind, string> = {
-  R: 'Resistor', C: 'Capacitor', L: 'Inductor', V: 'DC source', PULSE: 'Pulse source', SIN: 'Sine source', GND: 'Ground',
-  D: 'Diode / LED', NMOS: 'N-MOSFET', PMOS: 'P-MOSFET', NPN: 'NPN transistor', PNP: 'PNP transistor',
-  OPAMP: 'Op-amp', REG: 'Voltage regulator', PIN: 'Board pin',
-};
+export const PART_NAMES: Record<PartKind, string> = translatedLabels({
+  R: "schematic-model.resistor", C: "schematic-model.capacitor", L: "schematic-model.inductor", V: "schematic-model.dc_source", PULSE: "schematic-model.pulse_source", SIN: "schematic-model.sine_source", GND: "schematic-model.ground",
+  D: "schematic-model.diode_led", NMOS: 'N-MOSFET', PMOS: 'P-MOSFET', NPN: "schematic-model.npn_transistor", PNP: "schematic-model.pnp_transistor",
+  OPAMP: "schematic-model.op_amp", REG: "schematic-model.voltage_regulator", PIN: "schematic-model.board_pin",
+});
 export const STANDARD_VALUES = Object.fromEntries(Object.entries(componentCatalog)
   .map(([kind, definition]) => [kind, definition.standard_values])) as Record<PartKind, number[]>;
 
@@ -16,13 +19,13 @@ export function engineering(value: number, unit = ''): string {
   if (value === 0) return '0 ' + unit;
   const prefixes: [number, string][] = [[1e6, 'M'], [1e3, 'k'], [1, ''], [1e-3, 'm'], [1e-6, 'µ'], [1e-9, 'n'], [1e-12, 'p']];
   const [scale, prefix] = prefixes.find(([scale]) => Math.abs(value) >= scale) ?? [1e-12, 'p'];
-  return Number((value / scale).toPrecision(4)) + ' ' + prefix + unit;
+  return formatMeasurement(value / scale) + ' ' + prefix + unit;
 }
 
 export function partValue(part: Part): string {
-  if (part.kind === 'PIN') return boardPinOf(part)?.pin.name ?? 'unknown pin';
-  if (isDeviceKind(part.kind)) return libraryPart(part.device)?.name ?? 'unknown part';
-  const units: Record<string, string> = { R: 'Ω', C: 'F', L: 'H', V: 'V', PULSE: 'V pulse', SIN: 'V peak sine', GND: 'V reference' };
+  if (part.kind === 'PIN') return boardPinOf(part)?.pin.name ?? translate("schematic-model.unknown_pin");
+  if (isDeviceKind(part.kind)) return libraryPart(part.device)?.name ?? translate("schematic-model.unknown_part");
+  const units: Record<string, string> = { R: 'Ω', C: 'F', L: 'H', V: 'V', PULSE: translate("schematic-model.v_pulse"), SIN: translate("schematic-model.v_peak_sine"), GND: translate("schematic-model.v_reference") };
   return engineering(part.value, units[part.kind]);
 }
 
@@ -64,16 +67,16 @@ export function wirePath(wire: Wire, parts: Part[]): string {
 }
 
 export function addWire(schematic: Schematic, a: Pin, b: Pin): Schematic {
-  if (samePin(a, b)) throw new Error('Choose a different terminal to complete the wire.');
-  if (schematic.wires.length >= 40) throw new Error('This prototype supports up to 40 wires.');
+  if (samePin(a, b)) throw new LocalizedFailure("schematic-model.choose_a_different_terminal_to");
+  if (schematic.wires.length >= 40) throw new LocalizedFailure("schematic-model.this_prototype_supports_up_to");
   if (schematic.wires.some(wire => (samePin(wire.a, a) && samePin(wire.b, b)) || (samePin(wire.a, b) && samePin(wire.b, a)))) {
-    throw new Error('Those terminals are already connected.');
+    throw new LocalizedFailure("schematic-model.those_terminals_are_already_connected");
   }
   return { ...schematic, wires: [...schematic.wires, { a, b }] };
 }
 
 export function makePart(kind: PartKind, parts: Part[], x: number, y: number): Part {
-  if (parts.length >= 20) throw new Error('This prototype supports up to 20 parts.');
+  if (parts.length >= 20) throw new LocalizedFailure("schematic-model.this_prototype_supports_up_to_2");
   const prefix = kind === 'GND' ? 'G' : kind === 'PULSE' || kind === 'SIN' ? 'V' : kind === 'PIN' ? 'P' : isDeviceKind(kind) ? ({ D: 'D', OPAMP: 'U', REG: 'U' } as Record<string, string>)[kind] ?? 'Q' : kind;
   let suffix = 1;
   while (parts.some(part => part.id === prefix + suffix)) suffix++;

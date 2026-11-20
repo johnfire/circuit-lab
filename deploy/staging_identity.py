@@ -11,8 +11,8 @@ from deploy.mcp_identity_configuration import oauth_additions
 
 class RealmAdmin:
     def __init__(self, endpoint: str, password: str) -> None:
-        if endpoint != 'http://127.0.0.1:8114':
-            raise ValueError('Use the private staging identity port')
+        if endpoint not in {'http://127.0.0.1:8114', 'http://127.0.0.1:8104'}:
+            raise ValueError('Use a fixed Circuit Lab loopback identity port')
         self.endpoint = endpoint
         self.opener = urllib.request.build_opener(NoRedirect())
         form = urllib.parse.urlencode({'client_id': 'admin-cli', 'grant_type': 'password',

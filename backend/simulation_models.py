@@ -2,7 +2,9 @@
 
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+from backend.localization import LocalizationMetadata, LocalizedString, LocalizedText
 
 NumericValue = Annotated[float, Field(gt=0, le=1e9, allow_inf_nan=False)]
 
@@ -32,9 +34,23 @@ class Check(BaseModel):
     name: str
     passed: bool
     detail: str
+    name_message: LocalizedText | None = None
+    detail_message: LocalizedText | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def capture_messages(cls, submitted: object) -> object:
+        if not isinstance(submitted, dict):
+            return submitted
+        captured = dict(submitted)
+        for field in ("name", "detail"):
+            original = captured.get(field)
+            if isinstance(original, LocalizedString):
+                captured[field + "_message"] = original.reference
+        return captured
 
 
-class SimulationResponse(BaseModel):
+class SimulationResponse(LocalizationMetadata):
     """A simulation report that never certifies a physical circuit."""
 
     circuit_id: str

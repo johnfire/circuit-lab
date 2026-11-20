@@ -5,6 +5,7 @@ COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
 COPY circuits/components.json circuits/footprints.json circuits/parts-index.json circuits/boards-index.json circuits/blocks-index.json /build/circuits/
+COPY locales/ /build/locales/
 ENV VITE_DEPLOYMENT_MODE=hosted
 RUN npm run build
 
@@ -24,6 +25,7 @@ RUN uv sync --frozen --no-dev && \
 COPY backend/ backend/
 COPY harness/ harness/
 COPY circuits/ circuits/
+COPY locales/ locales/
 ENV PATH="/app/.venv/bin:$PATH"
 ARG CIRCUIT_BUILD_ID=local
 ENV CIRCUIT_BUILD_ID=$CIRCUIT_BUILD_ID

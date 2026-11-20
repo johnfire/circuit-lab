@@ -5,4 +5,10 @@ FROM quay.io/keycloak/keycloak:26.8.0@sha256:b0f60d489d51c5d113390bdf5461d4c06e6
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
 RUN mkdir -p /opt/keycloak/data/import && chmod 0755 /opt/keycloak/data/import
 COPY --chmod=0644 deploy/circuit-lab-realm.json /opt/keycloak/data/import/circuit-lab-realm.json
+COPY deploy/keycloak-theme/ /opt/keycloak/themes/circuit-lab/
+COPY --chmod=0644 deploy/identity-language.js /opt/keycloak/themes/circuit-lab/login/resources/js/identity-language.js
+COPY --chmod=0644 deploy/identity-language.js /opt/keycloak/themes/circuit-lab/account/resources/js/identity-language.js
+USER root
+RUN chmod -R u=rwX,go=rX /opt/keycloak/themes/circuit-lab
+USER 1000
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]

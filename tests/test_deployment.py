@@ -185,3 +185,26 @@ def test_docker_frontend_stage_copies_every_circuits_file_the_frontend_imports()
     copy_line = next(line for line in Path("Dockerfile").read_text().splitlines()
                      if line.startswith("COPY circuits/") and "/build/circuits/" in line)
     assert imported and imported <= {Path(item).name for item in copy_line.split()[1:-1]}
+
+
+def test_public_translations_publish_only_allowed_languages_and_catalogues(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    release = tmp_path / 'release'
+    source = release / 'frontend' / 'public'
+    source.mkdir(parents=True)
+    for name in ('landing.html', 'landing.css', 'landing-language.js', 'language-preference.js'):
+        (source / name).write_text(name)
+    for language in ('de', 'en', 'private'):
+        folder = release / 'locales' / language
+        folder.mkdir(parents=True)
+        for name in ('landing', 'identity', 'messages', 'private'):
+            (folder / (name + '.json')).write_text(language + '-' + name)
+    public_link = tmp_path / 'public'
+    monkeypatch.setattr(deploy_release, 'PUBLIC_PAGES', tmp_path / 'pages')
+    monkeypatch.setattr(deploy_release, 'PUBLIC_LINK', public_link)
+    deploy_release.publish_landing(release)
+    actual = {str(path.relative_to(public_link)) for path in public_link.rglob('*') if path.is_file()}
+    assert actual == {'landing.html', 'landing.css', 'landing-language.js', 'language-preference.js',
+                      'locales/de/landing.json', 'locales/en/landing.json',
+                      'locales/de/identity.json', 'locales/en/identity.json'}
+    assert (public_link / 'locales/de/landing.json').read_text() == 'de-landing'
+    assert (public_link / 'locales/en/identity.json').stat().st_mode & 0o777 == 0o644

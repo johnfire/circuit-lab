@@ -16,9 +16,15 @@ LOGGER = logging.getLogger("circuit-lab")
 def record_simulation(circuit_id: str, correlation_id: str, outcome: str,
                       actor: str = "user:local") -> None:
     """Append an explicitly attributed action without storing submitted content."""
+    record_action("simulation.run", circuit_id, correlation_id, outcome, actor, "simulation")
+
+
+def record_action(action: str, target: str, correlation_id: str, outcome: str,
+                  actor: str, source: str = "account") -> None:
+    """One append-only writer for attributable user and agent actions."""
     event = {"timestamp": datetime.now(timezone.utc).isoformat(), "level": "INFO",
-             "source": "simulation", "actor": actor, "action": "simulation.run",
-             "target": circuit_id, "correlation_id": correlation_id, "outcome": outcome}
+             "source": source, "actor": actor, "action": action,
+             "target": target, "correlation_id": correlation_id, "outcome": outcome}
     audit_path = Path(os.environ.get("CIRCUIT_AUDIT_PATH", "/tmp/circuit-lab-audit.jsonl"))
     try:
         with AUDIT_LOCK:

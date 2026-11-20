@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 from backend.circuit_catalog import read_circuit, read_netlist
+from backend.localization import text
 from backend.simulation_models import Check, Signal, SimulationRequest, SimulationResponse
 from backend.verification_checks import Waveforms, evaluate_intent
 from harness.run_circuit import read_wrdata_2col, run_ngspice, simulation_error, substitute_netlist
@@ -22,10 +23,10 @@ def prepare_simulation(circuit_id: str, request: SimulationRequest) -> tuple[str
     values = {name: parameter.value for name, parameter in allowed.items()}
     for name, value in request.parameters.items():
         if name not in allowed:
-            raise ValueError(f"Unknown editable component: {name}")
+            raise ValueError(text('simulation_engine.errors.unknown_editable_component', part=name))
         parameter = allowed[name]
         if not parameter.minimum <= value <= parameter.maximum:
-            raise ValueError(f"{name} must be between {parameter.minimum:g} and {parameter.maximum:g} {parameter.unit}")
+            raise ValueError(text('simulation_engine.errors.must_be_between_and', part=name, minimum=f'{parameter.minimum:g}', maximum=f'{parameter.maximum:g}', unit=parameter.unit))
         values[name] = value
     overrides = {name: f"{value:.12g}" for name, value in values.items()}
     return substitute_netlist(read_netlist(circuit_id), overrides), values
@@ -36,14 +37,14 @@ def read_waveforms(workdir: str) -> Waveforms:
     waveforms = {}
     for signal_path in sorted(Path(workdir).glob("*.csv")):
         if signal_path.stat().st_size > 16_000_000:
-            raise SimulationFailure("Simulation output exceeded its size limit")
+            raise SimulationFailure(text('simulation_engine.errors.simulation_output_exceeded_its_size'))
         _, rows = read_wrdata_2col(signal_path)
         raw_count = len(signal_path.read_text().splitlines())
         if not rows or raw_count != len(rows):
-            raise SimulationFailure("Simulation produced malformed or empty samples")
+            raise SimulationFailure(text('simulation_engine.errors.simulation_produced_malformed_or_empty'))
         waveforms[signal_path.name] = rows
     if not waveforms:
-        raise SimulationFailure("Simulation produced no waveforms")
+        raise SimulationFailure(text('simulation_engine.errors.simulation_produced_no_waveforms'))
     return waveforms
 
 
@@ -74,13 +75,13 @@ def simulate(circuit_id: str, request: SimulationRequest,
         if error_detail:
             raise SimulationFailure(error_detail)
         waveforms = read_waveforms(workdir)
-    checks = [Check(name="Simulation completed", passed=True,
-                    detail="ngspice returned successfully with finite waveform samples.")]
+    checks = [Check(name=text('simulation_engine.simulate.simulation_completed'), passed=True,
+                    detail=text('simulation_engine.simulate.ngspice_returned_successfully_with_finite'))]
     checks.extend(evaluate_intent(circuit_id, values, waveforms, request.max_ripple_v))
     return SimulationResponse(
         circuit_id=circuit_id, correlation_id=correlation_id,
         status="passed" if all(check.passed for check in checks) else "failed",
         parameters=values, signals=[summarize_signal(name, rows) for name, rows in waveforms.items()],
         checks=checks, netlist=netlist, duration_ms=round((time.monotonic() - started) * 1000, 2),
-        warnings=["Generic/ideal models. These checks do not verify real component ratings or hardware safety."],
+        warnings=[text('simulation_engine.simulate.generic_ideal_models_these_checks')],
     )

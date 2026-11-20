@@ -1,3 +1,5 @@
+import { catalogueRecord } from './catalogue-localization.ts';
+import { translate } from './localization.ts';
 import genericFootprints from '../../circuits/footprints.json' with { type: 'json' };
 import { libraryPart } from './part-library.ts';
 import type { Part } from './schematic-types';
@@ -8,7 +10,9 @@ export interface FootprintOption {
   ratings?: Record<string, PackageRating>; dielectric?: 'ceramic' | 'electrolytic';
 }
 
-const GENERIC = genericFootprints as unknown as Record<string, FootprintOption[]>;
+const GENERIC = Object.fromEntries(Object.entries(genericFootprints).map(([kind, options]) =>
+  [kind, options.map(option => catalogueRecord(option, 'catalogue.footprints.' + kind + '.' + option.id, ['note']))],
+)) as Record<string, FootprintOption[]>;
 
 /** PCB package choices for a placed part: generic for R/C/L, the part's own for library devices. */
 export function footprintOptions(part: Part): FootprintOption[] {
@@ -17,7 +21,7 @@ export function footprintOptions(part: Part): FootprintOption[] {
 
 /** "TO-220-3_Vertical (through-hole)": the KiCad footprint name without its library. */
 export function footprintLabel(option: FootprintOption): string {
-  return option.kicad.split(':')[1] + (option.mount === 'tht' ? ' (through-hole)' : ' (SMD)');
+  return option.kicad.split(':')[1] + (option.mount === 'tht' ? translate("footprint-options.throughhole") : translate("footprint-options.smd"));
 }
 
 /** The package behind a resistor or capacitor rating check ("r_axial" → the axial resistor option). */

@@ -8,6 +8,7 @@ import re
 from dataclasses import dataclass
 from typing import Literal
 
+from backend.localization import text
 from backend.part_library import LIBRARY
 from backend.part_library_models import Rating
 from backend.passive_ratings import CHOSEN_ON_PART, passive_limits, positive
@@ -128,23 +129,13 @@ def rating_warnings(submitted: SchematicRequest) -> list[str]:
     devices = sorted({part.device for part in submitted.parts if part.device is not None})
     boards = sorted({pin_of(part)[0].id: pin_of(part)[0] for part in submitted.parts
                      if part.kind == "PIN"}.values(), key=lambda board: board.id)
-    warnings = ["Parts are checked against their absolute maximums: peak voltage and current on the "
-                "solver's own timepoints, and time-averaged power over this run. Resistors use their "
-                "package's typical power and working voltage; capacitors their chosen voltage rating, and "
-                "electrolytics must never see reverse voltage. Inductor current and saturation, and sources, "
-                "are not checked."]
+    warnings: list[str] = [text('part_ratings.rating_warnings.parts_are_checked_against_their')]
     if devices:
-        warnings.append("Device current is measured into terminal 0 (drain, collector or output); "
-                        "BJT power omits the small base term. Op-amps and regulators are behavioral "
-                        "models and do not current-limit: an iout_max failure means the real part "
-                        "would limit or fail.")
+        warnings.append(text('part_ratings.rating_warnings.device_current_is_measured_into'))
     if boards:
-        warnings.append("Board pins are modelled at their default drive with ESD clamp diodes to the "
-                        "logic rail and ground; firmware behaviour is not simulated. The board's GND "
-                        "is the circuit ground.")
+        warnings.append(text('part_ratings.rating_warnings.board_pins_are_modelled_at'))
     drafts = [device for device in devices if LIBRARY[device].trust.level == "draft"]
     drafts += [board.id for board in boards if board.trust.level == "draft"]
     if drafts:
-        warnings.append(f"Draft parts ({', '.join(drafts)}): models and ratings are unconfirmed "
-                        "against datasheets, so a pass is not hardware approval.")
+        warnings.append(text('part_ratings.rating_warnings.draft_parts_models_and_ratings', parts=', '.join(drafts)))
     return warnings

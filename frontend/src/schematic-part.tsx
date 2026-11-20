@@ -1,3 +1,4 @@
+import { translate } from './localization.ts';
 import type { KeyboardEvent, PointerEvent } from 'react';
 import { engineering, GRID, partValue, pinKey, pinPosition, pinsFor, snapped } from './schematic-model';
 import { SchematicSymbol } from './schematic-symbol';
@@ -35,7 +36,7 @@ function Terminal({ pin, props }: { pin: Pin; props: PartProps }) {
   } };
   return <g>
     <circle className={'terminal ' + (pending ? 'pending' : '')} cx={position.x} cy={position.y} r="9"
-      role="button" tabIndex={props.disabled ? -1 : 0} aria-label={props.part.id + ' terminal ' + terminalName(props.part, pin.terminal)}
+      role="button" tabIndex={props.disabled ? -1 : 0} aria-label={props.part.id + translate("schematic-part.terminal_2") + terminalName(props.part, pin.terminal)}
       aria-pressed={Boolean(pending)} onClick={event => { event.stopPropagation(); activate(); }}
       onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } }} />
     <text className="terminal-label" aria-hidden="true" x={position.x + 12} y={position.y + 18}>{terminalLetter(props.part, pin.terminal)}</text>
@@ -44,8 +45,8 @@ function Terminal({ pin, props }: { pin: Pin; props: PartProps }) {
 }
 
 function currentReference(part: Part): string {
-  if (part.kind === 'PIN') return '(into pin)';
-  return terminalCount(part.kind) > 2 ? '(into ' + terminalLetter(part, 0) + ')' : '(' + terminalLetter(part, 0) + '→' + terminalLetter(part, 1) + ')';
+  if (part.kind === 'PIN') return translate("schematic-part.into_pin");
+  return terminalCount(part.kind) > 2 ? translate("schematic-part.into") + terminalLetter(part, 0) + ')' : '(' + terminalLetter(part, 0) + '→' + terminalLetter(part, 1) + ')';
 }
 
 export function SchematicPart(props: PartProps) {
@@ -54,7 +55,7 @@ export function SchematicPart(props: PartProps) {
   const select = () => { props.onSelect(); if (props.observation?.observing && part.kind !== 'GND') props.observation.onCurrent(part.id); };
   return <g>
     <g className={'schematic-part ' + (props.selected ? 'selected-part' : '')} role="button"
-      tabIndex={props.disabled ? -1 : 0} aria-label={'Select ' + part.id + ' ' + partValue(part)}
+      tabIndex={props.disabled ? -1 : 0} aria-label={translate("schematic-part.select") + part.id + ' ' + partValue(part)}
       aria-pressed={props.selected} onKeyDown={event => partKey(event, { ...props, onSelect: select })}
       onClick={event => { event.stopPropagation(); select(); }}
       onPointerDown={props.onStartDrag}>

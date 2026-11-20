@@ -209,3 +209,13 @@ run DRC, then plot Gerbers and drill files and upload them to JLCPCB or PCBWay.
   all-zero simulations when it can't find them. The harness uses the
   self-built headless ngspice 47 instead.
 - Sweeps use the source **name** (`dc VIN 0 5 1`), not the node (`dc v(in)...`).
+
+
+## Languages
+
+The landing page, workbench, readable downloads and account flows support German
+and English. First visits follow browser language preferences; unsupported
+languages fall back to English. Use the top selector to remember another choice.
+Circuit identifiers and machine-readable formats stay unchanged. See
+[localization](docs/localization.md) for translation sources and verification, and
+the [deployment runbook](deploy/README.md) for the separate identity migration.

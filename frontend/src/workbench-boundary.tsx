@@ -1,3 +1,4 @@
+import { translate } from './localization.ts';
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 export class WorkbenchBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
@@ -13,9 +14,9 @@ export class WorkbenchBoundary extends Component<{ children: ReactNode }, { hasE
 
   render(): ReactNode {
     if (this.state.hasError) {
-      return <main className="recovery"><h1>The workbench needs a reload.</h1>
-        <p>Your circuit library is still available.</p>
-        <button onClick={() => window.location.reload()}>Reload workbench</button></main>;
+      return <main className="recovery"><h1>{translate("workbench-boundary.the_workbench_needs_a_reload")}</h1>
+        <p>{translate("workbench-boundary.your_circuit_library_is_still")}</p>
+        <button onClick={() => window.location.reload()}>{translate("workbench-boundary.reload_workbench")}</button></main>;
     }
     return this.props.children;
   }

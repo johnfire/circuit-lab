@@ -6,6 +6,7 @@ Electrolytics are polarised (terminal 0 is +), so reverse voltage across them is
 """
 
 from backend.footprint_catalog import chosen_footprint
+from backend.localization import text
 from backend.part_library_models import Rating
 from backend.schematic_models import Part, Trace
 
@@ -49,7 +50,7 @@ def suggested_rating(peak: float) -> float:
 def capacitor_advice(parts: list[Part], nodes: dict[str, str], traces: list[Trace]) -> list[str]:
     """For each capacitor without a voltage rating, its sampled peak and a rating to choose."""
     voltages = {trace.name.removeprefix("V:"): trace.values for trace in traces if trace.name.startswith("V:")}
-    advice = []
+    advice: list[str] = []
     for part in parts:
         if part.kind != "C" or part.voltage_rating is not None:
             continue
@@ -57,7 +58,5 @@ def capacitor_advice(parts: list[Part], nodes: dict[str, str], traces: list[Trac
         frames = len(first or second or [])
         peak = max((abs((first[frame] if first else 0.0) - (second[frame] if second else 0.0))
                     for frame in range(frames)), default=0.0)
-        advice.append(f"{part.id} has no voltage rating, so it is not checked. It sees up to {peak:.3g} V in "
-                      f"this run: choose at least {suggested_rating(peak):g} V (1.5x the peak; ceramics lose "
-                      "capacitance near their rating, so 2x is safer for them).")
+        advice.append(text('passive_ratings.capacitor_advice.has_no_voltage_rating_so', part=part.id, peak=f'{peak:.3g}', rating=f'{suggested_rating(peak):g}'))
     return advice
