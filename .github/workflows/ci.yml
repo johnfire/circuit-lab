@@ -126,6 +126,13 @@ jobs:
           for attempt in $(seq 1 30); do test -S /tmp/circuit-pcb-ci-socket/pcb.sock && break; sleep 1; done
           docker exec --user 10001:10001 circuit-pcb-ci chmod 666 /run/circuit-pcb/pcb.sock
           CIRCUIT_PCB_SOCKET=/tmp/circuit-pcb-ci-socket/pcb.sock npm run test:pcb --prefix frontend
+      - name: Retain PCB browser diagnostics
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: pcb-browser-failures
+          path: frontend/test-results
+          if-no-files-found: ignore
       - name: Stop isolated PCB test worker
         if: always()
         run: docker stop circuit-pcb-ci || true
