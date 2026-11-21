@@ -1,0 +1,93 @@
+{
+  "parts": [
+    {
+      "ref": "J1",
+      "value": "VIN input",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+      "lcsc": null,
+      "pads": [
+        [
+          "1",
+          "n0"
+        ],
+        [
+          "2",
+          "0"
+        ]
+      ]
+    },
+    {
+      "ref": "C1",
+      "value": "330nF 50V",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "lcsc": null,
+      "pads": [
+        [
+          "1",
+          "n0"
+        ],
+        [
+          "2",
+          "0"
+        ]
+      ]
+    },
+    {
+      "ref": "U1",
+      "value": "LM7805",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "lcsc": null,
+      "pads": [
+        [
+          "1",
+          "n0"
+        ],
+        [
+          "2",
+          "0"
+        ],
+        [
+          "3",
+          "n2"
+        ]
+      ]
+    },
+    {
+      "ref": "C2",
+      "value": "100nF 50V",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+      "lcsc": null,
+      "pads": [
+        [
+          "1",
+          "n2"
+        ],
+        [
+          "2",
+          "0"
+        ]
+      ]
+    },
+    {
+      "ref": "RL",
+      "value": "50",
+      "footprint": "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P15.24mm_Horizontal",
+      "lcsc": null,
+      "pads": [
+        [
+          "1",
+          "n2"
+        ],
+        [
+          "2",
+          "0"
+        ]
+      ]
+    }
+  ],
+  "nets": {
+    "0": "GND",
+    "n0": "N0",
+    "n2": "N2"
+  }
+}
