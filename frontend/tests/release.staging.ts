@@ -1,4 +1,5 @@
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
+import { assertReleaseBuild } from './release-build.ts';
 import { randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 
@@ -53,7 +54,7 @@ async function verifyWorkbench(page: Page, email: string, language: string) {
   const health = await page.request.get('/api/health');
   expect(health.ok()).toBeTruthy();
   const build = await health.json() as { status: string; build_id: string };
-  expect(build).toMatchObject({ status: 'ok', build_id: expectedBuild || /^[a-f0-9]{40}$/ });
+  assertReleaseBuild(build, expectedBuild);
   await page.getByRole('button', { name: language === 'de' ? 'Simulation starten' : 'Run simulation' }).click();
   await expect(page.getByText(language === 'de' ? 'Simulationsprüfungen bestanden' : 'Simulation checks passed', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: language === 'de' ? 'Schaltung bauen' : 'Build circuit', exact: true }).click();

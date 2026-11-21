@@ -1,5 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
+process.env.CIRCUIT_EXPECTED_BUILD ||= 'local';
+
 /** Only the disposable loopback identity/API/Mailpit stack, never production. */
 export default defineConfig({
   testDir: './tests', testMatch: ['**/*.identity.ts', '**/*.staging.ts'], workers: 1, timeout: 120000,
