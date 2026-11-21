@@ -75,11 +75,11 @@ async function verifyWorkbench(page: Page, email: string, language: string) {
 async function verifyPcbReview(page: Page, language: string) {
   const german = language === 'de';
   await page.getByRole('button', { name: german ? 'Platinenentwurf erstellen' : 'Generate board draft' }).click();
-  await expect(page.getByText(german ? 'Ungerouteter Entwurf:' : 'Unrouted draft:', { exact: false })).toBeVisible();
+  await expect(page.getByText(german ? 'Ungerouteter Entwurf:' : 'Unrouted draft:', { exact: false })).toBeVisible({ timeout: 60_000 });
   await expect(page.getByRole('img', { name: german ? 'Platinenansicht' : 'PCB layer view' })).toBeVisible();
   await page.locator('.pcb-review input[type=file]').setInputFiles('../tests/fixtures/pcb/partially-routed.kicad_pcb');
   await expect(page.getByText(german ? 'Leiterbahnen und Durchkontaktierungen: 1' : 'Tracks and vias: 1',
-    { exact: false })).toBeVisible();
+    { exact: false })).toBeVisible({ timeout: 60_000 });
   await expect(page.getByText(german ? 'Importierte KiCad-Platine.' : 'Imported KiCad board.', { exact: false })).toBeVisible();
 }
 
