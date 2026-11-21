@@ -27,3 +27,20 @@ test('public landing explains the preview and links to account creation', async 
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
+
+test('desktop header controls share a horizontal center in German and English', async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 768 });
+  await page.goto('/landing.html');
+  for (const language of ['de', 'en']) {
+    await page.locator('#language').selectOption(language);
+    const centers = await page.locator('.site-header .brand, .site-header nav > a, .site-header .language-selector > span').evaluateAll(
+      elements => elements.map(element => {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        const bounds = range.getBoundingClientRect();
+        return bounds.top + bounds.height / 2;
+      }),
+    );
+    expect(Math.max(...centers) - Math.min(...centers)).toBeLessThan(6);
+  }
+});
