@@ -60,6 +60,7 @@ async function verifyWorkbench(page: Page, email: string, language: string) {
   await page.getByRole('button', { name: language === 'de' ? 'Schaltung bauen' : 'Build circuit', exact: true }).click();
   await page.getByRole('button', { name: language === 'de' ? 'Neues Projekt speichern' : 'Save new project', exact: true }).click();
   await expect(page.getByText(language === 'de' ? 'Projekt privat gespeichert.' : 'Project saved privately.', { exact: false })).toBeVisible();
+  await verifyPcbReview(page, language);
   const exported = await page.request.get('/api/account/export');
   expect(exported.ok()).toBeTruthy();
   expect(await exported.json()).toMatchObject({
@@ -69,6 +70,17 @@ async function verifyWorkbench(page: Page, email: string, language: string) {
     ]),
     saved_projects: { documents: [expect.anything()] },
   });
+}
+
+async function verifyPcbReview(page: Page, language: string) {
+  const german = language === 'de';
+  await page.getByRole('button', { name: german ? 'Platinenentwurf erstellen' : 'Generate board draft' }).click();
+  await expect(page.getByText(german ? 'Ungerouteter Entwurf:' : 'Unrouted draft:', { exact: false })).toBeVisible();
+  await expect(page.getByRole('img', { name: german ? 'Platinenansicht' : 'PCB layer view' })).toBeVisible();
+  await page.locator('.pcb-review input[type=file]').setInputFiles('../tests/fixtures/pcb/partially-routed.kicad_pcb');
+  await expect(page.getByText(german ? 'Leiterbahnen und Durchkontaktierungen: 1' : 'Tracks and vias: 1',
+    { exact: false })).toBeVisible();
+  await expect(page.getByText(german ? 'Importierte KiCad-Platine.' : 'Imported KiCad board.', { exact: false })).toBeVisible();
 }
 
 for (const language of ['de', 'en']) {
