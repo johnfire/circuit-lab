@@ -182,7 +182,8 @@ def deploy(release: Path, target: DeploymentTarget) -> None:
 
 def release_image_ids(release: Path) -> list[str]:
     """Read the actual API and worker image IDs behind a release's local tags."""
-    references = [f'circuit-lab-{service}:{release.name}' for service in ('api', 'worker')]
+    services = ('api', 'worker', 'pcb-worker') if (release / 'pcb_worker/Dockerfile').is_file() else ('api', 'worker')
+    references = [f'circuit-lab-{service}:{release.name}' for service in services]
     inspected = subprocess.run(['docker', 'image', 'inspect', '--format', '{{.Id}}', *references],
                                capture_output=True, text=True, check=True, timeout=15)
     return inspected.stdout.splitlines()

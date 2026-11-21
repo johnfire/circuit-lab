@@ -1,6 +1,6 @@
 # PCB review inside Circuit Lab
 
-Date: 2026-11-21. Discovery and proposed implementation; not built or deployed.
+Date: 2026-11-21. Initial viewer implemented locally; see `docs/pcb-review.md` for verified behavior and outstanding work. Not deployed.
 Chris wants one seamless system, starting with viewing and inspecting boards. The
 first release should support both importing a finished KiCad board and producing
 a preliminary board from the current Circuit Lab circuit. Board placement and

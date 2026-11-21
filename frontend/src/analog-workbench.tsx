@@ -12,6 +12,7 @@ import { AnalogObservationSession } from './analog-observation-session';
 import { ObservationToolbar } from './observation-toolbar';
 import { AnalogWiresPanel } from './analog-wires-panel';
 import { BoardPinout } from './board-pinout';
+import { PcbReview } from './pcb-review';
 import { PcbExport } from './pcb-export';
 import { SchematicCanvas } from './schematic-canvas';
 import { useSchematicEditor } from './use-schematic-editor';
@@ -43,6 +44,7 @@ function ScopedAnalogWorkbench({ scope }: { scope: string | null }) {
             : translate("analog-workbench.the_initial_rc_example_charges")}</p>
           <p>{translate("analog-workbench.change_r1_or_c1_simulate")}</p></section></>}
       </div></div>
+    <PcbReview circuit={editor.schematic} />
     <p className="muted">{translate("analog-workbench.local_drafts_stay_in_this")}</p>
   </main>;
 }

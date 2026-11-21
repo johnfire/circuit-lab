@@ -3,6 +3,7 @@
 import io
 import json
 import re
+import subprocess
 import tarfile
 from pathlib import Path
 from xml.etree import ElementTree
@@ -208,3 +209,18 @@ def test_public_translations_publish_only_allowed_languages_and_catalogues(tmp_p
                       'locales/de/identity.json', 'locales/en/identity.json'}
     assert (public_link / 'locales/de/landing.json').read_text() == 'de-landing'
     assert (public_link / 'locales/en/identity.json').stat().st_mode & 0o777 == 0o644
+
+
+def test_release_image_ids_include_pcb_worker_for_new_releases(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    release = tmp_path / ('a' * 40)
+    (release / 'pcb_worker').mkdir(parents=True)
+    (release / 'pcb_worker/Dockerfile').write_text('FROM scratch')
+    calls = []
+
+    def inspect(arguments, **kwargs):
+        calls.append(arguments)
+        return subprocess.CompletedProcess(arguments, 0, stdout='api-id\nworker-id\npcb-id\n')
+
+    monkeypatch.setattr(deploy_release.subprocess, 'run', inspect)
+    assert deploy_release.release_image_ids(release) == ['api-id', 'worker-id', 'pcb-id']
+    assert calls[0][-1] == 'circuit-lab-pcb-worker:' + release.name

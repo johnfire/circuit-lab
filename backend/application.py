@@ -31,6 +31,7 @@ from backend.localized_http import (
     validation_exception_response,
 )
 from backend.mcp_http import MCPResponse, create_authenticated_server, create_http_app
+from backend.pcb_review import router as pcb_review_router
 from backend.project_lifecycle import export_projects
 from backend.project_models import ProjectFailure
 from backend.project_routes import create_project_router
@@ -64,6 +65,7 @@ app.state.mcp_http = mcp_http
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts())
 app.include_router(schematic_router)
 app.include_router(kicad_router)
+app.include_router(pcb_review_router)
 app.include_router(account_language_router)
 app.include_router(create_project_router(collaboration))
 
@@ -117,7 +119,8 @@ async def protect_local_requests(request: Request,
         return rejected
     is_mcp = request.url.path in {"/mcp", "/.well-known/oauth-protected-resource/mcp"}
     budget = 16384 if request.url.path.startswith("/api/projects") else 8192
-    if not is_mcp and request.method in {"POST", "PUT", "PATCH"} and len(await request.body()) > budget:
+    is_pcb_upload = request.url.path == "/api/pcb/review"
+    if not is_mcp and not is_pcb_upload and request.method in {"POST", "PUT", "PATCH"} and len(await request.body()) > budget:
         return JSONResponse({"detail": "Request too large"}, status_code=413)
     response = await call_next(request)
     response.headers["X-Correlation-ID"] = request.state.correlation_id
