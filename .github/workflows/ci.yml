@@ -120,6 +120,7 @@ jobs:
           if-no-files-found: ignore
       - name: Real KiCad board generation and import browser flow
         run: |
+          npm run build --prefix frontend
           mkdir -p /tmp/circuit-pcb-ci-socket
           chmod 777 /tmp/circuit-pcb-ci-socket
           docker run -d --name circuit-pcb-ci --network none --read-only --cap-drop ALL --security-opt no-new-privileges --memory 768m --pids-limit 64 --tmpfs /tmp:rw,nosuid,size=128m,mode=1777 -v /tmp/circuit-pcb-ci-socket:/run/circuit-pcb circuit-lab-pcb-worker:local
